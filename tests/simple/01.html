@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>New Web Project</title>
+		<script type="text/javascript" src="../../lib/MM_event-dispatcher.js"></script>
+		<script type="text/javascript" src="../../src/HasherEvent.js"></script>
+		<script type="text/javascript" src="../../src/Hasher.js"></script>
+		<style type="text/css">
+			#logger{
+				background-color:#eee; border:1px solid #ddd; margin: 20px 0;
+			}
+		</style>
+    </head>
+    <body>
+        <div id="wrapper">
+			<ul>
+				<li><a href="#blah">blah</a></li>
+				<li><a href="#lorem-ipsum">lorem ipsum</a></li>
+				<li><a href="#dolor">dolor</a></li>
+				<li><a href="#dolor/sit/amet">dolor sit amet</a></li>
+			</ul>
+			<ul>
+				<li><a href="javascript:Hasher.back();">Hasher.back()</a></li>
+				<li><a href="javascript:Hasher.forward();">Hasher.forward()</a></li>
+			</ul>
+        </div>
+		<div id="logger">&nbsp;</div>
+		<script type="text/javascript">
+			
+			function log(rest){
+				if (! console) {
+					document.getElementById('logger').innerHTML += Array.prototype.join.call(arguments, ' , ') + '<br />';
+				}else{
+					console.log(arguments);
+				}
+			}
+			
+			function onChange(e){
+				log(Hasher.getHash(), Hasher.getHashAsArray());
+			}
+			
+			function onChange2(e){
+				log('test multiple change listeners', e);
+			}
+			
+			function onChange3(e){
+				log(this);
+			}
+			
+			Hasher.addListener(HasherEvent.CHANGE, onChange);
+			
+			Hasher.addListener(HasherEvent.INIT, function(e){
+			    log('init', e, this);
+			});
+			
+			Hasher.init();
+			
+			Hasher.addListener(HasherEvent.CHANGE, onChange2);
+			Hasher.addListener(HasherEvent.CHANGE, onChange3);
+			
+			Hasher.addListener(HasherEvent.STOP, function(){
+				log('stop', e);
+			});
+		</script>
+    </body>
+</html>
