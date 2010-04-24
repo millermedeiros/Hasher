@@ -2,37 +2,45 @@
  * Hasher
  * - History Manager for rich-media applications.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.0 (2010/04/17)
+ * @version 0.1 (2010/04/24)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 (function(){
 	
-	//TODO: add support for IE <= 7.
 	//TODO: use 'window.onhashchange' listener if browser supports it.
 	
 	var	location = window.location,
 		_oldHash,
 		_checkInterval,
 		_frame, //used for IE <= 7 
+		_isLegacyIE = /msie (6|7)/.test(navigator.userAgent.toLowerCase()) && !+"\v1", //feature detection based on Andrea Giammarchi's solution: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html
 		Hasher = new MM.EventDispatcher(); //inherit from MM.EventDispatcher
 	
 	/**
-	 * Start listening/dispatching changes in the hash.
+	 * Start listening/dispatching changes in the hash/history.
 	 */
 	Hasher.init = function(){
 		var newHash = Hasher.getHash();
 		this.dispatchEvent(new HasherEvent(HasherEvent.INIT, _oldHash, newHash));
 		_oldHash = newHash; //avoid dispatching CHANGE event just after INIT event (since it didn't changed).
-		_checkInterval = setInterval(_check, 100);
+		if(_isLegacyIE){ //IE6 & IE7 [HACK]
+			if(!_frame){
+				_createFrame();
+				_updateFrame();
+			}
+			_checkInterval = setInterval(_checkHistoryLegacyIE, 50);
+		}else{ //regular browsers
+			_checkInterval = setInterval(_checkHash, 50);
+		}
 	};
 	
 	/**
-	 * Stop listening/dispatching changes in the hash.
+	 * Stop listening/dispatching changes in the hash/history.
 	 */
 	Hasher.stop = function(){
 		clearInterval(_checkInterval);
 		_checkInterval = null;
-		this.dispatchEvent(new HasherEvent(HasherEvent.STOP, _oldHash, _oldHash)); //since it didn't changed oldURL and newHash should be the same.
+		this.dispatchEvent(new HasherEvent(HasherEvent.STOP, _oldHash, _oldHash)); //since it didn't changed oldHash and newHash should be the same.
 	};
 	
 	/**
@@ -40,7 +48,7 @@
 	 * @param {String} value	Hash value without '#'.
 	 */
 	Hasher.setHash = function(value){
-		location.hash = '#'+ value;
+		location.hash = value;
 	};
 	
 	/**
@@ -118,21 +126,44 @@
 	
 	/**
 	 * Function that checks if hash has changed.
-	 * - used since some browsers don't dispatchEvent the `onhashchange` event.
+	 * - used since most browsers don't dispatch the `onhashchange` event.
 	 * @private
 	 */
-	function _check(){
-		var newHash = Hasher.getHash();
-		if(newHash == _oldHash){
+	function _checkHash(){
+		var curHash = Hasher.getHash();
+		if(curHash == _oldHash){
 			return;
-		} else {
-			Hasher.dispatchEvent(new HasherEvent(HasherEvent.CHANGE, _oldHash, newHash));
-			_oldHash = newHash;
+		}else{
+			Hasher.dispatchEvent(new HasherEvent(HasherEvent.CHANGE, _oldHash, curHash));
+			_oldHash = curHash;
 		}
 	}
 	
 	/**
-	 * Creates iframe. (Hack for IE <= 7) 
+	 * Check if browser history state has changed on IE <= 7. [HACK]
+	 * - used since IE 6,7 doesn't generates new history record on hashchange.
+	 * @private
+	 */
+	function _checkHistoryLegacyIE(){
+		var windowHash = Hasher.getHash(),
+			frameHash = _frame.contentWindow.frameHash;
+		//check if browser history state changed.
+		if(frameHash != windowHash && frameHash != _oldHash){ //detect changes made pressing browser history buttons. Workaround since history.back() and history.forward() doesn't update hash value on IE6/7 but updates content of the iframe.
+			Hasher.setTitle(_frame.contentWindow.document.title);
+			Hasher.setHash(frameHash);
+			Hasher.dispatchEvent(new HasherEvent(HasherEvent.CHANGE, _oldHash, frameHash));
+			_oldHash = frameHash;
+		}else if(windowHash != _oldHash){ //detect if hash changed
+			if(frameHash != windowHash){
+				_updateFrame();
+			}
+			Hasher.dispatchEvent(new HasherEvent(HasherEvent.CHANGE, _oldHash, windowHash));
+			_oldHash = windowHash;
+		}
+	}
+	
+	/**
+	 * Creates iframe used to record history state on IE <= 7. [HACK]
 	 * @private
 	 */
 	function _createFrame(){
@@ -143,13 +174,14 @@
 	}
 	
 	/**
-	 * Update iframe content, generating a history record. (Hack for IE <= 7)
+	 * Update iframe content, generating a history record and saving current hash/title on IE <= 7. [HACK]
+	 * - based on Really Simple History, SWFAddress and YUI.history.
 	 * @private
 	 */
 	function _updateFrame(){
-		var frameDoc = _frame.contentDocument || _frame.contentWindow.document;
+		var frameDoc = _frame.contentWindow.document;
 		frameDoc.open();
-		frameDoc.write('&nbsp;');
+		frameDoc.write('<html><head><title>'+ Hasher.getTitle() +'</title><script type="text/javascript">var frameHash="'+ Hasher.getHash() +'";</script></head><body>&nbsp;</body></html>'); //stores current title and current hash inside iframe.
 		frameDoc.close();
 	}
 	
