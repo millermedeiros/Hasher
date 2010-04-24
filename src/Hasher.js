@@ -11,16 +11,19 @@
 	//TODO: use 'window.onhashchange' listener if browser supports it.
 	
 	var	location = window.location,
-		_oldURL,
+		_oldHash,
 		_checkInterval,
+		_frame, //used for IE <= 7 
 		Hasher = new MM.EventDispatcher(); //inherit from MM.EventDispatcher
 	
 	/**
 	 * Start listening/dispatching changes in the hash.
 	 */
 	Hasher.init = function(){
-		this.dispatch(new HasherEvent(HasherEvent.INIT), _oldURL, Hasher.getURL());
-		_checkInterval = setInterval(_checkHash, 100);
+		var newHash = Hasher.getHash();
+		this.dispatchEvent(new HasherEvent(HasherEvent.INIT, _oldHash, newHash));
+		_oldHash = newHash; //avoid dispatching CHANGE event just after INIT event (since it didn't changed).
+		_checkInterval = setInterval(_check, 100);
 	};
 	
 	/**
@@ -29,27 +32,27 @@
 	Hasher.stop = function(){
 		clearInterval(_checkInterval);
 		_checkInterval = null;
-		this.dispatch(new HasherEvent(HasherEvent.STOP), _oldURL, Hasher.getURL());
+		this.dispatchEvent(new HasherEvent(HasherEvent.STOP, _oldHash, _oldHash)); //since it didn't changed oldURL and newHash should be the same.
 	};
 	
 	/**
 	 * Set Hash value.
-	 * @param {String} value	Full hash value.
+	 * @param {String} value	Hash value without '#'.
 	 */
 	Hasher.setHash = function(value){
 		location.hash = '#'+ value;
 	};
 	
 	/**
-	 * Return full hash as String.
-	 * @return {String}	Full hash value.
+	 * Return hash value as String.
+	 * @return {String}	Hash value without '#'.
 	 */
 	Hasher.getHash = function(){
 		return location.hash.substr(1);
 	};
 	
 	/**
-	 * Return hash as Array
+	 * Return hash value as Array.
 	 * @param {String} [separator]	String used to divide hash (default = '/').	
 	 * @return {Array}	Hash splitted into an Array.  
 	 */
@@ -115,17 +118,39 @@
 	
 	/**
 	 * Function that checks if hash has changed.
-	 * - used since some browsers don't dispatch the `onhashchange` event.
+	 * - used since some browsers don't dispatchEvent the `onhashchange` event.
 	 * @private
 	 */
-	function _checkHash(){
-		var newURL = Hasher.getURL();
-		if(newURL == _oldURL){
+	function _check(){
+		var newHash = Hasher.getHash();
+		if(newHash == _oldHash){
 			return;
 		} else {
-			Hasher.dispatch(new HasherEvent(HasherEvent.CHANGE, _oldURL, newURL));
-			_oldURL = newURL; 
+			Hasher.dispatchEvent(new HasherEvent(HasherEvent.CHANGE, _oldHash, newHash));
+			_oldHash = newHash;
 		}
+	}
+	
+	/**
+	 * Creates iframe. (Hack for IE <= 7) 
+	 * @private
+	 */
+	function _createFrame(){
+		_frame = document.createElement('iframe');
+		_frame.src = 'javascript:false';
+		_frame.style.display = 'none';
+		document.body.appendChild(_frame);
+	}
+	
+	/**
+	 * Update iframe content, generating a history record. (Hack for IE <= 7)
+	 * @private
+	 */
+	function _updateFrame(){
+		var frameDoc = _frame.contentDocument || _frame.contentWindow.document;
+		frameDoc.open();
+		frameDoc.write('&nbsp;');
+		frameDoc.close();
 	}
 	
 	//Add Hasher to the global scope

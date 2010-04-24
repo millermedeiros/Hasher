@@ -30,7 +30,7 @@
 		<script type="text/javascript">
 			
 			function log(rest){
-				if (! console) {
+				if (typeof console != "object") {
 					document.getElementById('logger').innerHTML += Array.prototype.join.call(arguments, ' , ') + '<br />';
 				}else{
 					console.log(arguments);
@@ -38,30 +38,30 @@
 			}
 			
 			function onChange(e){
-				log(Hasher.getHash(), Hasher.getHashAsArray());
+				log('onChange:', Hasher.getHash(), Hasher.getHashAsArray());
 			}
 			
 			function onChange2(e){
-				log('test multiple change listeners', e);
+				log('onChange2:', e);
 			}
 			
 			function onChange3(e){
-				log(this);
+				log('onChange3');
 			}
 			
-			Hasher.addListener(HasherEvent.CHANGE, onChange);
+			Hasher.addEventListener(HasherEvent.CHANGE, onChange);
 			
-			Hasher.addListener(HasherEvent.INIT, function(e){
-			    log('init', e, this);
+			Hasher.addEventListener(HasherEvent.INIT, function(e){
+			    log(e);
 			});
 			
 			Hasher.init();
 			
-			Hasher.addListener(HasherEvent.CHANGE, onChange2);
-			Hasher.addListener(HasherEvent.CHANGE, onChange3);
+			Hasher.addEventListener(HasherEvent.CHANGE, onChange2);
+			Hasher.addEventListener(HasherEvent.CHANGE, onChange3);
 			
-			Hasher.addListener(HasherEvent.STOP, function(){
-				log('stop', e);
+			Hasher.addEventListener(HasherEvent.STOP, function(e){
+				log(e);
 			});
 		</script>
     </body>
