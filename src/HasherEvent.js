@@ -17,7 +17,7 @@ var HasherEvent = function(eType, oldHash, newHash){
 	this.type = eType;
 	this.oldHash = oldHash;
 	this.newHash = newHash;
-}
+};
 
 /**
  * Returns string representation of the HasherEvent

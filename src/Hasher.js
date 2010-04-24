@@ -2,7 +2,7 @@
  * Hasher
  * - History Manager for rich-media applications.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.2 (2010/04/24)
+ * @version 0.3 (2010/04/24)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 (function(){
@@ -163,17 +163,24 @@
 	
 	
 	/**
+	 * Dispatch `HasherEvent.CHANGE` and stores hash value.
+	 * @param {String} newHash	New Hash Value.
+	 * @private
+	 */
+	function _dispatchChange(newHash){
+		Hasher.dispatchEvent(new HasherEvent(HasherEvent.CHANGE, _oldHash, newHash));
+		_oldHash = newHash;
+	}
+	
+	/**
 	 * Function that checks if hash has changed.
 	 * - used since most browsers don't dispatch the `onhashchange` event.
 	 * @private
 	 */
 	function _checkHash(){
 		var curHash = Hasher.getHash();
-		if(curHash == _oldHash){
-			return;
-		}else{
-			Hasher.dispatchEvent(new HasherEvent(HasherEvent.CHANGE, _oldHash, curHash));
-			_oldHash = curHash;
+		if(curHash != _oldHash){
+			_dispatchChange(curHash);
 		}
 	}
 	
@@ -185,18 +192,15 @@
 	function _checkHistoryLegacyIE(){
 		var windowHash = Hasher.getHash(),
 			frameHash = _frame.contentWindow.frameHash;
-		//check if browser history state changed.
 		if(frameHash != windowHash && frameHash != _oldHash){ //detect changes made pressing browser history buttons. Workaround since history.back() and history.forward() doesn't update hash value on IE6/7 but updates content of the iframe.
 			Hasher.setTitle(_frame.contentWindow.document.title);
 			Hasher.setHash(frameHash);
-			Hasher.dispatchEvent(new HasherEvent(HasherEvent.CHANGE, _oldHash, frameHash));
-			_oldHash = frameHash;
-		}else if(windowHash != _oldHash){ //detect if hash changed
+			_dispatchChange(frameHash);
+		}else if(windowHash != _oldHash){ //detect if hash changed (manually or using setHash)
 			if(frameHash != windowHash){
 				_updateFrame();
 			}
-			Hasher.dispatchEvent(new HasherEvent(HasherEvent.CHANGE, _oldHash, windowHash));
-			_oldHash = windowHash;
+			_dispatchChange(windowHash);
 		}
 	}
 	
@@ -213,7 +217,7 @@
 	
 	/**
 	 * Update iframe content, generating a history record and saving current hash/title on IE <= 7. [HACK]
-	 * - based on Really Simple History, SWFAddress and YUI.history.
+	 * - based on Really Simple History, SWFAddress and YUI.history solutions.
 	 * @private
 	 */
 	function _updateFrame(){
