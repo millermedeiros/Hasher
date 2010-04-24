@@ -2,19 +2,25 @@
  * Hasher
  * - History Manager for rich-media applications.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.1 (2010/04/24)
+ * @version 0.2 (2010/04/24)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 (function(){
 	
-	//TODO: use 'window.onhashchange' listener if browser supports it.
+	
+	//== Private Vars ==//
+	
 	
 	var	location = window.location,
-		_oldHash,
-		_checkInterval,
-		_frame, //used for IE <= 7 
+		_oldHash, //{String} used to check if hash changed
+		_checkInterval, //stores setInterval reference (used to check if hash changed)
+		_frame, //iframe used for IE <= 7 
 		_isLegacyIE = /msie (6|7)/.test(navigator.userAgent.toLowerCase()) && !+"\v1", //feature detection based on Andrea Giammarchi's solution: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html
 		Hasher = new MM.EventDispatcher(); //inherit from MM.EventDispatcher
+	
+	
+	//== Public API ==//
+	
 	
 	/**
 	 * Start listening/dispatching changes in the hash/history.
@@ -32,6 +38,7 @@
 		}else{ //regular browsers
 			_checkInterval = setInterval(_checkHash, 50);
 		}
+		//TODO: use 'window.onhashchange' listener if browser supports it.
 	};
 	
 	/**
@@ -124,6 +131,37 @@
 		return history.length;
 	};
 	
+	//-- Query string helpers 
+	
+	/**
+	 * @see MM.queryUtils.getQueryString
+	 */
+	Hasher.getQueryString = MM.queryUtils.getQueryString;
+	
+	/**
+	 * @see MM.queryUtils.getQueryObject
+	 */
+	Hasher.getQueryObject = MM.queryUtils.getQueryObject;
+	
+	/**
+	 * @see MM.queryUtils.getParamValue
+	 */
+	Hasher.getParamValue = MM.queryUtils.getParamValue;
+	
+	/**
+	 * @see MM.queryUtils.hasParam
+	 */
+	Hasher.hasParam = MM.queryUtils.hasParam;
+	
+	/**
+	 * @see MM.queryUtils.toQueryString
+	 */
+	Hasher.toQueryString = MM.queryUtils.toQueryString;
+	
+	
+	//== Private methods ==//
+	
+	
 	/**
 	 * Function that checks if hash has changed.
 	 * - used since most browsers don't dispatch the `onhashchange` event.
@@ -184,6 +222,10 @@
 		frameDoc.write('<html><head><title>'+ Hasher.getTitle() +'</title><script type="text/javascript">var frameHash="'+ Hasher.getHash() +'";</script></head><body>&nbsp;</body></html>'); //stores current title and current hash inside iframe.
 		frameDoc.close();
 	}
+	
+	
+	//== Init ==//	
+	
 	
 	//Add Hasher to the global scope
 	this.Hasher = Hasher;
