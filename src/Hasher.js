@@ -2,7 +2,7 @@
  * Hasher
  * - History Manager for rich-media applications.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.3 (2010/04/24)
+ * @version 0.3.1 (2010/04/25)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 (function(){
@@ -27,8 +27,7 @@
 	 */
 	Hasher.init = function(){
 		var newHash = Hasher.getHash();
-		this.dispatchEvent(new HasherEvent(HasherEvent.INIT, _oldHash, newHash));
-		_oldHash = newHash; //avoid dispatching CHANGE event just after INIT event (since it didn't changed).
+		//TODO: use 'window.onhashchange' listener if browser supports it.
 		if(_isLegacyIE){ //IE6 & IE7 [HACK]
 			if(!_frame){
 				_createFrame();
@@ -38,7 +37,8 @@
 		}else{ //regular browsers
 			_checkInterval = setInterval(_checkHash, 50);
 		}
-		//TODO: use 'window.onhashchange' listener if browser supports it.
+		this.dispatchEvent(new HasherEvent(HasherEvent.INIT, _oldHash, newHash));
+		_oldHash = newHash; //avoid dispatching CHANGE event just after INIT event (since it didn't changed).
 	};
 	
 	/**
@@ -77,6 +77,14 @@
 	};
 	
 	/**
+	 * Set a new location or hash value without generating a history record for the current page. (user won't be able to return to current page)
+	 * @param {String} value	New location (eg: '#newhash', 'newfile.html', 'http://example.com/')
+	 */
+	Hasher.replaceLocation = function(value){
+		location.replace(value);
+	};
+	
+	/**
 	 * Retrieve full URL.
 	 * @return {String}	Full URL.
 	 */
@@ -85,8 +93,40 @@
 	};
 	
 	/**
+	 * Retrieve URL without query string and hash.
+	 * @return {String}	Base URL.
+	 */
+	Hasher.getBaseURL = function(){
+		return location.href.replace(/(\?.*)|(\#.+)/, '');
+	};
+	
+	/**
+	 * Retrieve file name portion of the URL.
+	 * @return {String}	File Name
+	 * /
+	Hasher.getFileName = function(){
+		//TODO: implement
+	}; */
+	
+	/**
+	 * Host name of the URL.
+	 * @return {String}	The Host Name.
+	 */
+	Hasher.getHostName = function(){
+		return location.hostname;
+	};
+	
+	/**
+	 * Retrieves Path relative to HostName
+	 * @return {String} Folder path relative to domain
+	 */
+	Hasher.getPathName = function(){
+		return location.pathname;
+	};
+	
+	/**
 	 * Set page title
-	 * @param {String} title
+	 * @param {String} title	Page Title
 	 */
 	Hasher.setTitle = function(title){
 		document.title = title;
