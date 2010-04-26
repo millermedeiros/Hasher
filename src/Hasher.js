@@ -2,7 +2,7 @@
  * Hasher
  * - History Manager for rich-media applications.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.3.1 (2010/04/25)
+ * @version 0.4 (2010/04/25)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 (function(){
@@ -10,17 +10,26 @@
 	
 	//== Private Vars ==//
 	
-	
 	var	location = window.location,
 		_oldHash, //{String} used to check if hash changed
 		_checkInterval, //stores setInterval reference (used to check if hash changed)
 		_frame, //iframe used for IE <= 7 
-		_isLegacyIE = /msie (6|7)/.test(navigator.userAgent.toLowerCase()) && !+"\v1", //feature detection based on Andrea Giammarchi's solution: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html
-		Hasher = new MM.EventDispatcher(); //inherit from MM.EventDispatcher
+		_isLegacyIE = /msie (6|7)/.test(navigator.userAgent.toLowerCase()) && !+"\v1"; //feature detection based on Andrea Giammarchi's solution: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html	
 	
 	
 	//== Public API ==//
 	
+	/**
+	 * Hasher
+	 * @class
+	 * @extends MM.EventDispatcher
+	 * @borrows MM.queryUtils.getQueryString as getQueryString
+	 * @borrows MM.queryUtils.getQueryObject as getQueryObject
+	 * @borrows MM.queryUtils.getParamValue as getParamValue
+	 * @borrows MM.queryUtils.hasParam as hasParam
+	 * @borrows MM.queryUtils.toQueryString as toQueryString
+	 */
+	this.Hasher = new MM.EventDispatcher();
 	
 	/**
 	 * Start listening/dispatching changes in the hash/history.
@@ -165,34 +174,18 @@
 	
 	//-- Query string helpers 
 	
-	/**
-	 * @see MM.queryUtils.getQueryString
-	 */
 	Hasher.getQueryString = MM.queryUtils.getQueryString;
 	
-	/**
-	 * @see MM.queryUtils.getQueryObject
-	 */
 	Hasher.getQueryObject = MM.queryUtils.getQueryObject;
 	
-	/**
-	 * @see MM.queryUtils.getParamValue
-	 */
 	Hasher.getParamValue = MM.queryUtils.getParamValue;
 	
-	/**
-	 * @see MM.queryUtils.hasParam
-	 */
 	Hasher.hasParam = MM.queryUtils.hasParam;
 	
-	/**
-	 * @see MM.queryUtils.toQueryString
-	 */
 	Hasher.toQueryString = MM.queryUtils.toQueryString;
 	
 	
 	//== Private methods ==//
-	
 	
 	/**
 	 * Dispatch `HasherEvent.CHANGE` and stores hash value.
@@ -258,12 +251,5 @@
 		frameDoc.write('<html><head><title>'+ Hasher.getTitle() +'</title><script type="text/javascript">var frameHash="'+ Hasher.getHash() +'";</script></head><body>&nbsp;</body></html>'); //stores current title and current hash inside iframe.
 		frameDoc.close();
 	}
-	
-	
-	//== Init ==//	
-	
-	
-	//Add Hasher to the global scope
-	this.Hasher = Hasher;
 	
 })();

@@ -6,16 +6,28 @@
  */
 
 /**
- * Constructor
- * - Creates a new HasherEvent Object.
- * - According to the HTML5 spec `hashchange` event should have `oldURL` and `newURL` properties, since the only portion of the URL that changes is the hash I decided to use `oldHash` and `newHash` instead. ( http://www.whatwg.org/specs/web-apps/current-work/multipage/history.html#event-hashchange )
+ * HasherEvent Object.
+ * <p>According to the HTML5 spec `hashchange` event should have `oldURL` and `newURL` properties, since the only portion of the URL that changes is the hash I decided to use `oldHash` and `newHash` instead. (http://www.whatwg.org/specs/web-apps/current-work/multipage/history.html#event-hashchange)</p>
  * @param {String} eType	Hasher Event type.
  * @param {String} oldHash	Previous Hash.
  * @param {String} newHash	Current Hash.
+ * @constructor
  */
 var HasherEvent = function(eType, oldHash, newHash){
+	/**
+	 * Event Type
+	 * @type String
+	 */
 	this.type = eType;
+	/**
+	 * Previous Hash value
+	 * @type String
+	 */
 	this.oldHash = oldHash;
+	/**
+	 * Current Hash value
+	 * @type String
+	 */
 	this.newHash = newHash;
 };
 
@@ -30,19 +42,22 @@ HasherEvent.prototype.toString = function(){
 //-- Constants --//
 
 /**
- * @var	{String} Defines the value of the type property of an change event object.
- * @static
+ * Defines the value of the type property of an change event object.
+ * @type String
+ * @constant
  */
 HasherEvent.CHANGE = 'change';
 
-/**
- * @var	{String} Defines the value of the type property of an init event object.
- * @static
+ /**
+ * Defines the value of the type property of an init event object.
+ * @type String
+ * @constant
  */
 HasherEvent.INIT = 'init';
 
 /**
- * @var	{String} Defines the value of the type property of an stop event object.
- * @static
+ * Defines the value of the type property of an stop event object.
+ * @type String
+ * @constant
  */
 HasherEvent.STOP = 'stop';

@@ -1,0 +1,71 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"> <style>
+	.KEYW {color: #933;}
+	.COMM {color: #bbb; font-style: italic;}
+	.NUMB {color: #393;}
+	.STRN {color: #393;}
+	.REGX {color: #339;}
+	.line {border-right: 1px dotted #666; color: #666; font-style: normal;}
+	</style></head><body><pre><span class='line'>  1</span> <span class="COMM">/**
+<span class='line'>  2</span>  * Hasher Event
+<span class='line'>  3</span>  * @author Miller Medeiros &lt;http://www.millermedeiros.com/>
+<span class='line'>  4</span>  * @version 0.2 (2010/04/18)
+<span class='line'>  5</span>  * Released under the MIT License &lt;http://www.opensource.org/licenses/mit-license.php>
+<span class='line'>  6</span>  */</span><span class="WHIT">
+<span class='line'>  7</span> 
+<span class='line'>  8</span> </span><span class="COMM">/**
+<span class='line'>  9</span>  * HasherEvent Object.
+<span class='line'> 10</span>  * &lt;p>According to the HTML5 spec `hashchange` event should have `oldURL` and `newURL` properties, since the only portion of the URL that changes is the hash I decided to use `oldHash` and `newHash` instead. (http://www.whatwg.org/specs/web-apps/current-work/multipage/history.html#event-hashchange)&lt;/p>
+<span class='line'> 11</span>  * @param {String} eType	Hasher Event type.
+<span class='line'> 12</span>  * @param {String} oldHash	Previous Hash.
+<span class='line'> 13</span>  * @param {String} newHash	Current Hash.
+<span class='line'> 14</span>  * @constructor
+<span class='line'> 15</span>  */</span><span class="WHIT">
+<span class='line'> 16</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">HasherEvent</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">eType</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">oldHash</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">newHash</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 17</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 18</span> 	 * Event Type
+<span class='line'> 19</span> 	 * @type String
+<span class='line'> 20</span> 	 */</span><span class="WHIT">
+<span class='line'> 21</span> </span><span class="WHIT">	</span><span class="NAME">this.type</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">eType</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 22</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 23</span> 	 * Previous Hash value
+<span class='line'> 24</span> 	 * @type String
+<span class='line'> 25</span> 	 */</span><span class="WHIT">
+<span class='line'> 26</span> </span><span class="WHIT">	</span><span class="NAME">this.oldHash</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">oldHash</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 27</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 28</span> 	 * Current Hash value
+<span class='line'> 29</span> 	 * @type String
+<span class='line'> 30</span> 	 */</span><span class="WHIT">
+<span class='line'> 31</span> </span><span class="WHIT">	</span><span class="NAME">this.newHash</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">newHash</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 32</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 33</span> 
+<span class='line'> 34</span> </span><span class="COMM">/**
+<span class='line'> 35</span>  * Returns string representation of the HasherEvent
+<span class='line'> 36</span>  * @return {String} A string representation of the object.
+<span class='line'> 37</span>  */</span><span class="WHIT">
+<span class='line'> 38</span> </span><span class="NAME">HasherEvent.prototype.toString</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 39</span> </span><span class="WHIT">	</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="STRN">'[HasherEvent type="'</span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">this.type</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="STRN">'" oldHash="'</span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">this.oldHash</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="STRN">'" newHash="'</span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">this.newHash</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="STRN">'"]'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 40</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 41</span> 
+<span class='line'> 42</span> </span><span class="COMM">//-- Constants --//</span><span class="WHIT">
+<span class='line'> 43</span> 
+<span class='line'> 44</span> </span><span class="COMM">/**
+<span class='line'> 45</span>  * Defines the value of the type property of an change event object.
+<span class='line'> 46</span>  * @type String
+<span class='line'> 47</span>  * @constant
+<span class='line'> 48</span>  */</span><span class="WHIT">
+<span class='line'> 49</span> </span><span class="NAME">HasherEvent.CHANGE</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'change'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 50</span> 
+<span class='line'> 51</span> </span><span class="WHIT"> </span><span class="COMM">/**
+<span class='line'> 52</span>  * Defines the value of the type property of an init event object.
+<span class='line'> 53</span>  * @type String
+<span class='line'> 54</span>  * @constant
+<span class='line'> 55</span>  */</span><span class="WHIT">
+<span class='line'> 56</span> </span><span class="NAME">HasherEvent.INIT</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'init'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 57</span> 
+<span class='line'> 58</span> </span><span class="COMM">/**
+<span class='line'> 59</span>  * Defines the value of the type property of an stop event object.
+<span class='line'> 60</span>  * @type String
+<span class='line'> 61</span>  * @constant
+<span class='line'> 62</span>  */</span><span class="WHIT">
+<span class='line'> 63</span> </span><span class="NAME">HasherEvent.STOP</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'stop'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 64</span> </span></pre></body></html>
