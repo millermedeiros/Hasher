@@ -1,4 +1,4 @@
-/**
+/*
  * Hasher Event
  * @author Miller Medeiros <http://www.millermedeiros.com/>
  * @version 0.2 (2010/04/18)

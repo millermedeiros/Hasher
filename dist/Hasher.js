@@ -1,4 +1,175 @@
 /*!
+ * MM.EventDispatcher
+ * - Class used to allow Custom Objects to dispatch events.
+ * @author Miller Medeiros <http://www.millermedeiros.com/>
+ * @version 0.5 (2010/05/01)
+ * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
+ */
+
+/**
+ * @namespace
+ * @ignore
+ */
+this.MM = this.MM || {};
+
+/**
+ * EventDispatcher Object
+ * @constructor
+ */
+MM.EventDispatcher = function(){
+	this._handlers = {};
+};
+
+MM.EventDispatcher.prototype = {
+	
+	/**
+	 * Add Event Listener
+	 * @param {String} eType	Event Type.
+	 * @param {Function} fn	Event Handler.
+	 */
+	addEventListener : function(eType, fn){
+		if(typeof this._handlers[eType] == 'undefined'){
+			this._handlers[eType] = [];
+		}
+		this._handlers[eType].push(fn);
+	},
+	
+	/**
+	 * Remove Event Listener
+	 * @param {String} eType	Event Type.
+	 * @param {Function} fn	Event Handler.
+	 */
+	removeEventListener : function(eType, fn){
+		if(! this.hasEventListener(eType)){
+			return;
+		}
+		var	typeHandlers = this._handlers[eType], //stored for performance
+			n = typeHandlers.length;
+		if(n == 1){
+			this._handlers[eType] = null; //avoid loop if not necessary
+		}else{
+			while(n--){ //faster than for
+				if(typeHandlers[n] == fn){
+					typeHandlers.splice(n, 1);
+					break;
+				}
+			}
+		}
+	},
+	
+	/**
+	 * Removes all Listeners from the EventDispatcher object.
+	 */
+	removeAllEventListeners : function(){
+		this._handlers = {};
+	},
+	
+	/**
+	 * Checks if the EventDispatcher has any listeners registered for a specific type of event. 
+	 * @param {String} eType	Event Type.
+	 * @return {Boolean}
+	 */
+	hasEventListener : function(eType){
+		return (typeof this._handlers[eType] != 'undefined');
+	},
+
+	/**
+	 * Dispatch Event
+	 * - Call all Handlers Listening to the Event.
+	 * @param {Event|String} e	Custom Event Object (property `type` is required) or String with Event type.
+	 */
+	dispatchEvent : function(e){
+		e = (typeof e == 'string')? {type: e} : e; //create Object if not an Object to always call handlers with same type of argument.
+		if(this.hasEventListener(e.type)){
+			var typeHandlers = this._handlers[e.type], //stored for performance
+				curHandler,
+				i,
+				n = typeHandlers.length;
+			for(i=0; i<n; i++){
+				curHandler = typeHandlers[i];
+				curHandler(e);
+			}	
+		}
+	}
+	
+};
+/*!
+ * MM.queryUtils
+ * - utilities for query string manipulation
+ * @author Miller Medeiros <http://www.millermedeiros.com/>
+ * @version 0.3 (2010/05/01)
+ * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
+ */
+
+/**
+ * @namespace
+ * @ignore
+ */
+this.MM = this.MM || {};
+
+/**
+ * Utilities for query string manipulation.
+ * @namespace
+ */
+MM.queryUtils = {
+	
+	/**
+	 * Gets full query as string with all special chars decoded.
+	 * @return {String}	Query string without starting '?'.
+	 */
+	getQueryString : function(){
+		return decodeURIComponent(location.search.substring(1));
+	},
+	
+	/**
+	 * Gets query as Object.
+	 * @return {Object}	Object with all the query "params => values" pairs.
+	 */
+	getQueryObject : function(){
+		var queryArr = this.getQueryString().split('&'), 
+			n = queryArr.length,
+			queryObj = {};
+		while (n--) {
+			queryArr[n] = queryArr[n].split('=');
+			queryObj[queryArr[n][0]] = queryArr[n][1];
+		}
+		return queryObj;
+	},
+	
+	/**
+	 * Get query parameter value.
+	 * @param {String} param	Parameter name.
+	 * @return {String}	Parameter value.
+	 */
+	getParamValue : function(param){
+		return this.getQueryObject()[param];
+	},
+	
+	/**
+	 * Checks if query contains parameter.
+	 * @param {String} param	Parameter name.
+	 * @return {Boolean} If parameter exist.
+	 */
+	hasParam : function(param){
+		return (this.getQueryString().indexOf(param+'=') >= 0);
+	},
+	
+	/**
+	 * Converts object into query string.
+	 * @param {Object} obj	Object with "params => values" pairs.
+	 * @return {String}	Formated query string starting with '?'.
+	 */
+	toQueryString : function(obj){
+		var query = [],
+			param;
+		for(param in obj){
+			query.push(param +'='+ obj[param]);
+		}
+		return (query.length)? '?'+ query.join('&') : '';
+	}
+	
+};
+/*!
  * Hasher
  * - History Manager for rich-media applications.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
@@ -253,3 +424,66 @@
 	}
 	
 })();
+/*
+ * Hasher Event
+ * @author Miller Medeiros <http://www.millermedeiros.com/>
+ * @version 0.2 (2010/04/18)
+ * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
+ */
+
+/**
+ * HasherEvent Object.
+ * <p>According to the HTML5 spec `hashchange` event should have `oldURL` and `newURL` properties, since the only portion of the URL that changes is the hash I decided to use `oldHash` and `newHash` instead. (http://www.whatwg.org/specs/web-apps/current-work/multipage/history.html#event-hashchange)</p>
+ * @param {String} eType	Hasher Event type.
+ * @param {String} oldHash	Previous Hash.
+ * @param {String} newHash	Current Hash.
+ * @constructor
+ */
+var HasherEvent = function(eType, oldHash, newHash){
+	/**
+	 * Event Type
+	 * @type String
+	 */
+	this.type = eType;
+	/**
+	 * Previous Hash value
+	 * @type String
+	 */
+	this.oldHash = oldHash;
+	/**
+	 * Current Hash value
+	 * @type String
+	 */
+	this.newHash = newHash;
+};
+
+/**
+ * Returns string representation of the HasherEvent
+ * @return {String} A string representation of the object.
+ */
+HasherEvent.prototype.toString = function(){
+	return '[HasherEvent type="'+ this.type +'" oldHash="'+ this.oldHash +'" newHash="'+ this.newHash +'"]';
+};
+
+//-- Constants --//
+
+/**
+ * Defines the value of the type property of an change event object.
+ * @type String
+ * @constant
+ */
+HasherEvent.CHANGE = 'change';
+
+ /**
+ * Defines the value of the type property of an init event object.
+ * @type String
+ * @constant
+ */
+HasherEvent.INIT = 'init';
+
+/**
+ * Defines the value of the type property of an stop event object.
+ * @type String
+ * @constant
+ */
+HasherEvent.STOP = 'stop';
