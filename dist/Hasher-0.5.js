@@ -1,4 +1,15 @@
 /*!
+ * Hasher
+ * - History Manager for rich-media applications.
+ * @author Miller Medeiros <http://www.millermedeiros.com/>
+ * @version 0.5 (2010/05/01)
+ * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
+ *
+ * Includes: MM.EventDispatcher (0.5), MM.queryUtils (0.3)
+ * @author Miller Medeiros <http://www.millermedeiros.com/>
+ * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
+ */
+/*
  * MM.EventDispatcher
  * - Class used to allow Custom Objects to dispatch events.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
@@ -93,7 +104,7 @@ MM.EventDispatcher.prototype = {
 	}
 	
 };
-/*!
+/*
  * MM.queryUtils
  * - utilities for query string manipulation
  * @author Miller Medeiros <http://www.millermedeiros.com/>
@@ -169,7 +180,7 @@ MM.queryUtils = {
 	}
 	
 };
-/*!
+/*
  * Hasher
  * - History Manager for rich-media applications.
  * @author Miller Medeiros <http://www.millermedeiros.com/>

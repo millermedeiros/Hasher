@@ -1,67 +1,68 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
 <project name="Hasher" default="dist" basedir=".">
 	<description>
 		Hasher Build Task. Unify files, compress, generate documentation and distribution files. 
 	</description>
 	
-	<!-- set global properties for this build -->
-	<property name="src" location="src"/>
-	<property name="build" location="build"/>
-	<property name="dist"  location="dist"/>
-	<property name="lib"  location="lib"/>
-	<property name="docs"  location="docs"/>
-	<property name="jsdoc-toolkit" value="${build}/jsdoc-toolkit"/>
-	<property name="yuicompressor" value="${build}/yuicompressor/yuicompressor-2.4.2.jar"/>
-	
-	<target name="purge" description="Delete destination directories.">
-		<delete dir="${dist}" />
-        <delete dir="${docs}" />
+	<!-- load global properties for this build -->
+	<target name="-loadProperties">
+        <property file="ant.properties"/>
     </target>
 	
-	<target name="mkdirs" description="Make required dirs.">
-		<mkdir dir="${dist}"/>
-		<mkdir dir="${docs}"/>
+	<target name="purge" depends="-loadProperties" description="Delete destination directories.">
+		<delete dir="${dist.dir}" />
+        <delete dir="${doc.dir}" />
+    </target>
+	
+	<target name="mkdirs" depends="-loadProperties" description="Make required dirs.">
+		<mkdir dir="${dist.dir}"/>
+		<mkdir dir="${doc.dir}"/>
 	</target>
 
 	<target name="buildHasher" depends="mkdirs" description="Concatenate Files and outputs uncompressed version of Hasher.">
-		<echo message="Building Hasher.js" />
-		<concat destfile="${dist}/Hasher.js" fixlastline="yes" eol="unix">
-            <fileset file="${lib}/MM_EventDispatcher.js" />
-            <fileset file="${lib}/MM_queryUtils.js" />
-            <fileset file="${src}/Hasher.js" />
-            <fileset file="${src}/HasherEvent.js" />
+		<echo message="Building ${dist.name}" />
+		<concat destfile="${dist.dir}/${dist.name}" fixlastline="yes" eol="unix">
+            <fileset file="${src.dir}/copyright.inc" />
+            <fileset file="${lib.dir}/MM_EventDispatcher.js" />
+            <fileset file="${lib.dir}/MM_queryUtils.js" />
+            <fileset file="${src.dir}/Hasher.js" />
+            <fileset file="${src.dir}/HasherEvent.js" />
         </concat>
-		<echo message="Hasher.js built." />
+		<replace file="${dist.dir}/${dist.name}" token="::version::" value="${version.number} ${version.date}"/>
+		<replace file="${dist.dir}/${dist.name}" token="::evtDispatcher_version::" value="${evtDispatcher.version}"/>
+		<replace file="${dist.dir}/${dist.name}" token="::queryUtils_version::" value="${queryUtils.version}"/>
+		<echo message="${dist.name} built" />
 	</target>
 	
 	<target name="buildHasherMin" depends="buildHasher" description="Build minified version of Hasher.">
-		<echo message="Building Hasher.min.js" />
-		<apply executable="java" parallel="false" verbose="true" dest="${dist}">
-		    <fileset dir="${dist}">
-		        <include name="Hasher.js" />
+		<echo message="Building ${dist.min.name}" />
+		<apply executable="java" parallel="false" verbose="true" dest="${dist.dir}">
+		    <fileset dir="${dist.dir}">
+		        <include name="${dist.name}" />
 		    </fileset>
 		    <arg line="-jar" />
-		    <arg path="${yuicompressor}" />
+		    <arg path="${yuicompressor.jar}" />
 		    <arg value="--charset" />
 		    <arg value="ANSI" />
 		    <arg value="--verbose" />
 		    <arg value="-o" />
 		    <targetfile />
-		    <mapper type="glob" from="Hasher.js" to="Hasher.min.js" />
+		    <mapper type="glob" from="${dist.name}" to="${dist.min.name}" />
 		</apply>
-		<echo message="Hasher.min.js built." />
+		<echo message="${dist.min.name} built." />
 	</target>
 	
-	<target name="generateDoc" description="Build Hasher and generates documentation.">
+	<target name="generateDoc" depends="-loadProperties" description="Build Hasher and generates documentation.">
 		<echo message="Generating documentation" />
  		<apply executable="java" parallel="false" verbose="true">
-			<fileset dir="${dist}">
-				<include name="Hasher.js" />
+			<fileset dir="${dist.dir}">
+				<include name="${dist.name}" />
 			</fileset>
 			<arg line="-jar" />
-			<arg path="${jsdoc-toolkit}/jsrun.jar" />
-			<arg value="${jsdoc-toolkit}/app/run.js" />
-			<arg value="-t=${jsdoc-toolkit}/templates/jsdoc" />
-			<arg value="-d=${docs}" />
+			<arg path="${jsdoc-toolkit.dir}/jsrun.jar" />
+			<arg value="${jsdoc-toolkit.dir}/app/run.js" />
+			<arg value="-t=${jsdoc-toolkit.dir}/templates/jsdoc" />
+			<arg value="-d=${doc.dir}" />
 		</apply>
 		<echo message="Documentation generated" />
 	</target>

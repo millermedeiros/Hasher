@@ -1,4 +1,4 @@
-/*!
+/*
  * Hasher
  * - History Manager for rich-media applications.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
