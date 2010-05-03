@@ -224,9 +224,9 @@ MM.queryUtils = {
 				_createFrame();
 				_updateFrame();
 			}
-			_checkInterval = setInterval(_checkHistoryLegacyIE, 50);
+			_checkInterval = setInterval(_checkHistoryLegacyIE, 25);
 		}else{ //regular browsers
-			_checkInterval = setInterval(_checkHash, 50);
+			_checkInterval = setInterval(_checkHash, 25);
 		}
 		this.dispatchEvent(new HasherEvent(HasherEvent.INIT, _oldHash, newHash));
 		_oldHash = newHash; //avoid dispatching CHANGE event just after INIT event (since it didn't changed).

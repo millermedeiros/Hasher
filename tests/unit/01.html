@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" href="./qunit/qunit.css" type="text/css" media="screen" />
+		<script type="text/javascript" src="./qunit/qunit.js"></script>
+		<script type="text/javascript" src="../../dist/Hasher-0.5.min.js"></script>
+	</head>
+	<body>
+		<h1 id="qunit-header">Hasher 0.5 basic unit test</h1>
+		<h2 id="qunit-banner"></h2>
+		<h2 id="qunit-userAgent"></h2>
+		<ol id="qunit-tests"></ol>
+		<script type="text/javascript">
+			
+			test("init hasher", function(){
+				stop(50);
+				expect(1);
+				
+				Hasher.addEventListener(HasherEvent.INIT, function(){
+					ok(true, "Hasher Init");
+					start();
+				});
+				
+				Hasher.init();
+			});
+			
+			
+			test("set/get hash value", function(){
+				stop();
+				expect(13);
+				
+				var historyLength = history.length;
+				
+				equals(historyLength, Hasher.getHistoryLength(), "check if history length changed");
+				
+				setTimeout(function(){
+					var value = '';
+					Hasher.setHash(value);
+					equals(value, Hasher.getHash());
+					same(value.split('/'), Hasher.getHashAsArray());
+					setTimeout(function(){
+						equals(history.length, Hasher.getHistoryLength(), "check if history length changed");
+					}, 50);
+				}, 25);
+				
+				setTimeout(function(){
+					var value = 'lorem';
+					Hasher.setHash(value);
+					equals(value, Hasher.getHash());
+					same(value.split('/'), Hasher.getHashAsArray());
+					setTimeout(function(){
+						equals(history.length, Hasher.getHistoryLength(), "check if history length changed");
+					}, 50);
+				}, 100);
+				
+				setTimeout(function(){
+					var value = 'lorem/dolor';
+					Hasher.setHash(value);
+					equals(value, Hasher.getHash());
+					same(value.split('/'), Hasher.getHashAsArray());
+					
+					setTimeout(function(){
+						equals(history.length, Hasher.getHistoryLength(), "check if history length changed");
+					}, 50);
+				}, 200);
+				
+				setTimeout(function(){
+					var value = 'lorem/ipsum/dolor-sit-amet';
+					Hasher.setHash(value);
+					equals(value, Hasher.getHash());
+					same(value.split('/'), Hasher.getHashAsArray());
+					setTimeout(function(){
+						equals(history.length, Hasher.getHistoryLength(), "check if history length changed");
+						
+						start(); //next test
+					}, 50);
+				}, 300);
+				
+			});
+			
+			
+			
+			test("set/get title", function(){
+				stop();
+				
+				var value = ''; 
+				Hasher.setTitle(value);
+				equals(value, Hasher.getTitle());
+				
+				value = 'lorem';
+				Hasher.setTitle(value);
+				equals(value, Hasher.getTitle());
+				
+				value = 'ipsum';
+				Hasher.setTitle(value);
+				equals(value, Hasher.getTitle());
+				
+				value = 'Testing Special Chars like "%&@בחדüף;"';
+				Hasher.setTitle(value);
+				equals(value, Hasher.getTitle());
+				
+				value = 'dolor sit amet';
+				Hasher.setTitle(value);
+				equals(value, Hasher.getTitle());
+				
+				start();
+			});
+		</script>
+	</body>
+</html>
