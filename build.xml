@@ -6,7 +6,7 @@
 	
 	<!-- load global properties for this build -->
 	<target name="-loadProperties">
-        <property file="ant.properties"/>
+        <property file="build/ant.properties"/>
     </target>
 	
 	<target name="purge" depends="-loadProperties" description="Delete destination directories.">
@@ -14,12 +14,12 @@
         <delete dir="${doc.dir}" />
     </target>
 	
-	<target name="mkdirs" depends="-loadProperties" description="Make required dirs.">
+	<target name="-mkdirs" depends="-loadProperties" description="Make required dirs.">
 		<mkdir dir="${dist.dir}"/>
 		<mkdir dir="${doc.dir}"/>
 	</target>
 
-	<target name="buildHasher" depends="mkdirs" description="Concatenate Files and outputs uncompressed version of Hasher.">
+	<target name="buildHasher" depends="-mkdirs" description="Concatenate Files and outputs uncompressed version of Hasher.">
 		<echo message="Building ${dist.name}" />
 		<concat destfile="${dist.dir}/${dist.name}" fixlastline="yes" eol="unix">
             <fileset file="${src.dir}/copyright.inc" />
@@ -44,7 +44,6 @@
 		    <arg path="${yuicompressor.jar}" />
 		    <arg value="--charset" />
 		    <arg value="ANSI" />
-		    <arg value="--verbose" />
 		    <arg value="-o" />
 		    <targetfile />
 		    <mapper type="glob" from="${dist.name}" to="${dist.min.name}" />
@@ -67,7 +66,7 @@
 		<echo message="Documentation generated" />
 	</target>
 	
-	<target name="all" depends="purge, mkdirs, buildHasher, buildHasherMin, generateDoc">
+	<target name="all" depends="purge, -mkdirs, buildHasher, buildHasherMin, generateDoc">
 		<echo message="Build Complete." />
 	</target>
 	

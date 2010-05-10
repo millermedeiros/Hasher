@@ -9,10 +9,10 @@
 <span class='line'>  2</span>  * Hasher
 <span class='line'>  3</span>  * - History Manager for rich-media applications.
 <span class='line'>  4</span>  * @author Miller Medeiros &lt;http://www.millermedeiros.com/>
-<span class='line'>  5</span>  * @version 0.5 (2010/05/01)
+<span class='line'>  5</span>  * @version 0.6 (2010/05/09)
 <span class='line'>  6</span>  * Released under the MIT License &lt;http://www.opensource.org/licenses/mit-license.php>
 <span class='line'>  7</span>  *
-<span class='line'>  8</span>  * Includes: MM.EventDispatcher (0.5), MM.queryUtils (0.3)
+<span class='line'>  8</span>  * Includes: MM.EventDispatcher (0.6), MM.queryUtils (0.3)
 <span class='line'>  9</span>  * @author Miller Medeiros &lt;http://www.millermedeiros.com/>
 <span class='line'> 10</span>  * Released under the MIT License &lt;http://www.opensource.org/licenses/mit-license.php>
 <span class='line'> 11</span>  */</span><span class="WHIT">
@@ -20,7 +20,7 @@
 <span class='line'> 13</span>  * MM.EventDispatcher
 <span class='line'> 14</span>  * - Class used to allow Custom Objects to dispatch events.
 <span class='line'> 15</span>  * @author Miller Medeiros &lt;http://www.millermedeiros.com/>
-<span class='line'> 16</span>  * @version 0.5 (2010/05/01)
+<span class='line'> 16</span>  * @version 0.6 (2010/05/09)
 <span class='line'> 17</span>  * Released under the MIT License &lt;http://www.opensource.org/licenses/mit-license.php>
 <span class='line'> 18</span>  */</span><span class="WHIT">
 <span class='line'> 19</span> 
@@ -64,7 +64,7 @@
 <span class='line'> 57</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT">	</span><span class="NAME">typeHandlers</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this._handlers</span><span class="PUNC">[</span><span class="NAME">eType</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="COMM">//stored for performance</span><span class="WHIT">
 <span class='line'> 58</span> </span><span class="WHIT">			</span><span class="NAME">n</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">typeHandlers.length</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 59</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">n</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 60</span> </span><span class="WHIT">			</span><span class="NAME">this._handlers</span><span class="PUNC">[</span><span class="NAME">eType</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//avoid loop if not necessary</span><span class="WHIT">
+<span class='line'> 60</span> </span><span class="WHIT">			</span><span class="KEYW">delete</span><span class="WHIT"> </span><span class="NAME">this._handlers</span><span class="PUNC">[</span><span class="NAME">eType</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 61</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'> 62</span> </span><span class="WHIT">			</span><span class="KEYW">while</span><span class="PUNC">(</span><span class="NAME">n</span><span class="PUNC">--</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT"> </span><span class="COMM">//faster than for</span><span class="WHIT">
 <span class='line'> 63</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">typeHandlers</span><span class="PUNC">[</span><span class="NAME">n</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="NAME">fn</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
@@ -231,9 +231,9 @@
 <span class='line'>224</span> </span><span class="WHIT">				</span><span class="NAME">_createFrame</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>225</span> </span><span class="WHIT">				</span><span class="NAME">_updateFrame</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>226</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>227</span> </span><span class="WHIT">			</span><span class="NAME">_checkInterval</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">setInterval</span><span class="PUNC">(</span><span class="NAME">_checkHistoryLegacyIE</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">50</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>227</span> </span><span class="WHIT">			</span><span class="NAME">_checkInterval</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">setInterval</span><span class="PUNC">(</span><span class="NAME">_checkHistoryLegacyIE</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">25</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>228</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT"> </span><span class="COMM">//regular browsers</span><span class="WHIT">
-<span class='line'>229</span> </span><span class="WHIT">			</span><span class="NAME">_checkInterval</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">setInterval</span><span class="PUNC">(</span><span class="NAME">_checkHash</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">50</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>229</span> </span><span class="WHIT">			</span><span class="NAME">_checkInterval</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">setInterval</span><span class="PUNC">(</span><span class="NAME">_checkHash</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">25</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>230</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
 <span class='line'>231</span> </span><span class="WHIT">		</span><span class="NAME">this.dispatchEvent</span><span class="PUNC">(</span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">HasherEvent</span><span class="PUNC">(</span><span class="NAME">HasherEvent.INIT</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_oldHash</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">newHash</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>232</span> </span><span class="WHIT">		</span><span class="NAME">_oldHash</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">newHash</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//avoid dispatching CHANGE event just after INIT event (since it didn't changed).</span><span class="WHIT">

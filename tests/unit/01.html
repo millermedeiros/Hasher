@@ -3,108 +3,94 @@
 	<head>
 		<link rel="stylesheet" href="./qunit/qunit.css" type="text/css" media="screen" />
 		<script type="text/javascript" src="./qunit/qunit.js"></script>
-		<script type="text/javascript" src="../../dist/Hasher-0.5.min.js"></script>
+		<script type="text/javascript" src="../../dist/Hasher-0.6.min.js"></script>
+		<title>Untitled</title>
 	</head>
 	<body>
-		<h1 id="qunit-header">Hasher 0.5 basic unit test</h1>
+		<h1 id="qunit-header">Hasher basic unit test</h1>
 		<h2 id="qunit-banner"></h2>
 		<h2 id="qunit-userAgent"></h2>
 		<ol id="qunit-tests"></ol>
 		<script type="text/javascript">
 			
-			test("init hasher", function(){
-				stop(50);
-				expect(1);
+			var histLength;
+			
+			function init(){
 				
-				Hasher.addEventListener(HasherEvent.INIT, function(){
-					ok(true, "Hasher Init");
-					start();
+				histLength = history.length; //record initial history lenght
+				
+				
+				test("init hasher", function(){
+					stop(100);
+					expect(3);
+					
+					Hasher.addEventListener(HasherEvent.INIT, function(){				
+						ok(true, "HasherEvent.INIT");
+						
+						Hasher.removeEventListener(HasherEvent.INIT, arguments.callee);
+						ok(! Hasher.hasEventListener(HasherEvent.INIT), "Removed INIT Listener");
+						
+						start();
+					});
+					
+					ok(Hasher.hasEventListener(HasherEvent.INIT), "Has INIT Listener");
+					
+					Hasher.init();
 				});
 				
-				Hasher.init();
-			});
-			
-			
-			test("set/get hash value", function(){
-				stop();
-				expect(13);
+				module('set/get hash/title value');
 				
-				var historyLength = history.length;
-				
-				equals(historyLength, Hasher.getHistoryLength(), "check if history length changed");
-				
-				setTimeout(function(){
-					var value = '';
-					Hasher.setHash(value);
-					equals(value, Hasher.getHash());
-					same(value.split('/'), Hasher.getHashAsArray());
-					setTimeout(function(){
-						equals(history.length, Hasher.getHistoryLength(), "check if history length changed");
-					}, 50);
-				}, 25);
-				
-				setTimeout(function(){
-					var value = 'lorem';
-					Hasher.setHash(value);
-					equals(value, Hasher.getHash());
-					same(value.split('/'), Hasher.getHashAsArray());
-					setTimeout(function(){
-						equals(history.length, Hasher.getHistoryLength(), "check if history length changed");
-					}, 50);
-				}, 100);
-				
-				setTimeout(function(){
-					var value = 'lorem/dolor';
-					Hasher.setHash(value);
-					equals(value, Hasher.getHash());
-					same(value.split('/'), Hasher.getHashAsArray());
+				test('#1', function(){
+					stop();
+					if(location.hash.substr(1) == 'foo'){
+						location.href = Hasher.getBaseURL(); //make sure first call will cause a hash change
+						return;
+					}
+					doChangeTest('foo', 'Foo Bar', 1);
 					
-					setTimeout(function(){
-						equals(history.length, Hasher.getHistoryLength(), "check if history length changed");
-					}, 50);
-				}, 200);
+				});
 				
-				setTimeout(function(){
-					var value = 'lorem/ipsum/dolor-sit-amet';
-					Hasher.setHash(value);
-					equals(value, Hasher.getHash());
-					same(value.split('/'), Hasher.getHashAsArray());
-					setTimeout(function(){
-						equals(history.length, Hasher.getHistoryLength(), "check if history length changed");
+				test('#2', function(){
+					stop();
+					doChangeTest('dolor', 'Dolor Sit Amet', 2);
+				});
+				
+				test('#3', function(){
+					stop();
+					doChangeTest('sit-amet/ipsum', 'Sit Amet Ipsum', 3);
+				});
+				
+				test('#4', function(){
+					stop();
+					doChangeTest('sit-amet/ipsum/lorem', 'Lorem Ipsum', 4);
+				});
+			}
+			
+			function doChangeTest(hash, title, n){
+					expect(7);
+					
+					Hasher.addEventListener(HasherEvent.CHANGE, function(){
+						ok(true, "HasherEvent.CHANGE");
 						
-						start(); //next test
-					}, 50);
-				}, 300);
-				
-			});
+						Hasher.removeEventListener(HasherEvent.CHANGE, arguments.callee);
+						ok( ! Hasher.hasEventListener(HasherEvent.CHANGE), "Removed CHANGE Listener");
+						
+						equals(history.length, histLength+n, "History length changed");
+						start();
+					});
+					
+					ok(Hasher.hasEventListener(HasherEvent.CHANGE), "Has CHANGE Listener");
+					
+					Hasher.setHash(hash);
+					equals(hash, Hasher.getHash());
+					same(hash.split('/'), Hasher.getHashAsArray());
+					
+					Hasher.setTitle(title);
+					equal(document.title, Hasher.getTitle());
+			}
 			
+			window.onload = init;
 			
-			
-			test("set/get title", function(){
-				stop();
-				
-				var value = ''; 
-				Hasher.setTitle(value);
-				equals(value, Hasher.getTitle());
-				
-				value = 'lorem';
-				Hasher.setTitle(value);
-				equals(value, Hasher.getTitle());
-				
-				value = 'ipsum';
-				Hasher.setTitle(value);
-				equals(value, Hasher.getTitle());
-				
-				value = 'Testing Special Chars like "%&@בחדüף;"';
-				Hasher.setTitle(value);
-				equals(value, Hasher.getTitle());
-				
-				value = 'dolor sit amet';
-				Hasher.setTitle(value);
-				equals(value, Hasher.getTitle());
-				
-				start();
-			});
 		</script>
 	</body>
 </html>
