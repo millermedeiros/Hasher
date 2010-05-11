@@ -1,5 +1,3 @@
-# Hasher #
-
 ![hasher-logo.gif](http://github.com/millermedeiros/Hasher/raw/master/assets/hasher-logo.gif)
 
 Hasher is a set of JavaScript functions to control browser history for rich-media websites and applications.
