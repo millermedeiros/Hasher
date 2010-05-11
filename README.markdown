@@ -7,7 +7,7 @@ It works as an abstraction of browsers native methods plus some extra helper met
 
  - Get/Set Hash value.
  - Get/Set Page Title.
- - Basic history control (back/forward/go/getHistoryLength).
+ - Basic history control (back/forward/go).
  - Helper methods for query string manipulation.
  - Event listener support.
 
