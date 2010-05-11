@@ -2,10 +2,10 @@
  * Hasher
  * - History Manager for rich-media applications.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.6 (2010/05/09)
+ * @version 0.6 (2010/05/10)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  *
- * Includes: MM.EventDispatcher (0.6), MM.queryUtils (0.3)
+ * Includes: MM.EventDispatcher (0.7), MM.queryUtils (0.3)
  * @author Miller Medeiros <http://www.millermedeiros.com/>
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
@@ -13,7 +13,7 @@
  * MM.EventDispatcher
  * - Class used to allow Custom Objects to dispatch events.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.6 (2010/05/09)
+ * @version 0.7 (2010/05/10)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 
@@ -96,6 +96,7 @@ MM.EventDispatcher.prototype = {
 				curHandler,
 				i,
 				n = typeHandlers.length;
+			e.target = e.target || this; //ensure Event.target exists (default to Object that extends EventDispatcher)
 			for(i=0; i<n; i++){
 				curHandler = typeHandlers[i];
 				curHandler(e);
