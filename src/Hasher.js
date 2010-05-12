@@ -2,7 +2,7 @@
  * Hasher
  * - History Manager for rich-media applications.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.4 (2010/04/25)
+ * @version 0.5 (2010/05/11)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 (function(){
@@ -82,7 +82,10 @@
 	 */
 	Hasher.getHashAsArray = function(separator){
 		separator = separator || '/';
-		return Hasher.getHash().split(separator);
+		var hash = Hasher.getHash(),
+			regexp = new RegExp('^\\'+ separator +'|\\'+ separator +'$', 'g'); //match string starting and/or ending with separator
+		hash = hash.replace(regexp, '');
+		return hash.split(separator);
 	};
 	
 	/**
@@ -162,14 +165,6 @@
 	 */
 	Hasher.go = function(delta){
 		history.go(delta);
-	};
-	
-	/**
-	 * Retrieves number of items in the History list.
-	 * @return {int} History list length. 
-	 */
-	Hasher.getHistoryLength = function(){
-		return history.length;
 	};
 	
 	//-- Query string helpers 
