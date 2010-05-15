@@ -22,10 +22,12 @@
 				
 				test("init hasher", function(){
 					stop(100);
-					expect(3);
+					expect(4);
+					
+					ok(! Hasher.hasEventListener(HasherEvent.INIT), "No INIT Listener");
 					
 					Hasher.addEventListener(HasherEvent.INIT, function(){				
-						ok(true, "HasherEvent.INIT");
+						ok(true, "HasherEvent.INIT dispatched");
 						
 						Hasher.removeEventListener(HasherEvent.INIT, arguments.callee);
 						ok(! Hasher.hasEventListener(HasherEvent.INIT), "Removed INIT Listener");
@@ -33,7 +35,7 @@
 						start();
 					});
 					
-					ok(Hasher.hasEventListener(HasherEvent.INIT), "Has INIT Listener");
+					ok(Hasher.hasEventListener(HasherEvent.INIT), "Added INIT Listener");
 					
 					Hasher.init();
 				});
@@ -67,7 +69,7 @@
 				
 				test('#5', function(){
 					stop();
-					doChangeTest('/asd/', 'Asd');
+					doChangeTest('/asd', 'Asd');
 				});
 				
 				test('#6', function(){
@@ -75,13 +77,20 @@
 					doChangeTest('/asd/qwerty?foo=bar', 'Qwerty / Asd ? Foo = Bar');
 				});
 				
+				test('#7', function(){
+					stop();
+					doChangeTest('/asd/qwerty/', 'Asd Qwerty');
+				});
+				
 			}
 			
 			function doChangeTest(hash, title){
-					expect(6);
+					expect(7);
+					
+					ok(! Hasher.hasEventListener(HasherEvent.CHANGE), "No CHANGE Listener");
 					
 					Hasher.addEventListener(HasherEvent.CHANGE, function(){
-						ok(true, "HasherEvent.CHANGE");
+						ok(true, "HasherEvent.CHANGE dispatched");
 						
 						Hasher.removeEventListener(HasherEvent.CHANGE, arguments.callee);
 						ok( ! Hasher.hasEventListener(HasherEvent.CHANGE), "Removed CHANGE Listener");
@@ -89,14 +98,20 @@
 						start();
 					});
 					
-					ok(Hasher.hasEventListener(HasherEvent.CHANGE), "Has CHANGE Listener");
+					ok(Hasher.hasEventListener(HasherEvent.CHANGE), "Added CHANGE Listener");
 					
 					Hasher.setHash(hash);
-					equals(hash, Hasher.getHash());
-					same(hash.split('/'), Hasher.getHashAsArray());
+					equals(hash, Hasher.getHash(), "Hasher.setHash() & Hasher.getHash()");
+					
+					// simple substring to test if regex is correct
+					var tmpHash = (hash.charAt(0) == '/')? hash.substr(1) : hash;
+					tmpHash = (tmpHash.charAt(tmpHash.length -1 ) == '/')? tmpHash.substring(0, tmpHash.length -1) : tmpHash;
+					var hashArray = tmpHash.split('/');
+					
+					same(hashArray, Hasher.getHashAsArray(), "Hasher.getHashAsArray()");
 					
 					Hasher.setTitle(title);
-					equal(document.title, Hasher.getTitle());
+					equal(document.title, Hasher.getTitle(), "Hasher.setTitle() & Hasher.getTitle()");
 			}
 			
 			window.onload = init;
