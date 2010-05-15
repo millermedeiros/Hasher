@@ -3,7 +3,10 @@
 	<head>
 		<link rel="stylesheet" href="./qunit/qunit.css" type="text/css" media="screen" />
 		<script type="text/javascript" src="./qunit/qunit.js"></script>
-		<script type="text/javascript" src="../../dist/Hasher-0.6.min.js"></script>
+		<script type="text/javascript" src="../../lib/MM_EventDispatcher.js"></script>
+		<script type="text/javascript" src="../../lib/MM_queryUtils.js"></script>
+		<script type="text/javascript" src="../../src/HasherEvent.js"></script>
+		<script type="text/javascript" src="../../src/Hasher.js"></script>
 		<title>Untitled</title>
 	</head>
 	<body>
@@ -13,11 +16,8 @@
 		<ol id="qunit-tests"></ol>
 		<script type="text/javascript">
 			
-			var histLength;
 			
 			function init(){
-				
-				histLength = history.length; //record initial history lenght
 				
 				
 				test("init hasher", function(){
@@ -46,28 +46,39 @@
 						location.href = Hasher.getBaseURL(); //make sure first call will cause a hash change
 						return;
 					}
-					doChangeTest('foo', 'Foo Bar', 1);
+					doChangeTest('foo', 'Foo Bar');
 					
 				});
 				
 				test('#2', function(){
 					stop();
-					doChangeTest('dolor', 'Dolor Sit Amet', 2);
+					doChangeTest('dolor', 'Dolor Sit Amet');
 				});
 				
 				test('#3', function(){
 					stop();
-					doChangeTest('sit-amet/ipsum', 'Sit Amet Ipsum', 3);
+					doChangeTest('sit-amet/ipsum', 'Sit Amet Ipsum');
 				});
 				
 				test('#4', function(){
 					stop();
-					doChangeTest('sit-amet/ipsum/lorem', 'Lorem Ipsum', 4);
+					doChangeTest('sit-amet/ipsum/lorem', 'Lorem Ipsum');
 				});
+				
+				test('#5', function(){
+					stop();
+					doChangeTest('/asd/', 'Asd');
+				});
+				
+				test('#6', function(){
+					stop();
+					doChangeTest('/asd/qwerty?foo=bar', 'Qwerty / Asd ? Foo = Bar');
+				});
+				
 			}
 			
-			function doChangeTest(hash, title, n){
-					expect(7);
+			function doChangeTest(hash, title){
+					expect(6);
 					
 					Hasher.addEventListener(HasherEvent.CHANGE, function(){
 						ok(true, "HasherEvent.CHANGE");
@@ -75,7 +86,6 @@
 						Hasher.removeEventListener(HasherEvent.CHANGE, arguments.callee);
 						ok( ! Hasher.hasEventListener(HasherEvent.CHANGE), "Removed CHANGE Listener");
 						
-						equals(history.length, histLength+n, "History length changed");
 						start();
 					});
 					
