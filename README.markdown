@@ -3,6 +3,8 @@
 Hasher is a set of JavaScript functions to control browser history for rich-media websites and applications.
 It works as an abstraction of browsers native methods plus some extra helper methods, it also has the advantage of dispatching Events when the history state change across multiple browsers (since this feature isn't supported by all of them).
 
+** This is a work on progress, no test was done yet. **
+
 ## Key Features ##
 
  - Get/Set Hash value.
