@@ -16,83 +16,195 @@
 		<ol id="qunit-tests"></ol>
 		<script type="text/javascript">
 			
-			var histLength;
+			location.hash = ''; //resets location.hash
+
+			var testsHashs = [
+				['foo', 'Foo Bar'],
+				['dolor', 'Dolor Sit Amet'],
+				['sit-amet/ipsum', 'Sit Amet Ipsum'],
+				['sit-amet/ipsum/lorem', 'Lorem Ipsum'],
+				['/asd', 'Asd'],
+				['/asd/qwerty?foo=bar', 'Qwerty / Asd ? Foo = Bar'],
+				['/asd/qwerty/', 'Asd Qwerty']
+			];
 			
-			function init(){
+			
+			//-- init hasher test
+			
+			test("init hasher", function(){
+				stop(100);
+				expect(4);
 				
-				histLength = history.length; //record initial history lenght
+				ok(! Hasher.hasEventListener(HasherEvent.INIT), "No INIT Listener");
 				
-				
-				test("init hasher", function(){
-					stop(100);
-					expect(3);
+				Hasher.addEventListener(HasherEvent.INIT, function(){				
+					ok(true, "HasherEvent.INIT dispatched");
 					
-					Hasher.addEventListener(HasherEvent.INIT, function(){				
-						ok(true, "HasherEvent.INIT");
-						
-						Hasher.removeEventListener(HasherEvent.INIT, arguments.callee);
-						ok(! Hasher.hasEventListener(HasherEvent.INIT), "Removed INIT Listener");
-						
-						start();
-					});
+					Hasher.removeEventListener(HasherEvent.INIT, arguments.callee);
+					ok(! Hasher.hasEventListener(HasherEvent.INIT), "Removed INIT Listener");
 					
-					ok(Hasher.hasEventListener(HasherEvent.INIT), "Has INIT Listener");
-					
-					Hasher.init();
+					start();
 				});
 				
-				module('set/get hash/title value');
+				ok(Hasher.hasEventListener(HasherEvent.INIT), "Added INIT Listener");
 				
-				test('#1', function(){
-					stop();
-					if(location.hash.substr(1) == 'foo'){
-						location.href = Hasher.getBaseURL(); //make sure first call will cause a hash change
-						return;
-					}
-					doChangeTest('foo', 'Foo Bar', 1);
-					
-				});
-				
-				test('#2', function(){
-					stop();
-					doChangeTest('dolor', 'Dolor Sit Amet', 2);
-				});
-				
-				test('#3', function(){
-					stop();
-					doChangeTest('sit-amet/ipsum', 'Sit Amet Ipsum', 3);
-				});
-				
-				test('#4', function(){
-					stop();
-					doChangeTest('sit-amet/ipsum/lorem', 'Lorem Ipsum', 4);
-				});
+				Hasher.init();
+			});
+			
+			
+			//-- set/get hash/title value
+			
+			module('set/get hash/title value');
+			
+			for(var i=0, t=testsHashs.length; i<t; i++){
+				doChangeTest(i);
 			}
 			
-			function doChangeTest(hash, title, n){
+			function doChangeTest(n){
+				
+				var testName = '#'+(n+1);
+				
+				var hash = testsHashs[n][0];
+				var title = testsHashs[n][1];
+				
+				var testFn = function(){
+					stop(100);
 					expect(7);
 					
+					ok(! Hasher.hasEventListener(HasherEvent.CHANGE), "No CHANGE Listener");
+					
 					Hasher.addEventListener(HasherEvent.CHANGE, function(){
-						ok(true, "HasherEvent.CHANGE");
+						ok(true, "HasherEvent.CHANGE dispatched");
 						
 						Hasher.removeEventListener(HasherEvent.CHANGE, arguments.callee);
 						ok( ! Hasher.hasEventListener(HasherEvent.CHANGE), "Removed CHANGE Listener");
 						
-						equals(history.length, histLength+n, "History length changed");
 						start();
 					});
 					
-					ok(Hasher.hasEventListener(HasherEvent.CHANGE), "Has CHANGE Listener");
+					ok(Hasher.hasEventListener(HasherEvent.CHANGE), "Attached CHANGE Listener");
 					
 					Hasher.setHash(hash);
-					equals(hash, Hasher.getHash());
-					same(hash.split('/'), Hasher.getHashAsArray());
+					equals(Hasher.getHash(), hash, "Hasher.setHash() & Hasher.getHash()");
+					
+					// simple substring to test if regex is correct
+					var tmpHash = (hash.charAt(0) == '/')? hash.substr(1) : hash;
+					tmpHash = (tmpHash.charAt(tmpHash.length -1 ) == '/')? tmpHash.substring(0, tmpHash.length -1) : tmpHash;
+					var hashArray = tmpHash.split('/');
+					
+					same(Hasher.getHashAsArray(), hashArray, "Hasher.getHashAsArray()");
 					
 					Hasher.setTitle(title);
-					equal(document.title, Hasher.getTitle());
+					equal(Hasher.getTitle(), document.title, "Hasher.setTitle() & Hasher.getTitle()");
+				};
+				
+				test(testName, testFn);
+				
 			}
 			
-			window.onload = init;
+			
+			//-- back
+			
+			module('back');
+			
+			var i = testsHashs.length - 1;
+			
+			while(i--){
+				doBackTest(i);
+			}
+			
+			
+			function doBackTest(n){
+				
+				var testName = '#'+(n+1);
+				
+				var hash = testsHashs[n][0];
+				var title = testsHashs[n][1];
+				
+				var testFn = function(){
+					stop(100);
+					expect(6);
+					
+					ok(!Hasher.hasEventListener(HasherEvent.CHANGE), "No CHANGE Listener");
+					
+					Hasher.addEventListener(HasherEvent.CHANGE, function(){
+					
+						ok(true, "HasherEvent.CHANGE dispatched");
+						
+						Hasher.removeEventListener(HasherEvent.CHANGE, arguments.callee);
+						ok(!Hasher.hasEventListener(HasherEvent.CHANGE), "Removed CHANGE Listener");
+						
+						equals(Hasher.getHash(), hash, "Hasher.getHash()");
+						
+						// simple substring to test if regex is correct
+						var tmpHash = (hash.charAt(0) == '/')? hash.substr(1) : hash;
+						tmpHash = (tmpHash.charAt(tmpHash.length -1 ) == '/')? tmpHash.substring(0, tmpHash.length -1) : tmpHash;
+						var hashArray = tmpHash.split('/');
+						
+						same(Hasher.getHashAsArray(), hashArray, "Hasher.getHashAsArray()");
+						
+						start();
+						
+					});
+					
+					ok(Hasher.hasEventListener(HasherEvent.CHANGE), "Attached CHANGE Listener");
+					
+					Hasher.back();
+				};
+				
+				test(testName, testFn);
+			}
+			
+			
+			//-- forward
+			
+			module('forward');
+			
+			for(var i=1, t=testsHashs.length; i<t; i++){
+				doForwardTest(i);
+			}
+			
+			
+			function doForwardTest(n){
+				
+				var testName = '#'+(n+1);
+				
+				var hash = testsHashs[n][0];
+				var title = testsHashs[n][1];
+				
+				var testFn = function(){
+					stop(100);
+					expect(6);
+					
+					ok(!Hasher.hasEventListener(HasherEvent.CHANGE), "No CHANGE Listener");
+					
+					Hasher.addEventListener(HasherEvent.CHANGE, function(){
+					
+						ok(true, "HasherEvent.CHANGE dispatched");
+						
+						Hasher.removeEventListener(HasherEvent.CHANGE, arguments.callee);
+						ok(!Hasher.hasEventListener(HasherEvent.CHANGE), "Removed CHANGE Listener");
+						
+						equals(Hasher.getHash(), hash, "Hasher.getHash()");
+						
+						// simple substring to test if regex is correct
+						var tmpHash = (hash.charAt(0) == '/')? hash.substr(1) : hash;
+						tmpHash = (tmpHash.charAt(tmpHash.length -1 ) == '/')? tmpHash.substring(0, tmpHash.length -1) : tmpHash;
+						var hashArray = tmpHash.split('/');
+						
+						same(Hasher.getHashAsArray(), hashArray, "Hasher.getHashAsArray()");
+						
+						start();
+						
+					});
+					
+					ok(Hasher.hasEventListener(HasherEvent.CHANGE), "Attached CHANGE Listener");
+					
+					Hasher.forward();
+				};
+				
+				test(testName, testFn);
+			}
 			
 		</script>
 	</body>
