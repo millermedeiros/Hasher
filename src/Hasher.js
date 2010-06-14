@@ -2,7 +2,7 @@
  * Hasher
  * - History Manager for rich-media applications.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.5 (2010/05/11)
+ * @version 0.6 (2010/06/14)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 (function(){
@@ -28,6 +28,7 @@
 	 * @borrows MM.queryUtils.getParamValue as getParamValue
 	 * @borrows MM.queryUtils.hasParam as hasParam
 	 * @borrows MM.queryUtils.toQueryString as toQueryString
+	 * @borrows MM.queryUtils.toQueryObject as toQueryObject
 	 */
 	this.Hasher = new MM.EventDispatcher();
 	
@@ -89,14 +90,6 @@
 	};
 	
 	/**
-	 * Set a new location or hash value without generating a history record for the current page. (user won't be able to return to current page)
-	 * @param {String} value	New location (eg: '#newhash', 'newfile.html', 'http://example.com/')
-	 */
-	Hasher.replaceLocation = function(value){
-		location.replace(value);
-	};
-	
-	/**
 	 * Retrieve full URL.
 	 * @return {String}	Full URL.
 	 */
@@ -109,23 +102,7 @@
 	 * @return {String}	Base URL.
 	 */
 	Hasher.getBaseURL = function(){
-		return location.href.replace(/(\?.*)|(\#.+)/, '');
-	};
-	
-	/**
-	 * Host name of the URL.
-	 * @return {String}	The Host Name.
-	 */
-	Hasher.getHostName = function(){
-		return location.hostname;
-	};
-	
-	/**
-	 * Retrieves Path relative to HostName
-	 * @return {String} Folder path relative to domain
-	 */
-	Hasher.getPathName = function(){
-		return location.pathname;
+		return location.href.replace(/(\?.*)|(\#.*)/, '');
 	};
 	
 	/**
@@ -173,12 +150,29 @@
 	
 	Hasher.getQueryObject = MM.queryUtils.getQueryObject;
 	
+	Hasher.toQueryObject = MM.queryUtils.toQueryObject;
+	
 	Hasher.getParamValue = MM.queryUtils.getParamValue;
 	
 	Hasher.hasParam = MM.queryUtils.hasParam;
 	
 	Hasher.toQueryString = MM.queryUtils.toQueryString;
 	
+	/**
+	 * Get Query portion of the Hash as a String
+	 * @return {String}	Hash Query
+	 */
+	Hasher.getHashQuery = function(){
+		return MM.queryUtils.getQueryString( Hasher.getHash() );
+	};
+	
+	/**
+	 * Get Query portion of the Hash as an Object
+	 * @return {Object} Hash Query
+	 */
+	Hasher.getHashQueryAsObject = function(){
+		return MM.queryUtils.toQueryObject( Hasher.getHashQuery() );
+	};
 	
 	//== Private methods ==//
 	
@@ -193,7 +187,7 @@
 	}
 	
 	/**
-	 * Function that checks if hash has changed.
+	 * Function that checks if hash has changed. [HACK]
 	 * - used since most browsers don't dispatch the `onhashchange` event.
 	 * @private
 	 */
@@ -213,7 +207,6 @@
 		var windowHash = Hasher.getHash(),
 			frameHash = _frame.contentWindow.frameHash;
 		if(frameHash != windowHash && frameHash != _oldHash){ //detect changes made pressing browser history buttons. Workaround since history.back() and history.forward() doesn't update hash value on IE6/7 but updates content of the iframe.
-			Hasher.setTitle(_frame.contentWindow.document.title);
 			Hasher.setHash(frameHash);
 			_dispatchChange(frameHash);
 		}else if(windowHash != _oldHash){ //detect if hash changed (manually or using setHash)
@@ -243,7 +236,7 @@
 	function _updateFrame(){
 		var frameDoc = _frame.contentWindow.document;
 		frameDoc.open();
-		frameDoc.write('<html><head><title>'+ Hasher.getTitle() +'</title><script type="text/javascript">var frameHash="'+ Hasher.getHash() +'";</script></head><body>&nbsp;</body></html>'); //stores current title and current hash inside iframe.
+		frameDoc.write('<html><head><title>'+ Hasher.getTitle() +'</title><script type="text/javascript">var frameHash="'+ Hasher.getHash() +'";</script></head><body>&nbsp;</body></html>'); //stores current hash inside iframe.
 		frameDoc.close();
 	}
 	
