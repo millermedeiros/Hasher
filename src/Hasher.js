@@ -2,16 +2,15 @@
  * Hasher
  * - History Manager for rich-media applications.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.6 (2010/06/14)
+ * @version 0.6.2 (2010/06/21)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
-(function(){
+(function(window, document, undefined){
 	
 	
 	//== Private Vars ==//
 	
-	var	location = window.location,
-		_oldHash, //{String} used to check if hash changed
+	var	_oldHash, //{String} used to check if hash changed
 		_checkInterval, //stores setInterval reference (used to check if hash changed)
 		_frame, //iframe used for IE <= 7 
 		_isLegacyIE = /msie (6|7)/.test(navigator.userAgent.toLowerCase()) && !+"\v1"; //feature detection based on Andrea Giammarchi's solution: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html	
@@ -240,4 +239,4 @@
 		frameDoc.close();
 	}
 	
-})();
+})(window, document);
