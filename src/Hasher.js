@@ -2,7 +2,7 @@
  * Hasher
  * - History Manager for rich-media applications.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.6.2 (2010/06/21)
+ * @version 0.7 (2010/06/21)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 (function(window, document, undefined){
@@ -20,14 +20,8 @@
 	
 	/**
 	 * Hasher
-	 * @class
+	 * @namespace
 	 * @extends MM.EventDispatcher
-	 * @borrows MM.queryUtils.getQueryString as getQueryString
-	 * @borrows MM.queryUtils.getQueryObject as getQueryObject
-	 * @borrows MM.queryUtils.getParamValue as getParamValue
-	 * @borrows MM.queryUtils.hasParam as hasParam
-	 * @borrows MM.queryUtils.toQueryString as toQueryString
-	 * @borrows MM.queryUtils.toQueryObject as toQueryObject
 	 */
 	this.Hasher = new MM.EventDispatcher();
 	
@@ -35,7 +29,7 @@
 	 * Start listening/dispatching changes in the hash/history.
 	 */
 	Hasher.init = function(){
-		var newHash = Hasher.getHash();
+		var newHash = this.getHash();
 		//TODO: use 'window.onhashchange' listener if browser supports it.
 		if(_isLegacyIE){ //IE6 & IE7 [HACK]
 			if(!_frame){
@@ -82,7 +76,7 @@
 	 */
 	Hasher.getHashAsArray = function(separator){
 		separator = separator || '/';
-		var hash = Hasher.getHash(),
+		var hash = this.getHash(),
 			regexp = new RegExp('^\\'+ separator +'|\\'+ separator +'$', 'g'); //match string starting and/or ending with separator
 		hash = hash.replace(regexp, '');
 		return hash.split(separator);
@@ -142,35 +136,23 @@
 	Hasher.go = function(delta){
 		history.go(delta);
 	};
-	
-	//-- Query string helpers 
-	
-	Hasher.getQueryString = MM.queryUtils.getQueryString;
-	
-	Hasher.getQueryObject = MM.queryUtils.getQueryObject;
-	
-	Hasher.toQueryObject = MM.queryUtils.toQueryObject;
-	
-	Hasher.getParamValue = MM.queryUtils.getParamValue;
-	
-	Hasher.hasParam = MM.queryUtils.hasParam;
-	
-	Hasher.toQueryString = MM.queryUtils.toQueryString;
-	
+
 	/**
 	 * Get Query portion of the Hash as a String
+	 * - alias to: `MM.queryUtils.getQueryString( Hasher.getHash() );`
 	 * @return {String}	Hash Query
 	 */
-	Hasher.getHashQuery = function(){
-		return MM.queryUtils.getQueryString( Hasher.getHash() );
+	Hasher.getHashQueryString = function(){
+		return MM.queryUtils.getQueryString( this.getHash() );
 	};
 	
 	/**
 	 * Get Query portion of the Hash as an Object
+	 * - alias to: `MM.queryUtils.toQueryObject( Hasher.getHashQueryString() );`
 	 * @return {Object} Hash Query
 	 */
-	Hasher.getHashQueryAsObject = function(){
-		return MM.queryUtils.toQueryObject( Hasher.getHashQuery() );
+	Hasher.getHashQueryObject = function(){
+		return MM.queryUtils.toQueryObject( this.getHashQueryString() );
 	};
 	
 	//== Private methods ==//

@@ -16,8 +16,9 @@ JSDOC.SymbolSet.prototype.hasSymbol = function(alias) {
 }
 
 JSDOC.SymbolSet.prototype.addSymbol = function(symbol) {
-	if (this.hasSymbol(symbol.alias)) {
-		LOG.warn("Overwriting symbol documentation for: "+symbol.alias + ".");
+	if (JSDOC.opt.a && this.hasSymbol(symbol.alias)) {
+		LOG.warn("Overwriting symbol documentation for: " + symbol.alias + ".");
+		this.deleteSymbol(symbol.alias);
 	}
 	this._index.set(symbol.alias, symbol);
 }

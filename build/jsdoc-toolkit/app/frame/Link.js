@@ -74,11 +74,16 @@ Link.hashPrefix = "";
 Link.base = "";
 
 Link.symbolNameToLinkName = function(symbol) {
-	var linker = "";
+	var linker = "",
+		ns = "";
+	
 	if (symbol.isStatic) linker = ".";
 	else if (symbol.isInner) linker = "-";
 	
-	return Link.hashPrefix+linker+symbol.name;
+	if (symbol.isEvent && !/^event:/.test(symbol.name)) {
+		ns = "event:";
+	}
+	return Link.hashPrefix+linker+ns+symbol.name;
 }
 
 Link.getSymbol= function(alias) {
@@ -125,9 +130,6 @@ Link.prototype._makeSymbolLink = function(alias) {
 		if (!linkTo.is("CONSTRUCTOR") && !linkTo.isNamespace) { // it's a method or property
 			linkPath= (Link.filemap) ? Link.filemap[linkTo.memberOf] :
 				      escape(linkTo.memberOf) || "_global_";
-			if (linkTo.isEvent)
-				linkPath += publish.conf.ext + "#event:" + Link.symbolNameToLinkName(linkTo);
-			else
 				linkPath += publish.conf.ext + "#" + Link.symbolNameToLinkName(linkTo);
 		}
 		else {

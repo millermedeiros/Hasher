@@ -52,12 +52,14 @@ JSDOC.Parser = {
 			}
 		}
 
-		// if a symbol alias is documented more than once the last one with the user docs wins
+		// if a symbol alias is documented more than once the first one with the user docs wins
 		if (JSDOC.Parser.symbols.hasSymbol(symbol.alias)) {
  			var oldSymbol = JSDOC.Parser.symbols.getSymbol(symbol.alias);
 			if (oldSymbol.comment.isUserComment) {
+				if (JSDOC.opt.m) return;
 				if (symbol.comment.isUserComment) { // old and new are both documented
 					LOG.warn("The symbol '"+symbol.alias+"' is documented more than once.");
+					return;
 				}
 				else { // old is documented but new isn't
 					return;

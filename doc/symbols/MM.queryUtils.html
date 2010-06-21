@@ -219,7 +219,7 @@ ul.inheritsList
 				
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/D__Projetos_millermedeiros_Hasher_dist_Hasher-0.6.js.html">Hasher-0.6.js</a>.
+					<br /><i>Defined in: </i> <a href="../symbols/src/C__Miller_Personal_millermedeiros_Hasher_dist_Hasher-0.7.js.html">Hasher-0.7.js</a>.
 				
 			</p>
 
@@ -267,7 +267,7 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&lt;static&gt; &nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont">MM.queryUtils.<b><a href="../symbols/MM.queryUtils.html#.getParamValue">getParamValue</a></b>(param)
+								<div class="fixedFont">MM.queryUtils.<b><a href="../symbols/MM.queryUtils.html#.getParamValue">getParamValue</a></b>(param, url)
 								</div>
 								<div class="description">Get query parameter value.</div>
 							</td>
@@ -285,7 +285,7 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&lt;static&gt; &nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont">MM.queryUtils.<b><a href="../symbols/MM.queryUtils.html#.getQueryString">getQueryString</a></b>()
+								<div class="fixedFont">MM.queryUtils.<b><a href="../symbols/MM.queryUtils.html#.getQueryString">getQueryString</a></b>(url)
 								</div>
 								<div class="description">Gets full query as string with all special chars decoded.</div>
 							</td>
@@ -294,9 +294,18 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&lt;static&gt; &nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont">MM.queryUtils.<b><a href="../symbols/MM.queryUtils.html#.hasParam">hasParam</a></b>(param)
+								<div class="fixedFont">MM.queryUtils.<b><a href="../symbols/MM.queryUtils.html#.hasParam">hasParam</a></b>(param, url)
 								</div>
 								<div class="description">Checks if query contains parameter.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&lt;static&gt; &nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">MM.queryUtils.<b><a href="../symbols/MM.queryUtils.html#.toQueryObject">toQueryObject</a></b>(queryString)
+								</div>
+								<div class="description">Convert Query String into an Object</div>
 							</td>
 						</tr>
 					
@@ -361,7 +370,7 @@ ul.inheritsList
 					<div class="fixedFont">&lt;static&gt; 
 					
 					<span class="light">{String}</span>
-					<span class="light">MM.queryUtils.</span><b>getParamValue</b>(param)
+					<span class="light">MM.queryUtils.</span><b>getParamValue</b>(param, url)
 					
 					</div>
 					<div class="description">
@@ -381,6 +390,12 @@ ul.inheritsList
 									
 								</dt>
 								<dd>Parameter name.</dd>
+							
+								<dt>
+									<span class="light fixedFont">{String}</span> <b>url</b>
+									<i>Optional</i>
+								</dt>
+								<dd>URL to be parsed, default to location.href</dd>
 							
 							</dl>
 						
@@ -408,7 +423,7 @@ ul.inheritsList
 					
 					</div>
 					<div class="description">
-						Gets query as Object.
+						Gets query as Object.- Alias for `MM.queryUtils.toQueryObject( MM.queryUtils.getQueryString() )`
 						
 						
 					</div>
@@ -436,7 +451,7 @@ ul.inheritsList
 					<div class="fixedFont">&lt;static&gt; 
 					
 					<span class="light">{String}</span>
-					<span class="light">MM.queryUtils.</span><b>getQueryString</b>()
+					<span class="light">MM.queryUtils.</span><b>getQueryString</b>(url)
 					
 					</div>
 					<div class="description">
@@ -448,6 +463,17 @@ ul.inheritsList
 					
 					
 						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{String}</span> <b>url</b>
+									<i>Optional</i>
+								</dt>
+								<dd>URL to be parsed, defaults to `location.href`</dd>
+							
+							</dl>
+						
 						
 						
 						
@@ -455,7 +481,7 @@ ul.inheritsList
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{String}</span> Query string without starting '?'.</dd>
+								<dd><span class="light fixedFont">{String}</span> Query string</dd>
 							
 							</dl>
 						
@@ -468,7 +494,7 @@ ul.inheritsList
 					<div class="fixedFont">&lt;static&gt; 
 					
 					<span class="light">{Boolean}</span>
-					<span class="light">MM.queryUtils.</span><b>hasParam</b>(param)
+					<span class="light">MM.queryUtils.</span><b>hasParam</b>(param, url)
 					
 					</div>
 					<div class="description">
@@ -489,6 +515,12 @@ ul.inheritsList
 								</dt>
 								<dd>Parameter name.</dd>
 							
+								<dt>
+									<span class="light fixedFont">{String}</span> <b>url</b>
+									<i>Optional</i>
+								</dt>
+								<dd>URL to be parsed, default to location.href</dd>
+							
 							</dl>
 						
 						
@@ -499,6 +531,49 @@ ul.inheritsList
 							<dt class="heading">Returns:</dt>
 							
 								<dd><span class="light fixedFont">{Boolean}</span> If parameter exist.</dd>
+							
+							</dl>
+						
+						
+						
+
+					<hr />
+				
+					<a name=".toQueryObject"> </a>
+					<div class="fixedFont">&lt;static&gt; 
+					
+					<span class="light">{Object}</span>
+					<span class="light">MM.queryUtils.</span><b>toQueryObject</b>(queryString)
+					
+					</div>
+					<div class="description">
+						Convert Query String into an Object
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{String}</span> <b>queryString</b>
+									
+								</dt>
+								<dd>Query String to be parsed</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{Object}</span> Object with all the query "params => values" pairs.</dd>
 							
 							</dl>
 						
@@ -562,7 +637,7 @@ ul.inheritsList
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.3.3-beta on Sun May 09 2010 23:20:14 GMT-0400 (EDT)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Mon Jun 21 2010 18:33:24 GMT-0400 (EDT)
 		</div>
 	</body>
 </html>

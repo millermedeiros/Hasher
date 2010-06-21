@@ -1,19 +1,16 @@
 /*!
  * Hasher
  * - History Manager for rich-media applications.
+ * Includes: MM.EventDispatcher (0.7.2), MM.queryUtils (0.5)
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.6.1 (2010/05/11)
- * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
- *
- * Includes: MM.EventDispatcher (0.7), MM.queryUtils (0.3)
- * @author Miller Medeiros <http://www.millermedeiros.com/>
+ * @version 0.7 (2010/06/21)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 /*
  * MM.EventDispatcher
  * - Class used to allow Custom Objects to dispatch events.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.7 (2010/05/10)
+ * @version 0.7.2 (2010/06/21)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 
@@ -21,7 +18,7 @@
  * @namespace
  * @ignore
  */
-this.MM = this.MM || {};
+var MM = MM || {};
 
 /**
  * EventDispatcher Object
@@ -109,7 +106,7 @@ MM.EventDispatcher.prototype = {
  * MM.queryUtils
  * - utilities for query string manipulation
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.3 (2010/05/01)
+ * @version 0.5 (2010/06/21)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 
@@ -117,7 +114,7 @@ MM.EventDispatcher.prototype = {
  * @namespace
  * @ignore
  */
-this.MM = this.MM || {};
+var MM = MM || {};
 
 /**
  * Utilities for query string manipulation.
@@ -127,18 +124,32 @@ MM.queryUtils = {
 	
 	/**
 	 * Gets full query as string with all special chars decoded.
-	 * @return {String}	Query string without starting '?'.
+	 * @param {String} [url]	 URL to be parsed, defaults to `location.href`
+	 * @return {String}	Query string
 	 */
-	getQueryString : function(){
-		return decodeURIComponent(location.search.substring(1));
+	getQueryString : function(url){
+		url = url || location.href; //used to avoid bug on IE6 and query string inside location.hash
+		url = url.replace(/#.*/, ''); //removes hash (to avoid getting hash query)
+		var queryString = /\?[a-zA-Z0-9\=\&\%\$\-\_\.\+\!\*\'\(\)\,]+/.exec(url); //valid chars according to: http://www.ietf.org/rfc/rfc1738.txt
+		return (queryString)? decodeURIComponent(queryString[0]) : '';
 	},
 	
 	/**
 	 * Gets query as Object.
+	 * - Alias for `MM.queryUtils.toQueryObject( MM.queryUtils.getQueryString() )`
 	 * @return {Object}	Object with all the query "params => values" pairs.
 	 */
 	getQueryObject : function(){
-		var queryArr = this.getQueryString().split('&'), 
+		return this.toQueryObject(this.getQueryString());
+	},
+	
+	/**
+	 * Convert Query String into an Object
+	 * @param {String} queryString	 Query String to be parsed
+	 * @return {Object}	Object with all the query "params => values" pairs.
+	 */
+	toQueryObject : function(queryString){
+		var queryArr = queryString.replace('?', '').split('&'), 
 			n = queryArr.length,
 			queryObj = {};
 		while (n--) {
@@ -151,19 +162,23 @@ MM.queryUtils = {
 	/**
 	 * Get query parameter value.
 	 * @param {String} param	Parameter name.
+	 * @param {String} [url]	URL to be parsed, default to location.href
 	 * @return {String}	Parameter value.
 	 */
-	getParamValue : function(param){
-		return this.getQueryObject()[param];
+	getParamValue : function(param, url){
+		var queryObj = (url)? this.toQueryObject(url) : this.getQueryObject();
+		return queryObj[param];
 	},
 	
 	/**
 	 * Checks if query contains parameter.
 	 * @param {String} param	Parameter name.
+	 * @param {String} [url]	URL to be parsed, default to location.href
 	 * @return {Boolean} If parameter exist.
 	 */
-	hasParam : function(param){
-		return (this.getQueryString().indexOf(param+'=') >= 0);
+	hasParam : function(param, url){
+		var regexp = new RegExp('(\?|\&)'+ param +'\=', 'g'); //matches `?param=` or `&param=`
+		return regexp.test(this.getQueryString(url));
 	},
 	
 	/**
@@ -185,16 +200,15 @@ MM.queryUtils = {
  * Hasher
  * - History Manager for rich-media applications.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.5 (2010/05/11)
+ * @version 0.7 (2010/06/21)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
-(function(){
+(function(window, document, undefined){
 	
 	
 	//== Private Vars ==//
 	
-	var	location = window.location,
-		_oldHash, //{String} used to check if hash changed
+	var	_oldHash, //{String} used to check if hash changed
 		_checkInterval, //stores setInterval reference (used to check if hash changed)
 		_frame, //iframe used for IE <= 7 
 		_isLegacyIE = /msie (6|7)/.test(navigator.userAgent.toLowerCase()) && !+"\v1"; //feature detection based on Andrea Giammarchi's solution: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html	
@@ -204,13 +218,8 @@ MM.queryUtils = {
 	
 	/**
 	 * Hasher
-	 * @class
+	 * @namespace
 	 * @extends MM.EventDispatcher
-	 * @borrows MM.queryUtils.getQueryString as getQueryString
-	 * @borrows MM.queryUtils.getQueryObject as getQueryObject
-	 * @borrows MM.queryUtils.getParamValue as getParamValue
-	 * @borrows MM.queryUtils.hasParam as hasParam
-	 * @borrows MM.queryUtils.toQueryString as toQueryString
 	 */
 	this.Hasher = new MM.EventDispatcher();
 	
@@ -218,7 +227,7 @@ MM.queryUtils = {
 	 * Start listening/dispatching changes in the hash/history.
 	 */
 	Hasher.init = function(){
-		var newHash = Hasher.getHash();
+		var newHash = this.getHash();
 		//TODO: use 'window.onhashchange' listener if browser supports it.
 		if(_isLegacyIE){ //IE6 & IE7 [HACK]
 			if(!_frame){
@@ -265,18 +274,10 @@ MM.queryUtils = {
 	 */
 	Hasher.getHashAsArray = function(separator){
 		separator = separator || '/';
-		var hash = Hasher.getHash(),
+		var hash = this.getHash(),
 			regexp = new RegExp('^\\'+ separator +'|\\'+ separator +'$', 'g'); //match string starting and/or ending with separator
 		hash = hash.replace(regexp, '');
 		return hash.split(separator);
-	};
-	
-	/**
-	 * Set a new location or hash value without generating a history record for the current page. (user won't be able to return to current page)
-	 * @param {String} value	New location (eg: '#newhash', 'newfile.html', 'http://example.com/')
-	 */
-	Hasher.replaceLocation = function(value){
-		location.replace(value);
 	};
 	
 	/**
@@ -292,23 +293,7 @@ MM.queryUtils = {
 	 * @return {String}	Base URL.
 	 */
 	Hasher.getBaseURL = function(){
-		return location.href.replace(/(\?.*)|(\#.+)/, '');
-	};
-	
-	/**
-	 * Host name of the URL.
-	 * @return {String}	The Host Name.
-	 */
-	Hasher.getHostName = function(){
-		return location.hostname;
-	};
-	
-	/**
-	 * Retrieves Path relative to HostName
-	 * @return {String} Folder path relative to domain
-	 */
-	Hasher.getPathName = function(){
-		return location.pathname;
+		return location.href.replace(/(\?.*)|(\#.*)/, '');
 	};
 	
 	/**
@@ -349,19 +334,24 @@ MM.queryUtils = {
 	Hasher.go = function(delta){
 		history.go(delta);
 	};
+
+	/**
+	 * Get Query portion of the Hash as a String
+	 * - alias to: `MM.queryUtils.getQueryString( Hasher.getHash() );`
+	 * @return {String}	Hash Query
+	 */
+	Hasher.getHashQueryString = function(){
+		return MM.queryUtils.getQueryString( this.getHash() );
+	};
 	
-	//-- Query string helpers 
-	
-	Hasher.getQueryString = MM.queryUtils.getQueryString;
-	
-	Hasher.getQueryObject = MM.queryUtils.getQueryObject;
-	
-	Hasher.getParamValue = MM.queryUtils.getParamValue;
-	
-	Hasher.hasParam = MM.queryUtils.hasParam;
-	
-	Hasher.toQueryString = MM.queryUtils.toQueryString;
-	
+	/**
+	 * Get Query portion of the Hash as an Object
+	 * - alias to: `MM.queryUtils.toQueryObject( Hasher.getHashQueryString() );`
+	 * @return {Object} Hash Query
+	 */
+	Hasher.getHashQueryObject = function(){
+		return MM.queryUtils.toQueryObject( this.getHashQueryString() );
+	};
 	
 	//== Private methods ==//
 	
@@ -376,7 +366,7 @@ MM.queryUtils = {
 	}
 	
 	/**
-	 * Function that checks if hash has changed.
+	 * Function that checks if hash has changed. [HACK]
 	 * - used since most browsers don't dispatch the `onhashchange` event.
 	 * @private
 	 */
@@ -396,7 +386,6 @@ MM.queryUtils = {
 		var windowHash = Hasher.getHash(),
 			frameHash = _frame.contentWindow.frameHash;
 		if(frameHash != windowHash && frameHash != _oldHash){ //detect changes made pressing browser history buttons. Workaround since history.back() and history.forward() doesn't update hash value on IE6/7 but updates content of the iframe.
-			Hasher.setTitle(_frame.contentWindow.document.title);
 			Hasher.setHash(frameHash);
 			_dispatchChange(frameHash);
 		}else if(windowHash != _oldHash){ //detect if hash changed (manually or using setHash)
@@ -426,11 +415,11 @@ MM.queryUtils = {
 	function _updateFrame(){
 		var frameDoc = _frame.contentWindow.document;
 		frameDoc.open();
-		frameDoc.write('<html><head><title>'+ Hasher.getTitle() +'</title><script type="text/javascript">var frameHash="'+ Hasher.getHash() +'";</script></head><body>&nbsp;</body></html>'); //stores current title and current hash inside iframe.
+		frameDoc.write('<html><head><title>'+ Hasher.getTitle() +'</title><script type="text/javascript">var frameHash="'+ Hasher.getHash() +'";</script></head><body>&nbsp;</body></html>'); //stores current hash inside iframe.
 		frameDoc.close();
 	}
 	
-})();
+})(window, document);
 /*
  * Hasher Event
  * @author Miller Medeiros <http://www.millermedeiros.com/>

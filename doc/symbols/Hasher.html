@@ -208,7 +208,7 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class Hasher
+				Namespace Hasher
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
@@ -221,14 +221,14 @@ ul.inheritsList
 				
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/D__Projetos_millermedeiros_Hasher_dist_Hasher-0.6.js.html">Hasher-0.6.js</a>.
+					<br /><i>Defined in: </i> <a href="../symbols/src/C__Miller_Personal_millermedeiros_Hasher_dist_Hasher-0.7.js.html">Hasher-0.7.js</a>.
 				
 			</p>
 
 <!-- ============================== constructor summary ==================== -->			
 			
 			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class Hasher.">
-				<caption>Class Summary</caption>
+				<caption>Namespace Summary</caption>
 				<thead>
 					<tr>
 						<th scope="col">Constructor Attributes</th>
@@ -240,7 +240,7 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/Hasher.html#constructor">Hasher</a></b>()
+								<b><a href="../symbols/Hasher.html#constructor">Hasher</a></b>
 							</div>
 							<div class="description">Hasher</div>
 						</td>
@@ -314,54 +314,18 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&lt;static&gt; &nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont">Hasher.<b><a href="../symbols/Hasher.html#.getHistoryLength">getHistoryLength</a></b>()
+								<div class="fixedFont">Hasher.<b><a href="../symbols/Hasher.html#.getHashQueryObject">getHashQueryObject</a></b>()
 								</div>
-								<div class="description">Retrieves number of items in the History list.</div>
+								<div class="description">Get Query portion of the Hash as an Object- alias to: `MM.queryUtils.toQueryObject( Hasher.getHashQueryString() );`</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&lt;static&gt; &nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont">Hasher.<b><a href="../symbols/Hasher.html#.getHostName">getHostName</a></b>()
+								<div class="fixedFont">Hasher.<b><a href="../symbols/Hasher.html#.getHashQueryString">getHashQueryString</a></b>()
 								</div>
-								<div class="description">Host name of the URL.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;static&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont">Hasher.<b><a href="../symbols/Hasher.html#.getParamValue">getParamValue</a></b>(param)
-								</div>
-								<div class="description">Get query parameter value.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;static&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont">Hasher.<b><a href="../symbols/Hasher.html#.getPathName">getPathName</a></b>()
-								</div>
-								<div class="description">Retrieves Path relative to HostName</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;static&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont">Hasher.<b><a href="../symbols/Hasher.html#.getQueryObject">getQueryObject</a></b>()
-								</div>
-								<div class="description">Gets query as Object.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;static&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont">Hasher.<b><a href="../symbols/Hasher.html#.getQueryString">getQueryString</a></b>()
-								</div>
-								<div class="description">Gets full query as string with all special chars decoded.</div>
+								<div class="description">Get Query portion of the Hash as a String- alias to: `MM.queryUtils.getQueryString( Hasher.getHash() );`</div>
 							</td>
 						</tr>
 					
@@ -395,27 +359,9 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&lt;static&gt; &nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont">Hasher.<b><a href="../symbols/Hasher.html#.hasParam">hasParam</a></b>(param)
-								</div>
-								<div class="description">Checks if query contains parameter.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;static&gt; &nbsp;</td>
-							<td class="nameDescription">
 								<div class="fixedFont">Hasher.<b><a href="../symbols/Hasher.html#.init">init</a></b>()
 								</div>
 								<div class="description">Start listening/dispatching changes in the hash/history.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;static&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont">Hasher.<b><a href="../symbols/Hasher.html#.replaceLocation">replaceLocation</a></b>(value)
-								</div>
-								<div class="description">Set a new location or hash value without generating a history record for the current page.</div>
 							</td>
 						</tr>
 					
@@ -446,15 +392,6 @@ ul.inheritsList
 							</td>
 						</tr>
 					
-						<tr>
-							<td class="attributes">&lt;static&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont">Hasher.<b><a href="../symbols/Hasher.html#.toQueryString">toQueryString</a></b>(obj)
-								</div>
-								<div class="description">Converts object into query string.</div>
-							</td>
-						</tr>
-					
 					</tbody>
 				</table>
 				
@@ -472,11 +409,11 @@ ul.inheritsList
 			
 			<div class="details"><a name="constructor"> </a>
 				<div class="sectionTitle">
-					Class Detail
+					Namespace Detail
 				</div>
 				
 				<div class="fixedFont">
-						<b>Hasher</b>()
+						<b>Hasher</b>
 				</div>
 				
 				<div class="description">
@@ -664,154 +601,15 @@ ul.inheritsList
 
 					<hr />
 				
-					<a name=".getHistoryLength"> </a>
-					<div class="fixedFont">&lt;static&gt; 
-					
-					<span class="light">{int}</span>
-					<span class="light">Hasher.</span><b>getHistoryLength</b>()
-					
-					</div>
-					<div class="description">
-						Retrieves number of items in the History list.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd><span class="light fixedFont">{int}</span> History list length.</dd>
-							
-							</dl>
-						
-						
-						
-
-					<hr />
-				
-					<a name=".getHostName"> </a>
-					<div class="fixedFont">&lt;static&gt; 
-					
-					<span class="light">{String}</span>
-					<span class="light">Hasher.</span><b>getHostName</b>()
-					
-					</div>
-					<div class="description">
-						Host name of the URL.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd><span class="light fixedFont">{String}</span> The Host Name.</dd>
-							
-							</dl>
-						
-						
-						
-
-					<hr />
-				
-					<a name=".getParamValue"> </a>
-					<div class="fixedFont">&lt;static&gt; 
-					
-					<span class="light">{String}</span>
-					<span class="light">Hasher.</span><b>getParamValue</b>(param)
-					
-					</div>
-					<div class="description">
-						Get query parameter value.
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{String}</span> <b>param</b>
-									
-								</dt>
-								<dd>Parameter name.</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd><span class="light fixedFont">{String}</span> Parameter value.</dd>
-							
-							</dl>
-						
-						
-						
-
-					<hr />
-				
-					<a name=".getPathName"> </a>
-					<div class="fixedFont">&lt;static&gt; 
-					
-					<span class="light">{String}</span>
-					<span class="light">Hasher.</span><b>getPathName</b>()
-					
-					</div>
-					<div class="description">
-						Retrieves Path relative to HostName
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd><span class="light fixedFont">{String}</span> Folder path relative to domain</dd>
-							
-							</dl>
-						
-						
-						
-
-					<hr />
-				
-					<a name=".getQueryObject"> </a>
+					<a name=".getHashQueryObject"> </a>
 					<div class="fixedFont">&lt;static&gt; 
 					
 					<span class="light">{Object}</span>
-					<span class="light">Hasher.</span><b>getQueryObject</b>()
+					<span class="light">Hasher.</span><b>getHashQueryObject</b>()
 					
 					</div>
 					<div class="description">
-						Gets query as Object.
+						Get Query portion of the Hash as an Object- alias to: `MM.queryUtils.toQueryObject( Hasher.getHashQueryString() );`
 						
 						
 					</div>
@@ -826,7 +624,7 @@ ul.inheritsList
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{Object}</span> Object with all the query "params => values" pairs.</dd>
+								<dd><span class="light fixedFont">{Object}</span> Hash Query</dd>
 							
 							</dl>
 						
@@ -835,15 +633,15 @@ ul.inheritsList
 
 					<hr />
 				
-					<a name=".getQueryString"> </a>
+					<a name=".getHashQueryString"> </a>
 					<div class="fixedFont">&lt;static&gt; 
 					
 					<span class="light">{String}</span>
-					<span class="light">Hasher.</span><b>getQueryString</b>()
+					<span class="light">Hasher.</span><b>getHashQueryString</b>()
 					
 					</div>
 					<div class="description">
-						Gets full query as string with all special chars decoded.
+						Get Query portion of the Hash as a String- alias to: `MM.queryUtils.getQueryString( Hasher.getHash() );`
 						
 						
 					</div>
@@ -858,7 +656,7 @@ ul.inheritsList
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{String}</span> Query string without starting '?'.</dd>
+								<dd><span class="light fixedFont">{String}</span> Hash Query</dd>
 							
 							</dl>
 						
@@ -967,49 +765,6 @@ ul.inheritsList
 
 					<hr />
 				
-					<a name=".hasParam"> </a>
-					<div class="fixedFont">&lt;static&gt; 
-					
-					<span class="light">{Boolean}</span>
-					<span class="light">Hasher.</span><b>hasParam</b>(param)
-					
-					</div>
-					<div class="description">
-						Checks if query contains parameter.
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{String}</span> <b>param</b>
-									
-								</dt>
-								<dd>Parameter name.</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd><span class="light fixedFont">{Boolean}</span> If parameter exist.</dd>
-							
-							</dl>
-						
-						
-						
-
-					<hr />
-				
 					<a name=".init"> </a>
 					<div class="fixedFont">&lt;static&gt; 
 					
@@ -1025,42 +780,6 @@ ul.inheritsList
 					
 					
 					
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name=".replaceLocation"> </a>
-					<div class="fixedFont">&lt;static&gt; 
-					
-					
-					<span class="light">Hasher.</span><b>replaceLocation</b>(value)
-					
-					</div>
-					<div class="description">
-						Set a new location or hash value without generating a history record for the current page. (user won't be able to return to current page)
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{String}</span> <b>value</b>
-									
-								</dt>
-								<dd>New location (eg: '#newhash', 'newfile.html', 'http://example.com/')</dd>
-							
-							</dl>
 						
 						
 						
@@ -1166,49 +885,6 @@ ul.inheritsList
 						
 						
 
-					<hr />
-				
-					<a name=".toQueryString"> </a>
-					<div class="fixedFont">&lt;static&gt; 
-					
-					<span class="light">{String}</span>
-					<span class="light">Hasher.</span><b>toQueryString</b>(obj)
-					
-					</div>
-					<div class="description">
-						Converts object into query string.
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{Object}</span> <b>obj</b>
-									
-								</dt>
-								<dd>Object with "params => values" pairs.</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd><span class="light fixedFont">{String}</span> Formated query string starting with '?'.</dd>
-							
-							</dl>
-						
-						
-						
-
 					
 				
 			
@@ -1223,7 +899,7 @@ ul.inheritsList
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.3.3-beta on Sun May 09 2010 23:20:14 GMT-0400 (EDT)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Mon Jun 21 2010 18:33:24 GMT-0400 (EDT)
 		</div>
 	</body>
 </html>

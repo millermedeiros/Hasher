@@ -1,8 +1,8 @@
 /**
 	@overview
-	@date $Date: 2009-10-28 23:25:32 +0000 (Wed, 28 Oct 2009) $
-	@version $Revision: 816 $ 
-	@location $HeadURL: http://jsdoc-toolkit.googlecode.com/svn/trunk/jsdoc-toolkit/app/lib/JSDOC.js $
+	@date $Date: 2010-06-13 22:02:44 +0100 (Sun, 13 Jun 2010) $
+	@version $Revision: 837 $ 
+	@location $HeadURL: https://jsdoc-toolkit.googlecode.com/svn/tags/jsdoc_toolkit-2.4.0/jsdoc-toolkit/app/lib/JSDOC.js $
 	@name JSDOC.js
  */
 
@@ -27,6 +27,7 @@ JSDOC.opt = Opt.get(
 		e: "encoding",
 		"E[]": "exclude",
 		h: "help",
+		m: "multiple",
 		n: "nocode",
 		o: "out",
 		p: "private",
@@ -43,7 +44,7 @@ JSDOC.opt = Opt.get(
 );
 
 /** The current version string of this application. */
-JSDOC.VERSION = "2.3.3-beta";
+JSDOC.VERSION = "2.4.0";
 
 /** Print out usage information and quit. */
 JSDOC.usage = function() {
@@ -57,6 +58,7 @@ JSDOC.usage = function() {
 	print("  -e=<ENCODING> or --encoding=<ENCODING>\n          Use this encoding to read and write files.\n");
 	print("  -E=\"REGEX\" or --exclude=\"REGEX\"\n          Multiple. Exclude files based on the supplied regex.\n");
 	print("  -h or --help\n          Show this message and exit.\n");
+	print("  -m or --multiples\n          Don't warn about symbols being documented more than once.\n");
 	print("  -n or --nocode\n          Ignore all code, only document comments with @name tags.\n");
 	print("  -o=<PATH> or --out=<PATH>\n          Print log messages to a file (defaults to stdout).\n");
 	print("  -p or --private\n          Include symbols tagged as private, underscored and inner symbols.\n");
