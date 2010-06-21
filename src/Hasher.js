@@ -142,7 +142,7 @@
 	 * - alias to: `MM.queryUtils.getQueryString( Hasher.getHash() );`
 	 * @return {String}	Hash Query
 	 */
-	Hasher.getHashQueryString = function(){
+	Hasher.getHashQuery = function(){
 		return MM.queryUtils.getQueryString( this.getHash() );
 	};
 	
@@ -151,8 +151,18 @@
 	 * - alias to: `MM.queryUtils.toQueryObject( Hasher.getHashQueryString() );`
 	 * @return {Object} Hash Query
 	 */
-	Hasher.getHashQueryObject = function(){
-		return MM.queryUtils.toQueryObject( this.getHashQueryString() );
+	Hasher.getHashQueryAsObject = function(){
+		return MM.queryUtils.toQueryObject( this.getHashQuery() );
+	};
+	
+	/**
+	 * Get parameter value from the query portion of the Hash
+	 * - alias to: `MM.queryUtils.getParamValue(paramName, Hasher.getHash() );`
+	 * @param {String} paramName	Parameter Name.
+	 * @return {String}	Parameter value.
+	 */
+	Hasher.getHashQueryParam = function(paramName){
+		return MM.queryUtils.getParamValue(paramName, this.getHash() );
 	};
 	
 	//== Private methods ==//

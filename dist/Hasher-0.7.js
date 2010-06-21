@@ -1,7 +1,7 @@
 /*!
  * Hasher
  * - History Manager for rich-media applications.
- * Includes: MM.EventDispatcher (0.7.2), MM.queryUtils (0.5)
+ * Includes: MM.EventDispatcher (0.7.2), MM.queryUtils (0.6)
  * @author Miller Medeiros <http://www.millermedeiros.com/>
  * @version 0.7 (2010/06/21)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
@@ -106,7 +106,7 @@ MM.EventDispatcher.prototype = {
  * MM.queryUtils
  * - utilities for query string manipulation
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.5 (2010/06/21)
+ * @version 0.6 (2010/06/21)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 
@@ -128,7 +128,7 @@ MM.queryUtils = {
 	 * @return {String}	Query string
 	 */
 	getQueryString : function(url){
-		url = url || location.href; //used to avoid bug on IE6 and query string inside location.hash
+		url = url || location.href; //used location.href to avoid bug on IE6 and pseudo query string inside location.hash
 		url = url.replace(/#.*/, ''); //removes hash (to avoid getting hash query)
 		var queryString = /\?[a-zA-Z0-9\=\&\%\$\-\_\.\+\!\*\'\(\)\,]+/.exec(url); //valid chars according to: http://www.ietf.org/rfc/rfc1738.txt
 		return (queryString)? decodeURIComponent(queryString[0]) : '';
@@ -136,11 +136,12 @@ MM.queryUtils = {
 	
 	/**
 	 * Gets query as Object.
-	 * - Alias for `MM.queryUtils.toQueryObject( MM.queryUtils.getQueryString() )`
+	 * - Alias for `MM.queryUtils.toQueryObject( MM.queryUtils.getQueryString(url) )`
+	 * @param {String} [url]	URL to be parsed, default to location.href.
 	 * @return {Object}	Object with all the query "params => values" pairs.
 	 */
-	getQueryObject : function(){
-		return this.toQueryObject(this.getQueryString());
+	getQueryObject : function(url){
+		return this.toQueryObject(this.getQueryString(url));
 	},
 	
 	/**
@@ -166,8 +167,7 @@ MM.queryUtils = {
 	 * @return {String}	Parameter value.
 	 */
 	getParamValue : function(param, url){
-		var queryObj = (url)? this.toQueryObject(url) : this.getQueryObject();
-		return queryObj[param];
+		return this.getQueryObject(url)[param];
 	},
 	
 	/**
@@ -340,7 +340,7 @@ MM.queryUtils = {
 	 * - alias to: `MM.queryUtils.getQueryString( Hasher.getHash() );`
 	 * @return {String}	Hash Query
 	 */
-	Hasher.getHashQueryString = function(){
+	Hasher.getHashQuery = function(){
 		return MM.queryUtils.getQueryString( this.getHash() );
 	};
 	
@@ -349,8 +349,18 @@ MM.queryUtils = {
 	 * - alias to: `MM.queryUtils.toQueryObject( Hasher.getHashQueryString() );`
 	 * @return {Object} Hash Query
 	 */
-	Hasher.getHashQueryObject = function(){
-		return MM.queryUtils.toQueryObject( this.getHashQueryString() );
+	Hasher.getHashQueryAsObject = function(){
+		return MM.queryUtils.toQueryObject( this.getHashQuery() );
+	};
+	
+	/**
+	 * Get parameter value from the query portion of the Hash
+	 * - alias to: `MM.queryUtils.getParamValue(paramName, Hasher.getHash() );`
+	 * @param {String} paramName	Parameter Name.
+	 * @return {String}	Parameter value.
+	 */
+	Hasher.getHashQueryParam = function(paramName){
+		return MM.queryUtils.getParamValue(paramName, this.getHash() );
 	};
 	
 	//== Private methods ==//
