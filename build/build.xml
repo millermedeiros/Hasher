@@ -25,8 +25,8 @@
             <fileset file="${src.dir}/copyright.inc" />
             <fileset file="${lib.dir}/MM_EventDispatcher.js" />
             <fileset file="${lib.dir}/MM_queryUtils.js" />
-            <fileset file="${src.dir}/Hasher.js" />
             <fileset file="${src.dir}/HasherEvent.js" />
+            <fileset file="${src.dir}/Hasher.js" />
         </concat>
 		<replace file="${dist.dir}/${dist.name}" token="::version::" value="${version.number} ${version.date}"/>
 		<replace file="${dist.dir}/${dist.name}" token="::evtDispatcher_version::" value="${evtDispatcher.version}"/>
