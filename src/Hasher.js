@@ -2,7 +2,7 @@
  * Hasher
  * - History Manager for rich-media applications.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.8 (2010/06/22)
+ * @version 0.8.2 (2010/06/23)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 (function(window, document, undef){
@@ -10,12 +10,7 @@
 	
 	//== Private Vars ==//
 	
-	/**
-	 * Hasher
-	 * @namespace
-	 * @extends MM.EventDispatcher
-	 */
-	var	Hasher = new MM.EventDispatcher(),
+	var	Hasher = new MM.EventDispatcher(), //local storage, inherits MM.EventDispatcher
 		_oldHash, //{String} used to check if hash changed
 		_checkInterval, //stores setInterval reference (used to check if hash changed)
 		_frame, //iframe used for IE <= 7
@@ -32,6 +27,29 @@
 	function _dispatchChange(newHash){
 		Hasher.dispatchEvent(new HasherEvent(HasherEvent.CHANGE, _oldHash, newHash));
 		_oldHash = newHash;
+	}
+	
+	/**
+	 * Creates iframe used to record history state on IE <= 7. [HACK]
+	 * @private
+	 */
+	function _createFrame(){
+		_frame = document.createElement('iframe');
+		_frame.src = 'about:blank';
+		_frame.style.display = 'none';
+		document.body.appendChild(_frame);
+	}
+	
+	/**
+	 * Update iframe content, generating a history record and saving current hash/title on IE <= 7. [HACK]
+	 * - based on Really Simple History, SWFAddress and YUI.history solutions.
+	 * @private
+	 */
+	function _updateFrame(){
+		var frameDoc = _frame.contentWindow.document;
+		frameDoc.open();
+		frameDoc.write('<html><head><title>'+ Hasher.getTitle() +'</title><script type="text/javascript">var frameHash="'+ Hasher.getHash() +'";</script></head><body>&nbsp;</body></html>'); //stores current hash inside iframe.
+		frameDoc.close();
 	}
 	
 	/**
@@ -65,35 +83,15 @@
 		}
 	}
 	
-	/**
-	 * Creates iframe used to record history state on IE <= 7. [HACK]
-	 * @private
-	 */
-	function _createFrame(){
-		_frame = document.createElement('iframe');
-		_frame.src = 'javascript:false';
-		_frame.style.display = 'none';
-		document.body.appendChild(_frame);
-	}
-	
-	/**
-	 * Update iframe content, generating a history record and saving current hash/title on IE <= 7. [HACK]
-	 * - based on Really Simple History, SWFAddress and YUI.history solutions.
-	 * @private
-	 */
-	function _updateFrame(){
-		var frameDoc = _frame.contentWindow.document;
-		frameDoc.open();
-		frameDoc.write('<html><head><title>'+ Hasher.getTitle() +'</title><script type="text/javascript">var frameHash="'+ Hasher.getHash() +'";</script></head><body>&nbsp;</body></html>'); //stores current hash inside iframe.
-		frameDoc.close();
-	}
-	
 	
 	//== Public API ==//
 	
-	
-	//register Hasher to the global scope
-	window.Hasher = Hasher;
+	/**
+	 * Hasher
+	 * @namespace History Manager for rich-media applications.
+	 * @extends MM.EventDispatcher
+	 */
+	this.Hasher = Hasher; //register Hasher to the global scope
 	
 	/**
 	 * Start listening/dispatching changes in the hash/history.
@@ -235,4 +233,4 @@
 		return MM.queryUtils.getParamValue(paramName, this.getHash() );
 	};
 	
-})(window, document);
+}(window, document));

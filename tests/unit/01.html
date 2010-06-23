@@ -24,7 +24,7 @@
 				['sit-amet/ipsum', 'Sit Amet Ipsum'],
 				['sit-amet/ipsum/lorem', 'Lorem Ipsum'],
 				['/asd', 'Asd'],
-				['/asd/qwerty?foo=bar', 'Qwerty / Asd ? Foo = Bar'],
+				['/asd/qwerty/?foo=bar', 'Qwerty / Asd / ? Foo = Bar'],
 				['/asd/qwerty/', 'Asd Qwerty']
 			];
 			
@@ -32,7 +32,7 @@
 			//-- init hasher test
 			
 			test("init hasher", function(){
-				stop(100);
+				stop(200);
 				expect(4);
 				
 				ok(! Hasher.hasEventListener(HasherEvent.INIT), "No INIT Listener");
@@ -68,7 +68,7 @@
 				var title = testsHashs[n][1];
 				
 				var testFn = function(){
-					stop(100);
+					stop(200);
 					expect(7);
 					
 					ok(! Hasher.hasEventListener(HasherEvent.CHANGE), "No CHANGE Listener");
@@ -122,7 +122,7 @@
 				var title = testsHashs[n][1];
 				
 				var testFn = function(){
-					stop(100);
+					stop(200);
 					expect(6);
 					
 					ok(!Hasher.hasEventListener(HasherEvent.CHANGE), "No CHANGE Listener");
@@ -173,7 +173,7 @@
 				var title = testsHashs[n][1];
 				
 				var testFn = function(){
-					stop(100);
+					stop(200);
 					expect(6);
 					
 					ok(!Hasher.hasEventListener(HasherEvent.CHANGE), "No CHANGE Listener");
