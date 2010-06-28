@@ -72,7 +72,7 @@
 	</target>
 	
 	<target name="lint" description="Validate source code using JSLint.">
-		<jslint haltOnFailure="false" options="browser=true, onevar=true, undef=true, bitwise=true, newcap=true, immed=true">
+		<jslint haltOnFailure="false" options="browser, onevar, undef, bitwise, newcap, immed">
 			<formatter type="plain" />
 			<predef>window</predef>
 			<fileset dir="${dist.dir}" includes="*.js" excludes="*.min.js" />
