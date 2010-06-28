@@ -274,7 +274,7 @@ HasherEvent.STOP = 'stop';
 		_oldHash, //{String} used to check if hash changed
 		_checkInterval, //stores setInterval reference (used to check if hash changed)
 		_frame, //iframe used for IE <= 7
-		_isLegacyIE = /msie (6|7)/.test(navigator.userAgent.toLowerCase()) && !+"\v1"; //feature detection based on Andrea Giammarchi's solution: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html	
+		_isLegacyIE = /msie (6|7)/.test(navigator.userAgent.toLowerCase()) && (!+"\v1"); //feature detection based on Andrea Giammarchi's solution: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html	
 	
 	
 	//== Private methods ==//

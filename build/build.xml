@@ -1,25 +1,30 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <project name="Hasher" default="all" basedir="../">
 	<description>
-		Hasher Build Task. Unify files, compress, generate documentation and distribution files. 
+		Hasher Build Task. Unify files, compress, validate, generate documentation and distribution files.
 	</description>
 	
-	<!-- load global properties for this build -->
-	<target name="-loadProperties">
-        <property file="build/ant.properties"/>
-    </target>
+	<!-- properties -->
 	
-	<target name="purge" depends="-loadProperties" description="Delete destination directories.">
+    <property file="build/ant.properties"/>
+	
+	<!-- custom tasks -->
+	
+	<taskdef name="jslint" classname="com.googlecode.jslint4java.ant.JSLintTask" classpath="${jslint.jar}" />
+	
+	<!-- targets -->
+	
+	<target name="purge" description="Delete destination directories.">
 		<delete dir="${dist.dir}" />
         <delete dir="${doc.dir}" />
     </target>
 	
-	<target name="-mkdirs" depends="-loadProperties" description="Make required dirs.">
+	<target name="-mkdirs" description="Make required dirs.">
 		<mkdir dir="${dist.dir}"/>
 		<mkdir dir="${doc.dir}"/>
 	</target>
 
-	<target name="buildHasher" depends="-mkdirs" description="Concatenate Files and outputs uncompressed version of Hasher.">
+	<target name="concat" depends="-mkdirs" description="Concatenate Files and outputs uncompressed version of Hasher.">
 		<echo message="Building ${dist.name}" />
 		<concat destfile="${dist.dir}/${dist.name}" fixlastline="yes" eol="unix">
             <fileset file="${src.dir}/copyright.inc" />
@@ -34,7 +39,7 @@
 		<echo message="${dist.name} built" />
 	</target>
 	
-	<target name="buildHasherMin" depends="buildHasher" description="Build minified version of Hasher.">
+	<target name="minify" description="Build minified version of Hasher.">
 		<echo message="Building ${dist.min.name}" />
 		<apply executable="java" parallel="false" verbose="true" dest="${dist.dir}">
 		    <fileset dir="${dist.dir}">
@@ -51,7 +56,7 @@
 		<echo message="${dist.min.name} built." />
 	</target>
 	
-	<target name="generateDoc" depends="-loadProperties" description="Build Hasher and generates documentation.">
+	<target name="generateDoc" description="Build Hasher and generates documentation.">
 		<echo message="Generating documentation" />
  		<apply executable="java" parallel="false" verbose="true">
 			<fileset dir="${dist.dir}">
@@ -66,7 +71,15 @@
 		<echo message="Documentation generated" />
 	</target>
 	
-	<target name="all" depends="purge, -mkdirs, buildHasher, buildHasherMin, generateDoc">
+	<target name="lint" description="Validate source code using JSLint.">
+		<jslint haltOnFailure="false" options="browser=true, onevar=true, undef=true, bitwise=true, newcap=true, immed=true">
+			<formatter type="plain" />
+			<predef>window</predef>
+			<fileset dir="${dist.dir}" includes="*.js" excludes="*.min.js" />
+		</jslint>
+	</target>
+	
+	<target name="all" depends="purge, -mkdirs, concat, lint, minify, generateDoc">
 		<echo message="Build Complete." />
 	</target>
 	
