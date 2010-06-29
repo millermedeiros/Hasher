@@ -1,9 +1,9 @@
 /*!
  * Hasher
  * - History Manager for rich-media applications.
- * Includes: MM.EventDispatcher (0.7.2), MM.queryUtils (0.7)
+ * Includes: MM.EventDispatcher (0.7.2), MM.queryUtils (0.7), MM.event-listenerFacade (0.3)
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.8.2 (2010/06/23)
+ * @version 0.9 (2010/06/28)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 /*
@@ -196,6 +196,56 @@ MM.queryUtils = {
 	
 };
 /*
+ * MM.event - DOM Event Listener Facade
+ * - Cross-browser DOM Event Listener attachment/detachment.
+ * - Based on Peter-Paul Koch addEventSimple <http://www.quirksmode.org/js/eventSimple.html>
+ * @author Miller Medeiros <http://www.millermedeiros.com/>
+ * @version 0.3 (2010/06/23)
+ * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
+ */
+
+/**
+ * @namespace Miller Medeiros Namespace
+ */
+var MM = MM || {};
+
+/**
+ * @namespace Utilities for Browser Native Events
+ */
+MM.event = MM.event || {};
+
+/**
+* Adds DOM Event Listener
+* @param {Element} elm Element.
+* @param {String} eType Event type.
+* @param {Function} fn Listener function.
+*/
+MM.event.addListener = function(elm, eType, fn){
+	if(elm.addEventListener){
+		elm.addEventListener(eType, fn, false);
+	}else if(elm.attachEvent){
+		elm.attachEvent('on' + eType, fn);
+	}else{
+		elm['on' + eType] = fn;
+	}
+};
+
+/**
+* Removes DOM Event Listener
+* @param {Element} elm Element.
+* @param {String} eType Event type.
+* @param {Function} fn Listener function.
+*/
+MM.event.removeListener = function(elm, eType, fn){
+	if(elm.removeEventListener){
+		elm.removeEventListener(eType, fn, false);
+	}else if(elm.detachEvent){
+		elm.detachEvent('on' + eType, fn);
+	}else{
+		elm['on' + eType] = null;
+	}
+};
+/*
  * Hasher Event
  * @author Miller Medeiros <http://www.millermedeiros.com/>
  * @version 0.2 (2010/04/18)
@@ -262,7 +312,7 @@ HasherEvent.STOP = 'stop';
  * Hasher
  * - History Manager for rich-media applications.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.8.2 (2010/06/23)
+ * @version 0.9 (2010/06/28)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 (function(window, document, undef){
@@ -272,9 +322,10 @@ HasherEvent.STOP = 'stop';
 	
 	var	Hasher = new MM.EventDispatcher(), //local storage, inherits MM.EventDispatcher
 		_oldHash, //{String} used to check if hash changed
-		_checkInterval, //stores setInterval reference (used to check if hash changed)
+		_checkInterval, //stores setInterval reference (used to check if hash changed on non-standard browsers)
 		_frame, //iframe used for IE <= 7
-		_isLegacyIE = /msie (6|7)/.test(navigator.userAgent.toLowerCase()) && (!+"\v1"); //feature detection based on Andrea Giammarchi's solution: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html	
+		_isLegacyIE = /msie (6|7)/.test(navigator.userAgent.toLowerCase()) && (!+"\v1"), //feature detection based on Andrea Giammarchi's solution: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html
+		_isHashChangeSupported = ('onhashchange' in window); //{Boolean} If browser supports the `hashchange` event - FF3.6+, IE8+, Chrome 5+, Safari 5+
 	
 	
 	//== Private methods ==//
@@ -313,11 +364,10 @@ HasherEvent.STOP = 'stop';
 	}
 	
 	/**
-	 * Function that checks if hash has changed. [HACK]
-	 * - used since most browsers don't dispatch the `onhashchange` event.
+	 * Checks if hash/history state has changed and dispatch HasherEvent.
 	 * @private
 	 */
-	function _checkHash(){
+	function _checkHistory(){
 		var curHash = Hasher.getHash();
 		if(curHash != _oldHash){
 			_dispatchChange(curHash);
@@ -358,15 +408,20 @@ HasherEvent.STOP = 'stop';
 	 */
 	Hasher.init = function(){
 		var newHash = this.getHash();
-		//TODO: use 'window.onhashchange' listener if browser supports it.
-		if(_isLegacyIE){ //IE6 & IE7 [HACK]
-			if(!_frame){
-				_createFrame();
-				_updateFrame();
+		if(_isHashChangeSupported){
+			MM.event.removeListener(window, 'hashchange', _checkHistory); //always a good idea to remove listener before attaching!
+			MM.event.addListener(window, 'hashchange', _checkHistory);
+		}else {
+			clearInterval(_checkInterval); //always clear the interval before setting a new one! 
+			if(_isLegacyIE){
+				if(!_frame){
+					_createFrame();
+					_updateFrame();
+				}
+				_checkInterval = setInterval(_checkHistoryLegacyIE, 25);
+			}else{
+				_checkInterval = setInterval(_checkHistory, 25);
 			}
-			_checkInterval = setInterval(_checkHistoryLegacyIE, 25);
-		}else{ //regular browsers
-			_checkInterval = setInterval(_checkHash, 25);
 		}
 		this.dispatchEvent(new HasherEvent(HasherEvent.INIT, _oldHash, newHash));
 		_oldHash = newHash; //avoid dispatching CHANGE event just after INIT event (since it didn't changed).
@@ -376,38 +431,13 @@ HasherEvent.STOP = 'stop';
 	 * Stop listening/dispatching changes in the hash/history.
 	 */
 	Hasher.stop = function(){
-		clearInterval(_checkInterval);
-		_checkInterval = null;
+		if(_isHashChangeSupported){
+			MM.event.removeListener(window, 'hashchange', _checkHistory);
+		}else{
+			clearInterval(_checkInterval);
+			_checkInterval = null;
+		}
 		this.dispatchEvent(new HasherEvent(HasherEvent.STOP, _oldHash, _oldHash)); //since it didn't changed oldHash and newHash should be the same.
-	};
-	
-	/**
-	 * Set Hash value.
-	 * @param {String} value	Hash value without '#'.
-	 */
-	Hasher.setHash = function(value){
-		location.hash = value;
-	};
-	
-	/**
-	 * Return hash value as String.
-	 * @return {String}	Hash value without '#'.
-	 */
-	Hasher.getHash = function(){
-		return location.hash.substr(1);
-	};
-	
-	/**
-	 * Return hash value as Array.
-	 * @param {String} [separator]	String used to divide hash (default = '/').	
-	 * @return {Array}	Hash splitted into an Array.  
-	 */
-	Hasher.getHashAsArray = function(separator){
-		separator = separator || '/';
-		var hash = this.getHash(),
-			regexp = new RegExp('^\\'+ separator +'|\\'+ separator +'$', 'g'); //match string starting and/or ending with separator
-		hash = hash.replace(regexp, '');
-		return hash.split(separator);
 	};
 	
 	/**
@@ -424,6 +454,66 @@ HasherEvent.STOP = 'stop';
 	 */
 	Hasher.getBaseURL = function(){
 		return location.href.replace(/(\?.*)|(\#.*)/, '');
+	};
+	
+	/**
+	 * Set Hash value.
+	 * @param {String} value	Hash value without '#'.
+	 */
+	Hasher.setHash = function(value){
+		location.hash = value;
+	};
+	
+	/**
+	 * Return hash value as String.
+	 * @return {String}	Hash value without '#'.
+	 */
+	Hasher.getHash = function(){
+		//parsed full URL instead of getting location.hash because Firefox decode hash value (and all the other browsers don't)
+		//also because IE8 has some issues while setting a hash value that contains "?" while offline (it also adds it before the hash but without setting the location.search)
+		var result = /#(.*)$/.exec( this.getURL() );
+		return (result && result[1])? decodeURIComponent( result[1] ) : ''; 
+	};
+	
+	/**
+	 * Return hash value as Array.
+	 * @param {String} [separator]	String used to divide hash (default = '/').	
+	 * @return {Array}	Hash splitted into an Array.  
+	 */
+	Hasher.getHashAsArray = function(separator){
+		separator = separator || '/';
+		var hash = this.getHash(),
+			regexp = new RegExp('^\\'+ separator +'|\\'+ separator +'$', 'g'); //match string starting and/or ending with separator
+		hash = hash.replace(regexp, '');
+		return hash.split(separator);
+	};
+	
+	/**
+	 * Get Query portion of the Hash as a String
+	 * - alias to: `MM.queryUtils.getQueryString( Hasher.getHash() );`
+	 * @return {String}	Hash Query without '?'
+	 */
+	Hasher.getHashQuery = function(){
+		return MM.queryUtils.getQueryString( this.getHash() ).substr(1);
+	};
+	
+	/**
+	 * Get Query portion of the Hash as an Object
+	 * - alias to: `MM.queryUtils.toQueryObject( Hasher.getHashQueryString() );`
+	 * @return {Object} Hash Query
+	 */
+	Hasher.getHashQueryAsObject = function(){
+		return MM.queryUtils.toQueryObject( this.getHashQuery() );
+	};
+	
+	/**
+	 * Get parameter value from the query portion of the Hash
+	 * - alias to: `MM.queryUtils.getParamValue(paramName, Hasher.getHash() );`
+	 * @param {String} paramName	Parameter Name.
+	 * @return {String}	Parameter value.
+	 */
+	Hasher.getHashQueryParam = function(paramName){
+		return MM.queryUtils.getParamValue(paramName, this.getHash() );
 	};
 	
 	/**
@@ -463,34 +553,6 @@ HasherEvent.STOP = 'stop';
 	 */
 	Hasher.go = function(delta){
 		history.go(delta);
-	};
-
-	/**
-	 * Get Query portion of the Hash as a String
-	 * - alias to: `MM.queryUtils.getQueryString( Hasher.getHash() );`
-	 * @return {String}	Hash Query
-	 */
-	Hasher.getHashQuery = function(){
-		return MM.queryUtils.getQueryString( this.getHash() );
-	};
-	
-	/**
-	 * Get Query portion of the Hash as an Object
-	 * - alias to: `MM.queryUtils.toQueryObject( Hasher.getHashQueryString() );`
-	 * @return {Object} Hash Query
-	 */
-	Hasher.getHashQueryAsObject = function(){
-		return MM.queryUtils.toQueryObject( this.getHashQuery() );
-	};
-	
-	/**
-	 * Get parameter value from the query portion of the Hash
-	 * - alias to: `MM.queryUtils.getParamValue(paramName, Hasher.getHash() );`
-	 * @param {String} paramName	Parameter Name.
-	 * @return {String}	Parameter value.
-	 */
-	Hasher.getHashQueryParam = function(paramName){
-		return MM.queryUtils.getParamValue(paramName, this.getHash() );
 	};
 	
 }(window, document));

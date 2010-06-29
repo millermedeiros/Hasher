@@ -5,6 +5,7 @@
 		<script type="text/javascript" src="./qunit/qunit.js"></script>
 		<script type="text/javascript" src="../../lib/MM_EventDispatcher.js"></script>
 		<script type="text/javascript" src="../../lib/MM_queryUtils.js"></script>
+		<script type="text/javascript" src="../../lib/MM_event-listenerFacade.js"></script>
 		<script type="text/javascript" src="../../src/HasherEvent.js"></script>
 		<script type="text/javascript" src="../../src/Hasher.js"></script>
 		<title>Untitled</title>
@@ -19,13 +20,13 @@
 			location.hash = ''; //resets location.hash
 
 			var testsHashs = [
-				['foo', 'Foo Bar'],
-				['dolor', 'Dolor Sit Amet'],
-				['sit-amet/ipsum', 'Sit Amet Ipsum'],
-				['sit-amet/ipsum/lorem', 'Lorem Ipsum'],
-				['/asd', 'Asd'],
-				['/asd/qwerty/?foo=bar', 'Qwerty / Asd / ? Foo = Bar'],
-				['/asd/qwerty/', 'Asd Qwerty']
+				['foo', 'Foo Bar', ''],
+				['dolor', 'Dolor Sit Amet', ''],
+				['sit-amet/ipsum/?dolor=ipsum&maecennas=ullamcor', 'Sit Amet Ipsum', 'dolor=ipsum&maecennas=ullamcor'],
+				['Spêçïãl/Chårs FTW', 'Spêçïãl Chårs', ''],
+				['/asd', 'Asd', ''],
+				['/asd/qwerty/?foo=bar', 'Qwerty / Asd / ? Foo = Bar', 'foo=bar'],
+				['/asd/qwerty/', 'Asd Qwerty', '']
 			];
 			
 			
@@ -65,19 +66,26 @@
 				var testName = '#'+(n+1);
 				
 				var hash = testsHashs[n][0];
+				var oldHash = (n > 0)? testsHashs[n-1][0] : '';
 				var title = testsHashs[n][1];
+				var hashQuery = testsHashs[n][2];
 				
 				var testFn = function(){
-					stop(200);
-					expect(7);
+					stop(500);
+					expect(11);
 					
 					ok(! Hasher.hasEventListener(HasherEvent.CHANGE), "No CHANGE Listener");
 					
-					Hasher.addEventListener(HasherEvent.CHANGE, function(){
+					Hasher.addEventListener(HasherEvent.CHANGE, function(evt){
 						ok(true, "HasherEvent.CHANGE dispatched");
+						
+						ok((evt.oldHash !== Hasher.getHash()), "Hash value really changed.");
 						
 						Hasher.removeEventListener(HasherEvent.CHANGE, arguments.callee);
 						ok( ! Hasher.hasEventListener(HasherEvent.CHANGE), "Removed CHANGE Listener");
+						
+						equals(evt.oldHash, oldHash, "HasherEvent.oldHash");
+						equals(Hasher.getHash(), evt.newHash, "HasherEvent.newHash == Hasher.getHash()");
 						
 						start();
 					});
@@ -93,6 +101,8 @@
 					var hashArray = tmpHash.split('/');
 					
 					same(Hasher.getHashAsArray(), hashArray, "Hasher.getHashAsArray()");
+					
+					same(Hasher.getHashQuery(), hashQuery, "Hasher.getHashQuery()");
 					
 					Hasher.setTitle(title);
 					equal(Hasher.getTitle(), document.title, "Hasher.setTitle() & Hasher.getTitle()");
@@ -123,17 +133,18 @@
 				
 				var testFn = function(){
 					stop(200);
-					expect(6);
+					expect(7);
 					
 					ok(!Hasher.hasEventListener(HasherEvent.CHANGE), "No CHANGE Listener");
 					
-					Hasher.addEventListener(HasherEvent.CHANGE, function(){
+					Hasher.addEventListener(HasherEvent.CHANGE, function(evt){
 					
 						ok(true, "HasherEvent.CHANGE dispatched");
 						
 						Hasher.removeEventListener(HasherEvent.CHANGE, arguments.callee);
 						ok(!Hasher.hasEventListener(HasherEvent.CHANGE), "Removed CHANGE Listener");
 						
+						equals(Hasher.getHash(), evt.newHash, "HasherEvent.newHash == Hasher.getHash()");
 						equals(Hasher.getHash(), hash, "Hasher.getHash()");
 						
 						// simple substring to test if regex is correct
@@ -174,17 +185,18 @@
 				
 				var testFn = function(){
 					stop(200);
-					expect(6);
+					expect(7);
 					
 					ok(!Hasher.hasEventListener(HasherEvent.CHANGE), "No CHANGE Listener");
 					
-					Hasher.addEventListener(HasherEvent.CHANGE, function(){
+					Hasher.addEventListener(HasherEvent.CHANGE, function(evt){
 					
 						ok(true, "HasherEvent.CHANGE dispatched");
 						
 						Hasher.removeEventListener(HasherEvent.CHANGE, arguments.callee);
 						ok(!Hasher.hasEventListener(HasherEvent.CHANGE), "Removed CHANGE Listener");
 						
+						equals(Hasher.getHash(), evt.newHash, "HasherEvent.newHash == Hasher.getHash()");
 						equals(Hasher.getHash(), hash, "Hasher.getHash()");
 						
 						// simple substring to test if regex is correct

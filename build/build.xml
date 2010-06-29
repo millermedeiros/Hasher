@@ -30,12 +30,14 @@
             <fileset file="${src.dir}/copyright.inc" />
             <fileset file="${lib.dir}/MM_EventDispatcher.js" />
             <fileset file="${lib.dir}/MM_queryUtils.js" />
+            <fileset file="${lib.dir}/MM_event-listenerFacade.js" />
             <fileset file="${src.dir}/HasherEvent.js" />
             <fileset file="${src.dir}/Hasher.js" />
         </concat>
 		<replace file="${dist.dir}/${dist.name}" token="::version::" value="${version.number} ${version.date}"/>
 		<replace file="${dist.dir}/${dist.name}" token="::evtDispatcher_version::" value="${evtDispatcher.version}"/>
 		<replace file="${dist.dir}/${dist.name}" token="::queryUtils_version::" value="${queryUtils.version}"/>
+		<replace file="${dist.dir}/${dist.name}" token="::listenerFacade_version::" value="${listenerFacade.version}"/>
 		<echo message="${dist.name} built" />
 	</target>
 	
