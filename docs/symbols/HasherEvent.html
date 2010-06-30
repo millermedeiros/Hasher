@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - MM.EventDispatcher</title>
+		<title>JsDoc Reference - HasherEvent</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -212,7 +212,7 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class MM.EventDispatcher
+				Class HasherEvent
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
@@ -229,7 +229,7 @@ ul.inheritsList
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class MM.EventDispatcher.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class HasherEvent.">
 				<caption>Class Summary</caption>
 				<thead>
 					<tr>
@@ -242,9 +242,9 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/MM.EventDispatcher.html#constructor">MM.EventDispatcher</a></b>()
+								<b><a href="../symbols/HasherEvent.html#constructor">HasherEvent</a></b>(eType, oldHash, newHash)
 							</div>
-							<div class="description">EventDispatcher Object, used to allow Custom Objects to dispatch events.</div>
+							<div class="description">HasherEvent Object.</div>
 						</td>
 					</tr>
 				</tbody>
@@ -253,12 +253,90 @@ ul.inheritsList
 
 <!-- ============================== properties summary ===================== -->
 			
+				
+				
+				<table class="summaryTable" cellspacing="0" summary="A summary of the fields documented in the class HasherEvent.">
+					<caption>Field Summary</caption>
+					<thead>
+						<tr>
+							<th scope="col">Field Attributes</th>
+							<th scope="col">Field Name and Description</th>
+						</tr>
+					</thead>
+					<tbody>
+					
+						<tr>
+							<td class="attributes">&lt;static&gt; &lt;constant&gt; &nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								HasherEvent.<b><a href="../symbols/HasherEvent.html#.CHANGE">CHANGE</a></b>
+								</div>
+								<div class="description">Defines the value of the type property of an change event object.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&lt;static&gt; &lt;constant&gt; &nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								HasherEvent.<b><a href="../symbols/HasherEvent.html#.INIT">INIT</a></b>
+								</div>
+								<div class="description">Defines the value of the type property of an init event object.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								<b><a href="../symbols/HasherEvent.html#newHash">newHash</a></b>
+								</div>
+								<div class="description">Current Hash value</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								<b><a href="../symbols/HasherEvent.html#oldHash">oldHash</a></b>
+								</div>
+								<div class="description">Previous Hash value</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&lt;static&gt; &lt;constant&gt; &nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								HasherEvent.<b><a href="../symbols/HasherEvent.html#.STOP">STOP</a></b>
+								</div>
+								<div class="description">Defines the value of the type property of an stop event object.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								<b><a href="../symbols/HasherEvent.html#type">type</a></b>
+								</div>
+								<div class="description">Event Type</div>
+							</td>
+						</tr>
+					
+					</tbody>
+				</table>
+				
+				
+				
+			
 
 <!-- ============================== methods summary ======================== -->
 			
 				
 				
-				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class MM.EventDispatcher.">
+				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class HasherEvent.">
 					<caption>Method Summary</caption>
 					<thead>
 						<tr>
@@ -271,45 +349,9 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/MM.EventDispatcher.html#addEventListener">addEventListener</a></b>(eType, fn)
+								<div class="fixedFont"><b><a href="../symbols/HasherEvent.html#toString">toString</a></b>()
 								</div>
-								<div class="description">Add Event Listener</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/MM.EventDispatcher.html#dispatchEvent">dispatchEvent</a></b>(e)
-								</div>
-								<div class="description">Dispatch Event- Call all Handlers Listening to the Event.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/MM.EventDispatcher.html#hasEventListener">hasEventListener</a></b>(eType)
-								</div>
-								<div class="description">Checks if the EventDispatcher has any listeners registered for a specific type of event.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/MM.EventDispatcher.html#removeAllEventListeners">removeAllEventListeners</a></b>()
-								</div>
-								<div class="description">Removes all Listeners from the EventDispatcher object.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/MM.EventDispatcher.html#removeEventListener">removeEventListener</a></b>(eType, fn)
-								</div>
-								<div class="description">Remove Event Listener</div>
+								<div class="description">Returns string representation of the HasherEvent</div>
 							</td>
 						</tr>
 					
@@ -330,17 +372,40 @@ ul.inheritsList
 				</div>
 				
 				<div class="fixedFont">
-						<b>MM.EventDispatcher</b>()
+						<b>HasherEvent</b>(eType, oldHash, newHash)
 				</div>
 				
 				<div class="description">
-					EventDispatcher Object, used to allow Custom Objects to dispatch events.
+					HasherEvent Object.<p>According to the HTML5 spec `hashchange` event should have `oldURL` and `newURL` properties, since the only portion of the URL that changes is the hash I decided to use `oldHash` and `newHash` instead. (http://www.whatwg.org/specs/web-apps/current-work/multipage/history.html#event-hashchange)</p>
 					
 				</div>
 				
 				
 				
 				
+					
+						<dl class="detailList">
+						<dt class="heading">Parameters:</dt>
+						
+							<dt>
+								<span class="light fixedFont">{String}</span>  <b>eType</b>
+								
+							</dt>
+								<dd>Hasher Event type.</dd>
+						
+							<dt>
+								<span class="light fixedFont">{String}</span>  <b>oldHash</b>
+								
+							</dt>
+								<dd>Previous Hash.</dd>
+						
+							<dt>
+								<span class="light fixedFont">{String}</span>  <b>newHash</b>
+								
+							</dt>
+								<dd>Current Hash.</dd>
+						
+						</dl>
 					
 					
 					
@@ -354,6 +419,143 @@ ul.inheritsList
 
 <!-- ============================== field details ========================== -->		
 			
+				<div class="sectionTitle">
+					Field Detail
+				</div>
+				
+					<a name=".CHANGE"> </a>
+					<div class="fixedFont">&lt;static&gt; &lt;constant&gt; 
+					
+					<span class="light">{String}</span>
+					<span class="light">HasherEvent.</span><b>CHANGE</b>
+					
+					</div>
+					<div class="description">
+						Defines the value of the type property of an change event object.
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name=".INIT"> </a>
+					<div class="fixedFont">&lt;static&gt; &lt;constant&gt; 
+					
+					<span class="light">{String}</span>
+					<span class="light">HasherEvent.</span><b>INIT</b>
+					
+					</div>
+					<div class="description">
+						Defines the value of the type property of an init event object.
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="newHash"> </a>
+					<div class="fixedFont">
+					
+					<span class="light">{String}</span>
+					<b>newHash</b>
+					
+					</div>
+					<div class="description">
+						Current Hash value
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="oldHash"> </a>
+					<div class="fixedFont">
+					
+					<span class="light">{String}</span>
+					<b>oldHash</b>
+					
+					</div>
+					<div class="description">
+						Previous Hash value
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name=".STOP"> </a>
+					<div class="fixedFont">&lt;static&gt; &lt;constant&gt; 
+					
+					<span class="light">{String}</span>
+					<span class="light">HasherEvent.</span><b>STOP</b>
+					
+					</div>
+					<div class="description">
+						Defines the value of the type property of an stop event object.
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="type"> </a>
+					<div class="fixedFont">
+					
+					<span class="light">{String}</span>
+					<b>type</b>
+					
+					</div>
+					<div class="description">
+						Event Type
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					
+				
+			
 
 <!-- ============================== method details ========================= -->		
 			
@@ -361,110 +563,21 @@ ul.inheritsList
 					Method Detail
 				</div>
 				
-					<a name="addEventListener"> </a>
+					<a name="toString"> </a>
 					<div class="fixedFont">
 					
-					
-					<b>addEventListener</b>(eType, fn)
+					<span class="light">{String}</span>
+					<b>toString</b>()
 					
 					</div>
 					<div class="description">
-						Add Event Listener
+						Returns string representation of the HasherEvent
 						
 						
 					</div>
 					
 					
 					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{String}</span> <b>eType</b>
-									
-								</dt>
-								<dd>Event Type.</dd>
-							
-								<dt>
-									<span class="light fixedFont">{Function}</span> <b>fn</b>
-									
-								</dt>
-								<dd>Event Handler.</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="dispatchEvent"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>dispatchEvent</b>(e)
-					
-					</div>
-					<div class="description">
-						Dispatch Event- Call all Handlers Listening to the Event.
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{Event|String}</span> <b>e</b>
-									
-								</dt>
-								<dd>Custom Event Object (property `type` is required) or String with Event type.</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="hasEventListener"> </a>
-					<div class="fixedFont">
-					
-					<span class="light">{Boolean}</span>
-					<b>hasEventListener</b>(eType)
-					
-					</div>
-					<div class="description">
-						Checks if the EventDispatcher has any listeners registered for a specific type of event.
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{String}</span> <b>eType</b>
-									
-								</dt>
-								<dd>Event Type.</dd>
-							
-							</dl>
 						
 						
 						
@@ -473,76 +586,9 @@ ul.inheritsList
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{Boolean}</span> </dd>
+								<dd><span class="light fixedFont">{String}</span> A string representation of the object.</dd>
 							
 							</dl>
-						
-						
-						
-
-					<hr />
-				
-					<a name="removeAllEventListeners"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>removeAllEventListeners</b>()
-					
-					</div>
-					<div class="description">
-						Removes all Listeners from the EventDispatcher object.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="removeEventListener"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>removeEventListener</b>(eType, fn)
-					
-					</div>
-					<div class="description">
-						Remove Event Listener
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{String}</span> <b>eType</b>
-									
-								</dt>
-								<dd>Event Type.</dd>
-							
-								<dt>
-									<span class="light fixedFont">{Function}</span> <b>fn</b>
-									
-								</dt>
-								<dd>Event Handler.</dd>
-							
-							</dl>
-						
-						
-						
-						
 						
 						
 						
@@ -561,7 +607,7 @@ ul.inheritsList
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Mon Jun 28 2010 19:42:38 GMT-0400 (EDT)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Wed Jun 30 2010 10:40:15 GMT-0400 (EDT)
 		</div>
 	</body>
 </html>

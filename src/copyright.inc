@@ -1,6 +1,5 @@
 /*!
- * Hasher
- * - History Manager for rich-media applications.
+ * Hasher <http://github.com/millermedeiros/Hasher>
  * Includes: MM.EventDispatcher (::evtDispatcher_version::), MM.queryUtils (::queryUtils_version::), MM.event-listenerFacade (::listenerFacade_version::)
  * @author Miller Medeiros <http://www.millermedeiros.com/>
  * @version ::version::

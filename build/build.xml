@@ -16,12 +16,12 @@
 	
 	<target name="purge" description="Delete destination directories.">
 		<delete dir="${dist.dir}" />
-        <delete dir="${doc.dir}" />
+        <delete dir="${docs.dir}" />
     </target>
 	
 	<target name="-mkdirs" description="Make required dirs.">
 		<mkdir dir="${dist.dir}"/>
-		<mkdir dir="${doc.dir}"/>
+		<mkdir dir="${docs.dir}"/>
 	</target>
 
 	<target name="concat" depends="-mkdirs" description="Concatenate Files and outputs uncompressed version of Hasher.">
@@ -68,7 +68,7 @@
 			<arg path="${jsdoc-toolkit.dir}/jsrun.jar" />
 			<arg value="${jsdoc-toolkit.dir}/app/run.js" />
 			<arg value="-t=${jsdoc-toolkit.dir}/templates/jsdoc" />
-			<arg value="-d=${doc.dir}" />
+			<arg value="-d=${docs.dir}" />
 		</apply>
 		<echo message="Documentation generated" />
 	</target>

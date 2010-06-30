@@ -1,6 +1,5 @@
 /*!
- * Hasher
- * - History Manager for rich-media applications.
+ * Hasher <http://github.com/millermedeiros/Hasher>
  * Includes: MM.EventDispatcher (0.7.2), MM.queryUtils (0.7), MM.event-listenerFacade (0.3)
  * @author Miller Medeiros <http://www.millermedeiros.com/>
  * @version 0.9 (2010/06/28)
@@ -394,7 +393,7 @@ HasherEvent.STOP = 'stop';
 	}
 	
 	
-	//== Public API ==//
+	//== Public (API) ==//
 	
 	/**
 	 * Hasher
@@ -408,6 +407,7 @@ HasherEvent.STOP = 'stop';
 	 */
 	Hasher.init = function(){
 		var newHash = this.getHash();
+		//thought about branching/overloading Hasher.init() to avoid checking multiple times but don't think worth doing it since it probably won't be called multiple times. [?] 
 		if(_isHashChangeSupported){
 			MM.event.removeListener(window, 'hashchange', _checkHistory); //always a good idea to remove listener before attaching!
 			MM.event.addListener(window, 'hashchange', _checkHistory);
@@ -437,7 +437,7 @@ HasherEvent.STOP = 'stop';
 			clearInterval(_checkInterval);
 			_checkInterval = null;
 		}
-		this.dispatchEvent(new HasherEvent(HasherEvent.STOP, _oldHash, _oldHash)); //since it didn't changed oldHash and newHash should be the same.
+		this.dispatchEvent(new HasherEvent(HasherEvent.STOP, _oldHash, _oldHash)); //since it didn't changed oldHash and newHash should be the same. [?]
 	};
 	
 	/**
@@ -483,7 +483,7 @@ HasherEvent.STOP = 'stop';
 	Hasher.getHashAsArray = function(separator){
 		separator = separator || '/';
 		var hash = this.getHash(),
-			regexp = new RegExp('^\\'+ separator +'|\\'+ separator +'$', 'g'); //match string starting and/or ending with separator
+			regexp = new RegExp('^\\'+ separator +'|\\'+ separator +'$', 'g'); //match separator at the end or begin of string
 		hash = hash.replace(regexp, '');
 		return hash.split(separator);
 	};
