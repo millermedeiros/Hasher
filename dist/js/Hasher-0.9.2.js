@@ -2,7 +2,7 @@
  * Hasher <http://github.com/millermedeiros/Hasher>
  * Includes: MM.EventDispatcher (0.7.2), MM.queryUtils (0.7), MM.event-listenerFacade (0.3)
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.9 (2010/06/28)
+ * @version 0.9.2 (2010/07/08)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 /*
@@ -311,7 +311,7 @@ HasherEvent.STOP = 'stop';
  * Hasher
  * - History Manager for rich-media applications.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.9 (2010/06/28)
+ * @version 0.9.2 (2010/07/08)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 (function(window, document, undef){
@@ -322,8 +322,9 @@ HasherEvent.STOP = 'stop';
 	var	Hasher = new MM.EventDispatcher(), //local storage, inherits MM.EventDispatcher
 		_oldHash, //{String} used to check if hash changed
 		_checkInterval, //stores setInterval reference (used to check if hash changed on non-standard browsers)
+		_isInitialized, //{Boolean} If Hasher is initialized
 		_frame, //iframe used for IE <= 7
-		_isLegacyIE = /msie (6|7)/.test(navigator.userAgent.toLowerCase()) && (!+"\v1"), //feature detection based on Andrea Giammarchi's solution: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html
+		_isLegacyIE = /MSIE (6|7)/.test(navigator.userAgent) && (!+"\v1"), //feature detection based on Andrea Giammarchi's solution: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html
 		_isHashChangeSupported = ('onhashchange' in window); //{Boolean} If browser supports the `hashchange` event - FF3.6+, IE8+, Chrome 5+, Safari 5+
 	
 	
@@ -335,8 +336,10 @@ HasherEvent.STOP = 'stop';
 	 * @private
 	 */
 	function _dispatchChange(newHash){
-		Hasher.dispatchEvent(new HasherEvent(HasherEvent.CHANGE, _oldHash, newHash));
-		_oldHash = newHash;
+		if(_isInitialized && _oldHash != newHash){
+			Hasher.dispatchEvent(new HasherEvent(HasherEvent.CHANGE, _oldHash, newHash));
+			_oldHash = newHash;
+		}
 	}
 	
 	/**
@@ -406,6 +409,10 @@ HasherEvent.STOP = 'stop';
 	 * Start listening/dispatching changes in the hash/history.
 	 */
 	Hasher.init = function(){
+		if(_isInitialized){
+			return;
+		}
+		
 		var newHash = this.getHash();
 		//thought about branching/overloading Hasher.init() to avoid checking multiple times but don't think worth doing it since it probably won't be called multiple times. [?] 
 		if(_isHashChangeSupported){
@@ -423,6 +430,7 @@ HasherEvent.STOP = 'stop';
 				_checkInterval = setInterval(_checkHistory, 25);
 			}
 		}
+		_isInitialized = true;
 		this.dispatchEvent(new HasherEvent(HasherEvent.INIT, _oldHash, newHash));
 		_oldHash = newHash; //avoid dispatching CHANGE event just after INIT event (since it didn't changed).
 	};
@@ -431,6 +439,10 @@ HasherEvent.STOP = 'stop';
 	 * Stop listening/dispatching changes in the hash/history.
 	 */
 	Hasher.stop = function(){
+		if(!_isInitialized){
+			return;
+		}
+		
 		if(_isHashChangeSupported){
 			MM.event.removeListener(window, 'hashchange', _checkHistory);
 		}else{
@@ -453,7 +465,7 @@ HasherEvent.STOP = 'stop';
 	 * @return {String}	Base URL.
 	 */
 	Hasher.getBaseURL = function(){
-		return location.href.replace(/(\?.*)|(\#.*)/, '');
+		return location.href.replace(/(\?.*)|(\#.*)/, ''); //removes everything after '?' and/or '#'
 	};
 	
 	/**
@@ -462,6 +474,7 @@ HasherEvent.STOP = 'stop';
 	 */
 	Hasher.setHash = function(value){
 		location.hash = value;
+		_dispatchChange(value); //avoid breaking the application if for some reason `location.hash` don't change (not sure if really needed but it's safer to keep it).
 	};
 	
 	/**

@@ -15,7 +15,7 @@
 		_checkInterval, //stores setInterval reference (used to check if hash changed on non-standard browsers)
 		_isInitialized, //{Boolean} If Hasher is initialized
 		_frame, //iframe used for IE <= 7
-		_isLegacyIE = /msie (6|7)/.test(navigator.userAgent.toLowerCase()) && (!+"\v1"), //feature detection based on Andrea Giammarchi's solution: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html
+		_isLegacyIE = /MSIE (6|7)/.test(navigator.userAgent) && (!+"\v1"), //feature detection based on Andrea Giammarchi's solution: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html
 		_isHashChangeSupported = ('onhashchange' in window); //{Boolean} If browser supports the `hashchange` event - FF3.6+, IE8+, Chrome 5+, Safari 5+
 	
 	
@@ -100,7 +100,9 @@
 	 * Start listening/dispatching changes in the hash/history.
 	 */
 	Hasher.init = function(){
-		if(_isInitialized) return;
+		if(_isInitialized){
+			return;
+		}
 		
 		var newHash = this.getHash();
 		//thought about branching/overloading Hasher.init() to avoid checking multiple times but don't think worth doing it since it probably won't be called multiple times. [?] 
@@ -128,7 +130,9 @@
 	 * Stop listening/dispatching changes in the hash/history.
 	 */
 	Hasher.stop = function(){
-		if(! _isInitialized) return;
+		if(!_isInitialized){
+			return;
+		}
 		
 		if(_isHashChangeSupported){
 			MM.event.removeListener(window, 'hashchange', _checkHistory);

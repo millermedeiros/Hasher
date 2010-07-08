@@ -9,7 +9,7 @@
 <span class='line'>  2</span>  * Hasher &lt;http://github.com/millermedeiros/Hasher>
 <span class='line'>  3</span>  * Includes: MM.EventDispatcher (0.7.2), MM.queryUtils (0.7), MM.event-listenerFacade (0.3)
 <span class='line'>  4</span>  * @author Miller Medeiros &lt;http://www.millermedeiros.com/>
-<span class='line'>  5</span>  * @version 0.9 (2010/06/28)
+<span class='line'>  5</span>  * @version 0.9.2 (2010/07/08)
 <span class='line'>  6</span>  * Released under the MIT License &lt;http://www.opensource.org/licenses/mit-license.php>
 <span class='line'>  7</span>  */</span><span class="WHIT">
 <span class='line'>  8</span> </span><span class="COMM">/*
@@ -318,7 +318,7 @@
 <span class='line'>311</span>  * Hasher
 <span class='line'>312</span>  * - History Manager for rich-media applications.
 <span class='line'>313</span>  * @author Miller Medeiros &lt;http://www.millermedeiros.com/>
-<span class='line'>314</span>  * @version 0.9 (2010/06/28)
+<span class='line'>314</span>  * @version 0.9.2 (2010/07/08)
 <span class='line'>315</span>  * Released under the MIT License &lt;http://www.opensource.org/licenses/mit-license.php>
 <span class='line'>316</span>  */</span><span class="WHIT">
 <span class='line'>317</span> </span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">window</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">document</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">undef</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
@@ -329,238 +329,251 @@
 <span class='line'>322</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT">	</span><span class="NAME">Hasher</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">MM.EventDispatcher</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="COMM">//local storage, inherits MM.EventDispatcher</span><span class="WHIT">
 <span class='line'>323</span> </span><span class="WHIT">		</span><span class="NAME">_oldHash</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="COMM">//{String} used to check if hash changed</span><span class="WHIT">
 <span class='line'>324</span> </span><span class="WHIT">		</span><span class="NAME">_checkInterval</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="COMM">//stores setInterval reference (used to check if hash changed on non-standard browsers)</span><span class="WHIT">
-<span class='line'>325</span> </span><span class="WHIT">		</span><span class="NAME">_frame</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="COMM">//iframe used for IE &lt;= 7</span><span class="WHIT">
-<span class='line'>326</span> </span><span class="WHIT">		</span><span class="NAME">_isLegacyIE</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="REGX">/msie (6|7)/</span><span class="PUNC">.</span><span class="NAME">test</span><span class="PUNC">(</span><span class="NAME">navigator.userAgent.toLowerCase</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">!</span><span class="PUNC">+</span><span class="STRN">"\v1"</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="COMM">//feature detection based on Andrea Giammarchi's solution: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html</span><span class="WHIT">
-<span class='line'>327</span> </span><span class="WHIT">		</span><span class="NAME">_isHashChangeSupported</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="STRN">'onhashchange'</span><span class="WHIT"> </span><span class="KEYW">in</span><span class="WHIT"> </span><span class="NAME">window</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//{Boolean} If browser supports the `hashchange` event - FF3.6+, IE8+, Chrome 5+, Safari 5+</span><span class="WHIT">
-<span class='line'>328</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>325</span> </span><span class="WHIT">		</span><span class="NAME">_isInitialized</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="COMM">//{Boolean} If Hasher is initialized</span><span class="WHIT">
+<span class='line'>326</span> </span><span class="WHIT">		</span><span class="NAME">_frame</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="COMM">//iframe used for IE &lt;= 7</span><span class="WHIT">
+<span class='line'>327</span> </span><span class="WHIT">		</span><span class="NAME">_isLegacyIE</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="REGX">/MSIE (6|7)/</span><span class="PUNC">.</span><span class="NAME">test</span><span class="PUNC">(</span><span class="NAME">navigator.userAgent</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">!</span><span class="PUNC">+</span><span class="STRN">"\v1"</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="COMM">//feature detection based on Andrea Giammarchi's solution: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html</span><span class="WHIT">
+<span class='line'>328</span> </span><span class="WHIT">		</span><span class="NAME">_isHashChangeSupported</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="STRN">'onhashchange'</span><span class="WHIT"> </span><span class="KEYW">in</span><span class="WHIT"> </span><span class="NAME">window</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//{Boolean} If browser supports the `hashchange` event - FF3.6+, IE8+, Chrome 5+, Safari 5+</span><span class="WHIT">
 <span class='line'>329</span> </span><span class="WHIT">	</span><span class="WHIT">
-<span class='line'>330</span> </span><span class="WHIT">	</span><span class="COMM">//== Private methods ==//</span><span class="WHIT">
-<span class='line'>331</span> </span><span class="WHIT">	</span><span class="WHIT">
-<span class='line'>332</span> </span><span class="WHIT">	</span><span class="COMM">/**
-<span class='line'>333</span> 	 * Dispatch `HasherEvent.CHANGE` and stores hash value.
-<span class='line'>334</span> 	 * @param {String} newHash	New Hash Value.
-<span class='line'>335</span> 	 * @private
-<span class='line'>336</span> 	 */</span><span class="WHIT">
-<span class='line'>337</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">_dispatchChange</span><span class="PUNC">(</span><span class="NAME">newHash</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>338</span> </span><span class="WHIT">		</span><span class="NAME">Hasher.dispatchEvent</span><span class="PUNC">(</span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">HasherEvent</span><span class="PUNC">(</span><span class="NAME">HasherEvent.CHANGE</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_oldHash</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">newHash</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>339</span> </span><span class="WHIT">		</span><span class="NAME">_oldHash</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">newHash</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>340</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>341</span> </span><span class="WHIT">	</span><span class="WHIT">
-<span class='line'>342</span> </span><span class="WHIT">	</span><span class="COMM">/**
-<span class='line'>343</span> 	 * Creates iframe used to record history state on IE &lt;= 7. [HACK]
-<span class='line'>344</span> 	 * @private
-<span class='line'>345</span> 	 */</span><span class="WHIT">
-<span class='line'>346</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">_createFrame</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>347</span> </span><span class="WHIT">		</span><span class="NAME">_frame</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">document.createElement</span><span class="PUNC">(</span><span class="STRN">'iframe'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>348</span> </span><span class="WHIT">		</span><span class="NAME">_frame.src</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'about:blank'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>349</span> </span><span class="WHIT">		</span><span class="NAME">_frame.style.display</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'none'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>350</span> </span><span class="WHIT">		</span><span class="NAME">document.body.appendChild</span><span class="PUNC">(</span><span class="NAME">_frame</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>351</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>352</span> </span><span class="WHIT">	</span><span class="WHIT">
-<span class='line'>353</span> </span><span class="WHIT">	</span><span class="COMM">/**
-<span class='line'>354</span> 	 * Update iframe content, generating a history record and saving current hash/title on IE &lt;= 7. [HACK]
-<span class='line'>355</span> 	 * - based on Really Simple History, SWFAddress and YUI.history solutions.
-<span class='line'>356</span> 	 * @private
-<span class='line'>357</span> 	 */</span><span class="WHIT">
-<span class='line'>358</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">_updateFrame</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>359</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">frameDoc</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">_frame.contentWindow.document</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>360</span> </span><span class="WHIT">		</span><span class="NAME">frameDoc.open</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>361</span> </span><span class="WHIT">		</span><span class="NAME">frameDoc.write</span><span class="PUNC">(</span><span class="STRN">'&lt;html>&lt;head>&lt;title>'</span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">Hasher.getTitle</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="STRN">'&lt;/title>&lt;script type="text/javascript">var frameHash="'</span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">Hasher.getHash</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="STRN">'";&lt;/script>&lt;/head>&lt;body>&nbsp;&lt;/body>&lt;/html>'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//stores current hash inside iframe.</span><span class="WHIT">
-<span class='line'>362</span> </span><span class="WHIT">		</span><span class="NAME">frameDoc.close</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>363</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>364</span> </span><span class="WHIT">	</span><span class="WHIT">
-<span class='line'>365</span> </span><span class="WHIT">	</span><span class="COMM">/**
-<span class='line'>366</span> 	 * Checks if hash/history state has changed and dispatch HasherEvent.
-<span class='line'>367</span> 	 * @private
-<span class='line'>368</span> 	 */</span><span class="WHIT">
-<span class='line'>369</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">_checkHistory</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>370</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">curHash</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">Hasher.getHash</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>371</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">curHash</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="NAME">_oldHash</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>372</span> </span><span class="WHIT">			</span><span class="NAME">_dispatchChange</span><span class="PUNC">(</span><span class="NAME">curHash</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>373</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>374</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>375</span> </span><span class="WHIT">	</span><span class="WHIT">
-<span class='line'>376</span> </span><span class="WHIT">	</span><span class="COMM">/**
-<span class='line'>377</span> 	 * Check if browser history state has changed on IE &lt;= 7. [HACK]
-<span class='line'>378</span> 	 * - used since IE 6,7 doesn't generates new history record on hashchange.
-<span class='line'>379</span> 	 * @private
-<span class='line'>380</span> 	 */</span><span class="WHIT">
-<span class='line'>381</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">_checkHistoryLegacyIE</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>382</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">windowHash</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">Hasher.getHash</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>383</span> </span><span class="WHIT">			</span><span class="NAME">frameHash</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">_frame.contentWindow.frameHash</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>384</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">frameHash</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="NAME">windowHash</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">frameHash</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="NAME">_oldHash</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT"> </span><span class="COMM">//detect changes made pressing browser history buttons. Workaround since history.back() and history.forward() doesn't update hash value on IE6/7 but updates content of the iframe.</span><span class="WHIT">
-<span class='line'>385</span> </span><span class="WHIT">			</span><span class="NAME">Hasher.setHash</span><span class="PUNC">(</span><span class="NAME">frameHash</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>386</span> </span><span class="WHIT">			</span><span class="NAME">_dispatchChange</span><span class="PUNC">(</span><span class="NAME">frameHash</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>387</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="KEYW">else</span><span class="WHIT"> </span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">windowHash</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="NAME">_oldHash</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT"> </span><span class="COMM">//detect if hash changed (manually or using setHash)</span><span class="WHIT">
-<span class='line'>388</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">frameHash</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="NAME">windowHash</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>389</span> </span><span class="WHIT">				</span><span class="NAME">_updateFrame</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>390</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>391</span> </span><span class="WHIT">			</span><span class="NAME">_dispatchChange</span><span class="PUNC">(</span><span class="NAME">windowHash</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>392</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>393</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>394</span> </span><span class="WHIT">	</span><span class="WHIT">
-<span class='line'>395</span> </span><span class="WHIT">	</span><span class="WHIT">
-<span class='line'>396</span> </span><span class="WHIT">	</span><span class="COMM">//== Public (API) ==//</span><span class="WHIT">
+<span class='line'>330</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>331</span> </span><span class="WHIT">	</span><span class="COMM">//== Private methods ==//</span><span class="WHIT">
+<span class='line'>332</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>333</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>334</span> 	 * Dispatch `HasherEvent.CHANGE` and stores hash value.
+<span class='line'>335</span> 	 * @param {String} newHash	New Hash Value.
+<span class='line'>336</span> 	 * @private
+<span class='line'>337</span> 	 */</span><span class="WHIT">
+<span class='line'>338</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">_dispatchChange</span><span class="PUNC">(</span><span class="NAME">newHash</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>339</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">_isInitialized</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">_oldHash</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="NAME">newHash</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>340</span> </span><span class="WHIT">			</span><span class="NAME">Hasher.dispatchEvent</span><span class="PUNC">(</span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">HasherEvent</span><span class="PUNC">(</span><span class="NAME">HasherEvent.CHANGE</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_oldHash</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">newHash</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>341</span> </span><span class="WHIT">			</span><span class="NAME">_oldHash</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">newHash</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>342</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>343</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>344</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>345</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>346</span> 	 * Creates iframe used to record history state on IE &lt;= 7. [HACK]
+<span class='line'>347</span> 	 * @private
+<span class='line'>348</span> 	 */</span><span class="WHIT">
+<span class='line'>349</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">_createFrame</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>350</span> </span><span class="WHIT">		</span><span class="NAME">_frame</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">document.createElement</span><span class="PUNC">(</span><span class="STRN">'iframe'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>351</span> </span><span class="WHIT">		</span><span class="NAME">_frame.src</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'about:blank'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>352</span> </span><span class="WHIT">		</span><span class="NAME">_frame.style.display</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'none'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>353</span> </span><span class="WHIT">		</span><span class="NAME">document.body.appendChild</span><span class="PUNC">(</span><span class="NAME">_frame</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>354</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>355</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>356</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>357</span> 	 * Update iframe content, generating a history record and saving current hash/title on IE &lt;= 7. [HACK]
+<span class='line'>358</span> 	 * - based on Really Simple History, SWFAddress and YUI.history solutions.
+<span class='line'>359</span> 	 * @private
+<span class='line'>360</span> 	 */</span><span class="WHIT">
+<span class='line'>361</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">_updateFrame</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>362</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">frameDoc</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">_frame.contentWindow.document</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>363</span> </span><span class="WHIT">		</span><span class="NAME">frameDoc.open</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>364</span> </span><span class="WHIT">		</span><span class="NAME">frameDoc.write</span><span class="PUNC">(</span><span class="STRN">'&lt;html>&lt;head>&lt;title>'</span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">Hasher.getTitle</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="STRN">'&lt;/title>&lt;script type="text/javascript">var frameHash="'</span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">Hasher.getHash</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="STRN">'";&lt;/script>&lt;/head>&lt;body>&nbsp;&lt;/body>&lt;/html>'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//stores current hash inside iframe.</span><span class="WHIT">
+<span class='line'>365</span> </span><span class="WHIT">		</span><span class="NAME">frameDoc.close</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>366</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>367</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>368</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>369</span> 	 * Checks if hash/history state has changed and dispatch HasherEvent.
+<span class='line'>370</span> 	 * @private
+<span class='line'>371</span> 	 */</span><span class="WHIT">
+<span class='line'>372</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">_checkHistory</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>373</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">curHash</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">Hasher.getHash</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>374</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">curHash</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="NAME">_oldHash</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>375</span> </span><span class="WHIT">			</span><span class="NAME">_dispatchChange</span><span class="PUNC">(</span><span class="NAME">curHash</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>376</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>377</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>378</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>379</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>380</span> 	 * Check if browser history state has changed on IE &lt;= 7. [HACK]
+<span class='line'>381</span> 	 * - used since IE 6,7 doesn't generates new history record on hashchange.
+<span class='line'>382</span> 	 * @private
+<span class='line'>383</span> 	 */</span><span class="WHIT">
+<span class='line'>384</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">_checkHistoryLegacyIE</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>385</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">windowHash</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">Hasher.getHash</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>386</span> </span><span class="WHIT">			</span><span class="NAME">frameHash</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">_frame.contentWindow.frameHash</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>387</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">frameHash</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="NAME">windowHash</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">frameHash</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="NAME">_oldHash</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT"> </span><span class="COMM">//detect changes made pressing browser history buttons. Workaround since history.back() and history.forward() doesn't update hash value on IE6/7 but updates content of the iframe.</span><span class="WHIT">
+<span class='line'>388</span> </span><span class="WHIT">			</span><span class="NAME">Hasher.setHash</span><span class="PUNC">(</span><span class="NAME">frameHash</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>389</span> </span><span class="WHIT">			</span><span class="NAME">_dispatchChange</span><span class="PUNC">(</span><span class="NAME">frameHash</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>390</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="KEYW">else</span><span class="WHIT"> </span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">windowHash</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="NAME">_oldHash</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT"> </span><span class="COMM">//detect if hash changed (manually or using setHash)</span><span class="WHIT">
+<span class='line'>391</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">frameHash</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="NAME">windowHash</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>392</span> </span><span class="WHIT">				</span><span class="NAME">_updateFrame</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>393</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>394</span> </span><span class="WHIT">			</span><span class="NAME">_dispatchChange</span><span class="PUNC">(</span><span class="NAME">windowHash</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>395</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>396</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
 <span class='line'>397</span> </span><span class="WHIT">	</span><span class="WHIT">
-<span class='line'>398</span> </span><span class="WHIT">	</span><span class="COMM">/**
-<span class='line'>399</span> 	 * Hasher
-<span class='line'>400</span> 	 * @namespace History Manager for rich-media applications.
-<span class='line'>401</span> 	 * @extends MM.EventDispatcher
-<span class='line'>402</span> 	 */</span><span class="WHIT">
-<span class='line'>403</span> </span><span class="WHIT">	</span><span class="NAME">this.Hasher</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">Hasher</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//register Hasher to the global scope</span><span class="WHIT">
-<span class='line'>404</span> </span><span class="WHIT">	</span><span class="WHIT">
-<span class='line'>405</span> </span><span class="WHIT">	</span><span class="COMM">/**
-<span class='line'>406</span> 	 * Start listening/dispatching changes in the hash/history.
-<span class='line'>407</span> 	 */</span><span class="WHIT">
-<span class='line'>408</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.init</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>409</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">newHash</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.getHash</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>410</span> </span><span class="WHIT">		</span><span class="COMM">//thought about branching/overloading Hasher.init() to avoid checking multiple times but don't think worth doing it since it probably won't be called multiple times. [?] </span><span class="WHIT">
-<span class='line'>411</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">_isHashChangeSupported</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>412</span> </span><span class="WHIT">			</span><span class="NAME">MM.event.removeListener</span><span class="PUNC">(</span><span class="NAME">window</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="STRN">'hashchange'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_checkHistory</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//always a good idea to remove listener before attaching!</span><span class="WHIT">
-<span class='line'>413</span> </span><span class="WHIT">			</span><span class="NAME">MM.event.addListener</span><span class="PUNC">(</span><span class="NAME">window</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="STRN">'hashchange'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_checkHistory</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>414</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="KEYW">else</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>415</span> </span><span class="WHIT">			</span><span class="NAME">clearInterval</span><span class="PUNC">(</span><span class="NAME">_checkInterval</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//always clear the interval before setting a new one! </span><span class="WHIT">
-<span class='line'>416</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">_isLegacyIE</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>417</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="PUNC">!</span><span class="NAME">_frame</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>418</span> </span><span class="WHIT">					</span><span class="NAME">_createFrame</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>419</span> </span><span class="WHIT">					</span><span class="NAME">_updateFrame</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>420</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>421</span> </span><span class="WHIT">				</span><span class="NAME">_checkInterval</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">setInterval</span><span class="PUNC">(</span><span class="NAME">_checkHistoryLegacyIE</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">25</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>422</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>423</span> </span><span class="WHIT">				</span><span class="NAME">_checkInterval</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">setInterval</span><span class="PUNC">(</span><span class="NAME">_checkHistory</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">25</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>424</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>425</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>426</span> </span><span class="WHIT">		</span><span class="NAME">this.dispatchEvent</span><span class="PUNC">(</span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">HasherEvent</span><span class="PUNC">(</span><span class="NAME">HasherEvent.INIT</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_oldHash</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">newHash</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>427</span> </span><span class="WHIT">		</span><span class="NAME">_oldHash</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">newHash</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//avoid dispatching CHANGE event just after INIT event (since it didn't changed).</span><span class="WHIT">
-<span class='line'>428</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>429</span> </span><span class="WHIT">	</span><span class="WHIT">
-<span class='line'>430</span> </span><span class="WHIT">	</span><span class="COMM">/**
-<span class='line'>431</span> 	 * Stop listening/dispatching changes in the hash/history.
-<span class='line'>432</span> 	 */</span><span class="WHIT">
-<span class='line'>433</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.stop</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>434</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">_isHashChangeSupported</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>435</span> </span><span class="WHIT">			</span><span class="NAME">MM.event.removeListener</span><span class="PUNC">(</span><span class="NAME">window</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="STRN">'hashchange'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_checkHistory</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>436</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>437</span> </span><span class="WHIT">			</span><span class="NAME">clearInterval</span><span class="PUNC">(</span><span class="NAME">_checkInterval</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>438</span> </span><span class="WHIT">			</span><span class="NAME">_checkInterval</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>439</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>440</span> </span><span class="WHIT">		</span><span class="NAME">this.dispatchEvent</span><span class="PUNC">(</span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">HasherEvent</span><span class="PUNC">(</span><span class="NAME">HasherEvent.STOP</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_oldHash</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_oldHash</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//since it didn't changed oldHash and newHash should be the same. [?]</span><span class="WHIT">
-<span class='line'>441</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>442</span> </span><span class="WHIT">	</span><span class="WHIT">
-<span class='line'>443</span> </span><span class="WHIT">	</span><span class="COMM">/**
-<span class='line'>444</span> 	 * Retrieve full URL.
-<span class='line'>445</span> 	 * @return {String}	Full URL.
-<span class='line'>446</span> 	 */</span><span class="WHIT">
-<span class='line'>447</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.getURL</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>448</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">location.href</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>449</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>450</span> </span><span class="WHIT">	</span><span class="WHIT">
-<span class='line'>451</span> </span><span class="WHIT">	</span><span class="COMM">/**
-<span class='line'>452</span> 	 * Retrieve URL without query string and hash.
-<span class='line'>453</span> 	 * @return {String}	Base URL.
-<span class='line'>454</span> 	 */</span><span class="WHIT">
-<span class='line'>455</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.getBaseURL</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>456</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">location.href.replace</span><span class="PUNC">(</span><span class="REGX">/(\?.*)|(\#.*)/</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="STRN">''</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>457</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>458</span> </span><span class="WHIT">	</span><span class="WHIT">
-<span class='line'>459</span> </span><span class="WHIT">	</span><span class="COMM">/**
-<span class='line'>460</span> 	 * Set Hash value.
-<span class='line'>461</span> 	 * @param {String} value	Hash value without '#'.
-<span class='line'>462</span> 	 */</span><span class="WHIT">
-<span class='line'>463</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.setHash</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">value</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>464</span> </span><span class="WHIT">		</span><span class="NAME">location.hash</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>465</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>466</span> </span><span class="WHIT">	</span><span class="WHIT">
-<span class='line'>467</span> </span><span class="WHIT">	</span><span class="COMM">/**
-<span class='line'>468</span> 	 * Return hash value as String.
-<span class='line'>469</span> 	 * @return {String}	Hash value without '#'.
-<span class='line'>470</span> 	 */</span><span class="WHIT">
-<span class='line'>471</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.getHash</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>472</span> </span><span class="WHIT">		</span><span class="COMM">//parsed full URL instead of getting location.hash because Firefox decode hash value (and all the other browsers don't)</span><span class="WHIT">
-<span class='line'>473</span> </span><span class="WHIT">		</span><span class="COMM">//also because IE8 has some issues while setting a hash value that contains "?" while offline (it also adds it before the hash but without setting the location.search)</span><span class="WHIT">
-<span class='line'>474</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">result</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="REGX">/#(.*)$/</span><span class="PUNC">.</span><span class="NAME">exec</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">this.getURL</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>475</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">result</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">result</span><span class="PUNC">[</span><span class="NUMB">1</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">?</span><span class="WHIT"> </span><span class="NAME">decodeURIComponent</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">result</span><span class="PUNC">[</span><span class="NUMB">1</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">''</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="WHIT">
-<span class='line'>476</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>477</span> </span><span class="WHIT">	</span><span class="WHIT">
-<span class='line'>478</span> </span><span class="WHIT">	</span><span class="COMM">/**
-<span class='line'>479</span> 	 * Return hash value as Array.
-<span class='line'>480</span> 	 * @param {String} [separator]	String used to divide hash (default = '/').	
-<span class='line'>481</span> 	 * @return {Array}	Hash splitted into an Array.  
-<span class='line'>482</span> 	 */</span><span class="WHIT">
-<span class='line'>483</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.getHashAsArray</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">separator</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>484</span> </span><span class="WHIT">		</span><span class="NAME">separator</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">separator</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="STRN">'/'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>485</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">hash</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.getHash</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>486</span> </span><span class="WHIT">			</span><span class="NAME">regexp</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">RegExp</span><span class="PUNC">(</span><span class="STRN">'^\\'</span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">separator</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="STRN">'|\\'</span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">separator</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="STRN">'$'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="STRN">'g'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//match separator at the end or begin of string</span><span class="WHIT">
-<span class='line'>487</span> </span><span class="WHIT">		</span><span class="NAME">hash</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">hash.replace</span><span class="PUNC">(</span><span class="NAME">regexp</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="STRN">''</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>488</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">hash.split</span><span class="PUNC">(</span><span class="NAME">separator</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>398</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>399</span> </span><span class="WHIT">	</span><span class="COMM">//== Public (API) ==//</span><span class="WHIT">
+<span class='line'>400</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>401</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>402</span> 	 * Hasher
+<span class='line'>403</span> 	 * @namespace History Manager for rich-media applications.
+<span class='line'>404</span> 	 * @extends MM.EventDispatcher
+<span class='line'>405</span> 	 */</span><span class="WHIT">
+<span class='line'>406</span> </span><span class="WHIT">	</span><span class="NAME">this.Hasher</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">Hasher</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//register Hasher to the global scope</span><span class="WHIT">
+<span class='line'>407</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>408</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>409</span> 	 * Start listening/dispatching changes in the hash/history.
+<span class='line'>410</span> 	 */</span><span class="WHIT">
+<span class='line'>411</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.init</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>412</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">_isInitialized</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>413</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>414</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>415</span> </span><span class="WHIT">		</span><span class="WHIT">
+<span class='line'>416</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">newHash</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.getHash</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>417</span> </span><span class="WHIT">		</span><span class="COMM">//thought about branching/overloading Hasher.init() to avoid checking multiple times but don't think worth doing it since it probably won't be called multiple times. [?] </span><span class="WHIT">
+<span class='line'>418</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">_isHashChangeSupported</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>419</span> </span><span class="WHIT">			</span><span class="NAME">MM.event.removeListener</span><span class="PUNC">(</span><span class="NAME">window</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="STRN">'hashchange'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_checkHistory</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//always a good idea to remove listener before attaching!</span><span class="WHIT">
+<span class='line'>420</span> </span><span class="WHIT">			</span><span class="NAME">MM.event.addListener</span><span class="PUNC">(</span><span class="NAME">window</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="STRN">'hashchange'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_checkHistory</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>421</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="KEYW">else</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>422</span> </span><span class="WHIT">			</span><span class="NAME">clearInterval</span><span class="PUNC">(</span><span class="NAME">_checkInterval</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//always clear the interval before setting a new one! </span><span class="WHIT">
+<span class='line'>423</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">_isLegacyIE</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>424</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="PUNC">!</span><span class="NAME">_frame</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>425</span> </span><span class="WHIT">					</span><span class="NAME">_createFrame</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>426</span> </span><span class="WHIT">					</span><span class="NAME">_updateFrame</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>427</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>428</span> </span><span class="WHIT">				</span><span class="NAME">_checkInterval</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">setInterval</span><span class="PUNC">(</span><span class="NAME">_checkHistoryLegacyIE</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">25</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>429</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>430</span> </span><span class="WHIT">				</span><span class="NAME">_checkInterval</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">setInterval</span><span class="PUNC">(</span><span class="NAME">_checkHistory</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">25</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>431</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>432</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>433</span> </span><span class="WHIT">		</span><span class="NAME">_isInitialized</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>434</span> </span><span class="WHIT">		</span><span class="NAME">this.dispatchEvent</span><span class="PUNC">(</span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">HasherEvent</span><span class="PUNC">(</span><span class="NAME">HasherEvent.INIT</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_oldHash</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">newHash</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>435</span> </span><span class="WHIT">		</span><span class="NAME">_oldHash</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">newHash</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//avoid dispatching CHANGE event just after INIT event (since it didn't changed).</span><span class="WHIT">
+<span class='line'>436</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>437</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>438</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>439</span> 	 * Stop listening/dispatching changes in the hash/history.
+<span class='line'>440</span> 	 */</span><span class="WHIT">
+<span class='line'>441</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.stop</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>442</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="PUNC">!</span><span class="NAME">_isInitialized</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>443</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>444</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>445</span> </span><span class="WHIT">		</span><span class="WHIT">
+<span class='line'>446</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">_isHashChangeSupported</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>447</span> </span><span class="WHIT">			</span><span class="NAME">MM.event.removeListener</span><span class="PUNC">(</span><span class="NAME">window</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="STRN">'hashchange'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_checkHistory</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>448</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>449</span> </span><span class="WHIT">			</span><span class="NAME">clearInterval</span><span class="PUNC">(</span><span class="NAME">_checkInterval</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>450</span> </span><span class="WHIT">			</span><span class="NAME">_checkInterval</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>451</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>452</span> </span><span class="WHIT">		</span><span class="NAME">this.dispatchEvent</span><span class="PUNC">(</span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">HasherEvent</span><span class="PUNC">(</span><span class="NAME">HasherEvent.STOP</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_oldHash</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_oldHash</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//since it didn't changed oldHash and newHash should be the same. [?]</span><span class="WHIT">
+<span class='line'>453</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>454</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>455</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>456</span> 	 * Retrieve full URL.
+<span class='line'>457</span> 	 * @return {String}	Full URL.
+<span class='line'>458</span> 	 */</span><span class="WHIT">
+<span class='line'>459</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.getURL</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>460</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">location.href</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>461</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>462</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>463</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>464</span> 	 * Retrieve URL without query string and hash.
+<span class='line'>465</span> 	 * @return {String}	Base URL.
+<span class='line'>466</span> 	 */</span><span class="WHIT">
+<span class='line'>467</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.getBaseURL</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>468</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">location.href.replace</span><span class="PUNC">(</span><span class="REGX">/(\?.*)|(\#.*)/</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="STRN">''</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//removes everything after '?' and/or '#'</span><span class="WHIT">
+<span class='line'>469</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>470</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>471</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>472</span> 	 * Set Hash value.
+<span class='line'>473</span> 	 * @param {String} value	Hash value without '#'.
+<span class='line'>474</span> 	 */</span><span class="WHIT">
+<span class='line'>475</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.setHash</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">value</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>476</span> </span><span class="WHIT">		</span><span class="NAME">location.hash</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>477</span> </span><span class="WHIT">		</span><span class="NAME">_dispatchChange</span><span class="PUNC">(</span><span class="NAME">value</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//avoid breaking the application if for some reason `location.hash` don't change (not sure if really needed but it's safer to keep it).</span><span class="WHIT">
+<span class='line'>478</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>479</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>480</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>481</span> 	 * Return hash value as String.
+<span class='line'>482</span> 	 * @return {String}	Hash value without '#'.
+<span class='line'>483</span> 	 */</span><span class="WHIT">
+<span class='line'>484</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.getHash</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>485</span> </span><span class="WHIT">		</span><span class="COMM">//parsed full URL instead of getting location.hash because Firefox decode hash value (and all the other browsers don't)</span><span class="WHIT">
+<span class='line'>486</span> </span><span class="WHIT">		</span><span class="COMM">//also because IE8 has some issues while setting a hash value that contains "?" while offline (it also adds it before the hash but without setting the location.search)</span><span class="WHIT">
+<span class='line'>487</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">result</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="REGX">/#(.*)$/</span><span class="PUNC">.</span><span class="NAME">exec</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">this.getURL</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>488</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">result</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">result</span><span class="PUNC">[</span><span class="NUMB">1</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">?</span><span class="WHIT"> </span><span class="NAME">decodeURIComponent</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">result</span><span class="PUNC">[</span><span class="NUMB">1</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">''</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="WHIT">
 <span class='line'>489</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>490</span> </span><span class="WHIT">	</span><span class="WHIT">
 <span class='line'>491</span> </span><span class="WHIT">	</span><span class="COMM">/**
-<span class='line'>492</span> 	 * Get Query portion of the Hash as a String
-<span class='line'>493</span> 	 * - alias to: `MM.queryUtils.getQueryString( Hasher.getHash() );`
-<span class='line'>494</span> 	 * @return {String}	Hash Query without '?'
+<span class='line'>492</span> 	 * Return hash value as Array.
+<span class='line'>493</span> 	 * @param {String} [separator]	String used to divide hash (default = '/').	
+<span class='line'>494</span> 	 * @return {Array}	Hash splitted into an Array.  
 <span class='line'>495</span> 	 */</span><span class="WHIT">
-<span class='line'>496</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.getHashQuery</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>497</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">MM.queryUtils.getQueryString</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">this.getHash</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">substr</span><span class="PUNC">(</span><span class="NUMB">1</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>498</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>499</span> </span><span class="WHIT">	</span><span class="WHIT">
-<span class='line'>500</span> </span><span class="WHIT">	</span><span class="COMM">/**
-<span class='line'>501</span> 	 * Get Query portion of the Hash as an Object
-<span class='line'>502</span> 	 * - alias to: `MM.queryUtils.toQueryObject( Hasher.getHashQueryString() );`
-<span class='line'>503</span> 	 * @return {Object} Hash Query
-<span class='line'>504</span> 	 */</span><span class="WHIT">
-<span class='line'>505</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.getHashQueryAsObject</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>506</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">MM.queryUtils.toQueryObject</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">this.getHashQuery</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>507</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>508</span> </span><span class="WHIT">	</span><span class="WHIT">
-<span class='line'>509</span> </span><span class="WHIT">	</span><span class="COMM">/**
-<span class='line'>510</span> 	 * Get parameter value from the query portion of the Hash
-<span class='line'>511</span> 	 * - alias to: `MM.queryUtils.getParamValue(paramName, Hasher.getHash() );`
-<span class='line'>512</span> 	 * @param {String} paramName	Parameter Name.
-<span class='line'>513</span> 	 * @return {String}	Parameter value.
-<span class='line'>514</span> 	 */</span><span class="WHIT">
-<span class='line'>515</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.getHashQueryParam</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">paramName</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>516</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">MM.queryUtils.getParamValue</span><span class="PUNC">(</span><span class="NAME">paramName</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">this.getHash</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>517</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>518</span> </span><span class="WHIT">	</span><span class="WHIT">
-<span class='line'>519</span> </span><span class="WHIT">	</span><span class="COMM">/**
-<span class='line'>520</span> 	 * Set page title
-<span class='line'>521</span> 	 * @param {String} title	Page Title
-<span class='line'>522</span> 	 */</span><span class="WHIT">
-<span class='line'>523</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.setTitle</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">title</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>524</span> </span><span class="WHIT">		</span><span class="NAME">document.title</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">title</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>525</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>526</span> </span><span class="WHIT">	</span><span class="WHIT">
-<span class='line'>527</span> </span><span class="WHIT">	</span><span class="COMM">/**
-<span class='line'>528</span> 	 * Get page title
-<span class='line'>529</span> 	 * @return {String} Page Title
-<span class='line'>530</span> 	 */</span><span class="WHIT">
-<span class='line'>531</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.getTitle</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>532</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">document.title</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>533</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>534</span> </span><span class="WHIT">	</span><span class="WHIT">
-<span class='line'>535</span> </span><span class="WHIT">	</span><span class="COMM">/**
-<span class='line'>536</span> 	 * Navigate to previous page in history
-<span class='line'>537</span> 	 */</span><span class="WHIT">
-<span class='line'>538</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.back</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>539</span> </span><span class="WHIT">		</span><span class="NAME">history.back</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>540</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>541</span> </span><span class="WHIT">	</span><span class="WHIT">
-<span class='line'>542</span> </span><span class="WHIT">	</span><span class="COMM">/**
-<span class='line'>543</span> 	 * Navigate to next page in history
-<span class='line'>544</span> 	 */</span><span class="WHIT">
-<span class='line'>545</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.forward</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>546</span> </span><span class="WHIT">		</span><span class="NAME">history.forward</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>547</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>548</span> </span><span class="WHIT">	</span><span class="WHIT">
-<span class='line'>549</span> </span><span class="WHIT">	</span><span class="COMM">/**
-<span class='line'>550</span> 	 * Loads a page from the session history, identified by its relative location to the current page.
-<span class='line'>551</span> 	 * - for example `-1` loads previous page, `1` loads next page.
-<span class='line'>552</span> 	 * @param {int} delta	Relative location to the current page.
-<span class='line'>553</span> 	 */</span><span class="WHIT">
-<span class='line'>554</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.go</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">delta</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>555</span> </span><span class="WHIT">		</span><span class="NAME">history.go</span><span class="PUNC">(</span><span class="NAME">delta</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>556</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>557</span> </span><span class="WHIT">	</span><span class="WHIT">
-<span class='line'>558</span> </span><span class="PUNC">}</span><span class="PUNC">(</span><span class="NAME">window</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">document</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>559</span> </span></pre></body></html>
+<span class='line'>496</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.getHashAsArray</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">separator</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>497</span> </span><span class="WHIT">		</span><span class="NAME">separator</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">separator</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="STRN">'/'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>498</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">hash</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.getHash</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>499</span> </span><span class="WHIT">			</span><span class="NAME">regexp</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">RegExp</span><span class="PUNC">(</span><span class="STRN">'^\\'</span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">separator</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="STRN">'|\\'</span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">separator</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="STRN">'$'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="STRN">'g'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//match separator at the end or begin of string</span><span class="WHIT">
+<span class='line'>500</span> </span><span class="WHIT">		</span><span class="NAME">hash</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">hash.replace</span><span class="PUNC">(</span><span class="NAME">regexp</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="STRN">''</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>501</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">hash.split</span><span class="PUNC">(</span><span class="NAME">separator</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>502</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>503</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>504</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>505</span> 	 * Get Query portion of the Hash as a String
+<span class='line'>506</span> 	 * - alias to: `MM.queryUtils.getQueryString( Hasher.getHash() );`
+<span class='line'>507</span> 	 * @return {String}	Hash Query without '?'
+<span class='line'>508</span> 	 */</span><span class="WHIT">
+<span class='line'>509</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.getHashQuery</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>510</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">MM.queryUtils.getQueryString</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">this.getHash</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">substr</span><span class="PUNC">(</span><span class="NUMB">1</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>511</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>512</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>513</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>514</span> 	 * Get Query portion of the Hash as an Object
+<span class='line'>515</span> 	 * - alias to: `MM.queryUtils.toQueryObject( Hasher.getHashQueryString() );`
+<span class='line'>516</span> 	 * @return {Object} Hash Query
+<span class='line'>517</span> 	 */</span><span class="WHIT">
+<span class='line'>518</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.getHashQueryAsObject</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>519</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">MM.queryUtils.toQueryObject</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">this.getHashQuery</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>520</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>521</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>522</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>523</span> 	 * Get parameter value from the query portion of the Hash
+<span class='line'>524</span> 	 * - alias to: `MM.queryUtils.getParamValue(paramName, Hasher.getHash() );`
+<span class='line'>525</span> 	 * @param {String} paramName	Parameter Name.
+<span class='line'>526</span> 	 * @return {String}	Parameter value.
+<span class='line'>527</span> 	 */</span><span class="WHIT">
+<span class='line'>528</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.getHashQueryParam</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">paramName</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>529</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">MM.queryUtils.getParamValue</span><span class="PUNC">(</span><span class="NAME">paramName</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">this.getHash</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>530</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>531</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>532</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>533</span> 	 * Set page title
+<span class='line'>534</span> 	 * @param {String} title	Page Title
+<span class='line'>535</span> 	 */</span><span class="WHIT">
+<span class='line'>536</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.setTitle</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">title</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>537</span> </span><span class="WHIT">		</span><span class="NAME">document.title</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">title</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>538</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>539</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>540</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>541</span> 	 * Get page title
+<span class='line'>542</span> 	 * @return {String} Page Title
+<span class='line'>543</span> 	 */</span><span class="WHIT">
+<span class='line'>544</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.getTitle</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>545</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">document.title</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>546</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>547</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>548</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>549</span> 	 * Navigate to previous page in history
+<span class='line'>550</span> 	 */</span><span class="WHIT">
+<span class='line'>551</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.back</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>552</span> </span><span class="WHIT">		</span><span class="NAME">history.back</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>553</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>554</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>555</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>556</span> 	 * Navigate to next page in history
+<span class='line'>557</span> 	 */</span><span class="WHIT">
+<span class='line'>558</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.forward</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>559</span> </span><span class="WHIT">		</span><span class="NAME">history.forward</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>560</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>561</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>562</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>563</span> 	 * Loads a page from the session history, identified by its relative location to the current page.
+<span class='line'>564</span> 	 * - for example `-1` loads previous page, `1` loads next page.
+<span class='line'>565</span> 	 * @param {int} delta	Relative location to the current page.
+<span class='line'>566</span> 	 */</span><span class="WHIT">
+<span class='line'>567</span> </span><span class="WHIT">	</span><span class="NAME">Hasher.go</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">delta</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>568</span> </span><span class="WHIT">		</span><span class="NAME">history.go</span><span class="PUNC">(</span><span class="NAME">delta</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>569</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>570</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>571</span> </span><span class="PUNC">}</span><span class="PUNC">(</span><span class="NAME">window</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">document</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>572</span> </span></pre></body></html>
