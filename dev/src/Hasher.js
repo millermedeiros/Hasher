@@ -27,6 +27,7 @@
 	 * @private
 	 */
 	function _dispatchChange(newHash){
+		//TODO: store _oldHash even if !_isInitialized
 		if(_isInitialized && _oldHash != newHash){
 			Hasher.dispatchEvent(new HasherEvent(HasherEvent.CHANGE, _oldHash, newHash));
 			_oldHash = newHash;
@@ -173,6 +174,7 @@
 	 * @return {String}	Hash value without '#'.
 	 */
 	Hasher.getHash = function(){
+		//TODO: change the way Hasher.getHash works to just return _hash and create a new method that actually checks the value in the window.location to make it work even if browser has problems with location.hash
 		//parsed full URL instead of getting location.hash because Firefox decode hash value (and all the other browsers don't)
 		//also because IE8 has some issues while setting a hash value that contains "?" while offline (it also adds it before the hash but without setting the location.search)
 		var result = /#(.*)$/.exec( this.getURL() );
