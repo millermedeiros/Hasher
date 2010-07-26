@@ -6,11 +6,10 @@
 	
 	<!-- properties -->
 	
-    <property file="dev/build/ant.properties"/>
+    <property file="dev/build/build.properties"/>
 	
 	<!-- custom tasks -->
 	
-	<!-- <taskdef name="jslint" classname="com.googlecode.jslint4java.ant.JSLintTask" classpath="${jslint.jar}" /> -->
 	<taskdef name="jslint" classname="com.googlecode.jslint4java.ant.JSLintTask" classpath="${jslint.jar}" />
 	
 	<!-- targets -->

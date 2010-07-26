@@ -3,9 +3,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>New Web Project</title>
+        <title>Hasher simple test</title>
 		<script type="text/javascript" src="../../lib/MM_EventDispatcher.js"></script>
 		<script type="text/javascript" src="../../lib/MM_queryUtils.js"></script>
+		<script type="text/javascript" src="../../lib/MM_event-listenerFacade.js"></script>
 		<script type="text/javascript" src="../../src/HasherEvent.js"></script>
 		<script type="text/javascript" src="../../src/Hasher.js"></script>
 		<style type="text/css">
@@ -17,10 +18,10 @@
     <body>
         <div id="wrapper">
 			<ul>
-				<li><a href="#blah">blah</a></li>
-				<li><a href="#lorem-ipsum">lorem ipsum</a></li>
-				<li><a href="#dolor">dolor</a></li>
-				<li><a href="#dolor/sit/amet">dolor sit amet</a></li>
+				<li><a href="#" onclick="Hasher.setHash('blah'); return false;">blah</a></li>
+				<li><a href="#" onclick="Hasher.setHash('lorem ipsum'); return false;">lorem ipsum</a></li>
+				<li><a href="#" onclick="Hasher.setHash('dolor'); return false;">dolor</a></li>
+				<li><a href="#" onclick="Hasher.setHash('dolor sit amet'); return false;">dolor sit amet</a></li>
 			</ul>
 			<ul>
 				<li><a href="javascript:Hasher.back();">Hasher.back()</a></li>

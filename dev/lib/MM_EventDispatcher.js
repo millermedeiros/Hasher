@@ -2,7 +2,7 @@
  * MM.EventDispatcher
  * - Class used to allow Custom Objects to dispatch events.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.7.2 (2010/06/21)
+ * @version 0.8 (2010/07/26)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 
@@ -58,9 +58,14 @@ MM.EventDispatcher.prototype = {
 	
 	/**
 	 * Removes all Listeners from the EventDispatcher object.
+	 * @param {(String|Boolean)} eType	Event type or `true` if want to remove listeners of all event types.
 	 */
-	removeAllEventListeners : function(){
-		this._handlers = {};
+	removeAllEventListeners : function(eType){
+		if(eType === true){
+			this._handlers = {};
+		}else if(this.hasEventListener(eType)){
+			delete this._handlers[eType];
+		}
 	},
 	
 	/**
@@ -75,19 +80,19 @@ MM.EventDispatcher.prototype = {
 	/**
 	 * Dispatch Event
 	 * - Call all Handlers Listening to the Event.
-	 * @param {Event|String} e	Custom Event Object (property `type` is required) or String with Event type.
+	 * @param {Event|String} evt	Custom Event Object (property `type` is required) or String with Event type.
 	 */
-	dispatchEvent : function(e){
-		e = (typeof e == 'string')? {type: e} : e; //create Object if not an Object to always call handlers with same type of argument.
-		if(this.hasEventListener(e.type)){
-			var typeHandlers = this._handlers[e.type], //stored for performance
+	dispatchEvent : function(evt){
+		evt = (typeof evt == 'string')? {type: evt} : evt; //create Object if not an Object to always call handlers with same type of argument.
+		if(this.hasEventListener(evt.type)){
+			var typeHandlers = this._handlers[evt.type], //stored for performance
 				curHandler,
 				i,
 				n = typeHandlers.length;
-			e.target = e.target || this; //ensure Event.target exists (default to Object that extends EventDispatcher)
+			evt.target = evt.target || this; //ensure Event.target exists
 			for(i=0; i<n; i++){
 				curHandler = typeHandlers[i];
-				curHandler(e);
+				curHandler(evt);
 			}	
 		}
 	}
