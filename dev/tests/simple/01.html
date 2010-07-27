@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
@@ -22,6 +22,7 @@
 				<li><a href="#" onclick="Hasher.setHash('lorem ipsum'); return false;">lorem ipsum</a></li>
 				<li><a href="#" onclick="Hasher.setHash('dolor'); return false;">dolor</a></li>
 				<li><a href="#" onclick="Hasher.setHash('dolor sit amet'); return false;">dolor sit amet</a></li>
+				<li><a href="#" onclick="Hasher.setHash('Spêçïãl/Chårs FTW'); return false;">Sp&ecirc;&ccedil;&iuml;&atilde;l/Ch&aring;rs FTW</a></li>
 			</ul>
 			<ul>
 				<li><a href="javascript:Hasher.back();">Hasher.back()</a></li>
@@ -34,11 +35,11 @@
 		<script type="text/javascript">
 			
 			function log(rest){
-				if (typeof console != "object") {
+				//if (typeof console != "object") {
 					document.getElementById('logger').innerHTML += Array.prototype.join.call(arguments, ' , ') + '<br />';
-				}else{
-					console.log(arguments);
-				}
+				//}else{
+				//	console.log(arguments);
+				//}
 			}
 			
 			function onChange(e){

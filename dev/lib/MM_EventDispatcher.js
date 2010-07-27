@@ -2,7 +2,7 @@
  * MM.EventDispatcher
  * - Class used to allow Custom Objects to dispatch events.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.8 (2010/07/26)
+ * @version 0.8.1 (2010/07/27)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 
@@ -81,6 +81,7 @@ MM.EventDispatcher.prototype = {
 	 * Dispatch Event
 	 * - Call all Handlers Listening to the Event.
 	 * @param {Event|String} evt	Custom Event Object (property `type` is required) or String with Event type.
+	 * @return {Boolean} If Event was successfully dispatched.
 	 */
 	dispatchEvent : function(evt){
 		evt = (typeof evt == 'string')? {type: evt} : evt; //create Object if not an Object to always call handlers with same type of argument.
@@ -93,8 +94,10 @@ MM.EventDispatcher.prototype = {
 			for(i=0; i<n; i++){
 				curHandler = typeHandlers[i];
 				curHandler(evt);
-			}	
+			}
+			return true;
 		}
+		return false;
 	}
 	
 };

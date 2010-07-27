@@ -2,14 +2,14 @@
  * Hasher <http://github.com/millermedeiros/Hasher>
  * Includes: MM.EventDispatcher (0.8), MM.queryUtils (0.7), MM.event-listenerFacade (0.3)
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.9.3 (2010/07/26)
+ * @version 0.9.4 (2010/07/27)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 /*
  * MM.EventDispatcher
  * - Class used to allow Custom Objects to dispatch events.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.8 (2010/07/26)
+ * @version 0.8.1 (2010/07/27)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 
@@ -88,6 +88,7 @@ MM.EventDispatcher.prototype = {
 	 * Dispatch Event
 	 * - Call all Handlers Listening to the Event.
 	 * @param {Event|String} evt	Custom Event Object (property `type` is required) or String with Event type.
+	 * @return {Boolean} If Event was successfully dispatched.
 	 */
 	dispatchEvent : function(evt){
 		evt = (typeof evt == 'string')? {type: evt} : evt; //create Object if not an Object to always call handlers with same type of argument.
@@ -100,8 +101,10 @@ MM.EventDispatcher.prototype = {
 			for(i=0; i<n; i++){
 				curHandler = typeHandlers[i];
 				curHandler(evt);
-			}	
+			}
+			return true;
 		}
+		return false;
 	}
 	
 };
@@ -316,7 +319,7 @@ HasherEvent.STOP = 'stop';
  * Hasher
  * - History Manager for rich-media applications.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.9.3 (2010/07/26)
+ * @version 0.9.4 (2010/07/27)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 (function(window, document, location, history, undef){
@@ -336,11 +339,20 @@ HasherEvent.STOP = 'stop';
 		/** @private {iframe} iframe used for IE <= 7 */
 		_frame,
 		
+		/** @private {String} User Agent */
+		UA = navigator.userAgent,
+		
+		/** @private {Boolean} if is IE */
+		_isIE = /MSIE/.test(UA)  && (!window.opera),
+		
 		/** @private {Boolean} if is IE <= 7 */
-		_isLegacyIE = /MSIE (6|7)/.test(navigator.userAgent) && (!+"\v1"), //feature detection based on Andrea Giammarchi's solution: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html
+		_isLegacyIE = /MSIE (6|7)/.test(UA) && (!+"\v1"), //feature detection based on Andrea Giammarchi's solution: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html
 		
 		/** @private {Boolean} If browser supports the `hashchange` event - FF3.6+, IE8+, Chrome 5+, Safari 5+ */
 		_isHashChangeSupported = ('onhashchange' in window),
+		
+		/** @private {Boolean} If it is a local file */
+		_isLocal = (location.protocol === 'file:'),
 		
 		//-- local storage for performance improvement and better compression --//
 		
@@ -357,7 +369,31 @@ HasherEvent.STOP = 'stop';
 	//== Private methods ==//
 	
 	/**
-	 * Dispatch `HasherEvent.CHANGE` and stores hash value.
+	 * Get hash value stored inside iframe
+	 * - used for IE <= 7. [HACK] 
+	 * @return {String}	Hash value without '#'.
+	 */
+	function _getFrameHash(){
+		return (_frame)? _frame.contentWindow.frameHash : null;
+	}
+	
+	/**
+	 * Update iframe content, generating a history record and saving current hash/title on IE <= 7. [HACK]
+	 * - based on Really Simple History, SWFAddress and YUI.history solutions.
+	 * @param {string} hashValue	Hash value without '#'.
+	 * @private
+	 */
+	function _updateFrame(hashValue){
+		if(_frame && hashValue != _getFrameHash()){
+			var frameDoc = _frame.contentWindow.document;
+			frameDoc.open();
+			frameDoc.write('<html><head><title>' + Hasher.getTitle() + '</title><script type="text/javascript">var frameHash="' + hashValue + '";</script></head><body>&nbsp;</body></html>'); //stores current hash inside iframe.
+			frameDoc.close();
+		}
+	}
+	
+	/**
+	 * Stores new hash value and dispatch `HasherEvent.CHANGE` if Hasher is "active".
 	 * @param {String} newHash	New Hash Value.
 	 * @private
 	 */
@@ -365,6 +401,9 @@ HasherEvent.STOP = 'stop';
 		if(_hash != newHash){
 			var tmpHash = _hash;
 			_hash = newHash; //should come before event dispatch to make sure user can get proper value inside event handler
+			if(_isLegacyIE){
+				_updateFrame(newHash);
+			}
 			if(_isActive){
 				Hasher.dispatchEvent(new HasherEvent(HasherEvent.CHANGE, tmpHash, newHash));
 			}
@@ -383,26 +422,13 @@ HasherEvent.STOP = 'stop';
 	}
 	
 	/**
-	 * Update iframe content, generating a history record and saving current hash/title on IE <= 7. [HACK]
-	 * - based on Really Simple History, SWFAddress and YUI.history solutions.
-	 * @param {string} hashValue	Hash value without '#'.
-	 * @private
-	 */
-	function _updateFrame(hashValue){
-		var frameDoc = _frame.contentWindow.document;
-		frameDoc.open();
-		frameDoc.write('<html><head><title>'+ Hasher.getTitle() +'</title><script type="text/javascript">var frameHash="'+ hashValue +'";</script></head><body>&nbsp;</body></html>'); //stores current hash inside iframe.
-		frameDoc.close();
-	}
-	
-	/**
 	 * Get hash value from current URL
 	 * @return {String}	Hash value without '#'.
 	 * @private
 	 */
 	function _getWindowHash(){
 		//parsed full URL instead of getting location.hash because Firefox decode hash value (and all the other browsers don't)
-		//also because IE8 has some issues setting a hash value that contains "?" while offline (it also adds it before the hash but without setting the location.search)
+		//also because of IE8 bug with hash query in local file [issue #6]
 		var result = /#(.*)$/.exec( Hasher.getURL() );
 		return (result && result[1])? decodeURIComponent( result[1] ) : '';
 	}
@@ -425,14 +451,10 @@ HasherEvent.STOP = 'stop';
 	 */
 	function _checkHistoryLegacyIE(){
 		var windowHash = _getWindowHash(),
-			frameHash = _frame.contentWindow.frameHash;
-		if(frameHash != windowHash && frameHash != _hash){ //detect changes made pressing browser history buttons. Workaround since history.back() and history.forward() doesn't update hash value on IE6/7 but updates content of the iframe.
+			frameHash = _getFrameHash();
+		if(frameHash != _hash && frameHash != windowHash){ //detect changes made pressing browser history buttons. Workaround since history.back() and history.forward() doesn't update hash value on IE6/7 but updates content of the iframe.
 			Hasher.setHash(frameHash);
-			_registerChange(frameHash);
 		}else if(windowHash != _hash){ //detect if hash changed (manually or using setHash)
-			if(frameHash != windowHash){
-				_updateFrame(windowHash);
-			}
 			_registerChange(windowHash);
 		}
 	}
@@ -460,7 +482,7 @@ HasherEvent.STOP = 'stop';
 		
 		//thought about branching/overloading Hasher.init() to avoid checking multiple times but don't think worth doing it since it probably won't be called multiple times. [?] 
 		if(_isHashChangeSupported){
-			MM.event.addListener(window, 'hashchange', _checkHistory);
+			_eventAdapter.addListener(window, 'hashchange', _checkHistory);
 		}else { 
 			if(_isLegacyIE){
 				if(!_frame){
@@ -486,7 +508,7 @@ HasherEvent.STOP = 'stop';
 		}
 		
 		if(_isHashChangeSupported){
-			MM.event.removeListener(window, 'hashchange', _checkHistory);
+			_eventAdapter.removeListener(window, 'hashchange', _checkHistory);
 		}else{
 			clearInterval(_checkInterval);
 			_checkInterval = null;
@@ -509,7 +531,7 @@ HasherEvent.STOP = 'stop';
 	 * @return {String}	Base URL.
 	 */
 	Hasher.getBaseURL = function(){
-		return location.href.replace(/(\?.*)|(\#.*)/, ''); //removes everything after '?' and/or '#'
+		return this.getURL().replace(/(\?.*)|(\#.*)/, ''); //removes everything after '?' and/or '#'
 	};
 	
 	/**
@@ -519,8 +541,11 @@ HasherEvent.STOP = 'stop';
 	Hasher.setHash = function(value){
 		value = (value)? value.replace(/^\#/, '') : value; //removes '#' from the beginning of string.
 		if(value != _hash){
-			location.hash = value;
 			_registerChange(value); //avoid breaking the application if for some reason `location.hash` don't change (not sure if really needed but it's safer to keep it).
+			if(_isIE && _isLocal){
+				value = value.replace(/\?/, '%3F'); //fix IE8 local file bug [issue #6]
+			}
+			location.hash = '#'+ encodeURI(value); //used encodeURI instead of encodeURIComponent to preserve '?', '/', '#'. Fixes Safari bug [issue #8]
 		}
 	};
 	
