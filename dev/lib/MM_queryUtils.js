@@ -2,7 +2,7 @@
  * MM.queryUtils
  * - utilities for query string manipulation
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.7 (2010/06/22)
+ * @version 0.8 (2010/07/28)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 
@@ -46,10 +46,12 @@ MM.queryUtils = {
 	toQueryObject : function(queryString){
 		var queryArr = queryString.replace('?', '').split('&'), 
 			n = queryArr.length,
-			queryObj = {};
+			queryObj = {},
+			value;
 		while (n--) {
 			queryArr[n] = queryArr[n].split('=');
-			queryObj[queryArr[n][0]] = queryArr[n][1];
+			value = queryArr[n][1];
+			queryObj[queryArr[n][0]] = isNaN(value)? value : parseFloat(value);
 		}
 		return queryObj;
 	},
@@ -61,7 +63,10 @@ MM.queryUtils = {
 	 * @return {String}	Parameter value.
 	 */
 	getParamValue : function(param, url){
-		return this.getQueryObject(url)[param];
+		var regexp = new RegExp('(\\?|&)'+ param + '=([^&]*)'), //matches `?param=value` or `&param=value`, value = $2
+			result = regexp.exec(url),
+			value = (result && result[2])? result[2] : null;
+		return isNaN(value)? value : parseFloat(value);
 	},
 	
 	/**

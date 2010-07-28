@@ -11,26 +11,39 @@
 		<title>Untitled</title>
 	</head>
 	<body>
-		<h1 id="qunit-header">Hasher basic unit test</h1>
+		<h1 id="qunit-header">Hasher unit test #1</h1>
 		<h2 id="qunit-banner"></h2>
 		<h2 id="qunit-userAgent"></h2>
 		<ol id="qunit-tests"></ol>
 		<script type="text/javascript">
 			
+			/*
+			 * 
+			 * 		Hasher JS Unit test #1
+			 * 		
+			 * 		//TODO: split unit test, so back and forward tests are on a separate file. 
+			 * 		
+			 * 		-----------------------------------------------------------------------
+			 * 
+			 *		WARNING: 
+			 * 			- poor code ahead!
+			 * 			- don't use as reference!
+			 * 
+			 *		----------------------------------------------------------------------- 
+			 * 
+			 * 		IMPORTANT: 
+			 * 			- unit test doesn't work properly on Chrome because of browser bug:
+			 * 			  http://code.google.com/p/chromium/issues/detail?id=45419
+			 * 
+			 * 		-----------------------------------------------------------------------
+			 * 
+			 */
+			
+			
 			location.hash = ''; //resets location.hash
-
-			var testsHashs = [
-				['foo', 'Foo Bar', ''],
-				['dolor', 'Dolor Sit Amet', ''],
-				['sit-amet/ipsum/?dolor=ipsum&maecennas=ullamcor', 'Sit Amet Ipsum', 'dolor=ipsum&maecennas=ullamcor'],
-				['Spêçïãl/Chårs FTW', 'Spêçïãl Chårs', ''],
-				['/asd', 'Asd', ''],
-				['/asd/qwerty/?foo=bar', 'Qwerty / Asd / ? Foo = Bar', 'foo=bar'],
-				['/asd/qwerty/', 'Asd Qwerty', '']
-			];
 			
 			
-			//-- init hasher test
+			/* ==== init hasher test ==== */
 			
 			test("init hasher", function(){
 				stop(200);
@@ -51,9 +64,112 @@
 				
 				Hasher.init();
 			});
+			/* == */
 			
 			
-			//-- set/get hash/title value
+			/* ==== multiple listeners & changes ==== */
+			
+			module('multiple listeners & changes');
+			
+			function multipleTest(){
+				
+				stop(600);
+				expect(32);
+				
+				function handler1(evt){
+					ok(true, 'Called Handler #1');
+				}
+				
+				function handler2(evt){
+					ok(true, 'Called Handler #2');
+				}
+				
+				function handler3(evt){
+					ok(true, 'Called Handler #3');
+				}
+				
+				Hasher.removeAllEventListeners(true);
+				
+				ok(!Hasher.hasEventListener(HasherEvent.CHANGE), "No CHANGE Listener");
+				
+				Hasher.addEventListener(HasherEvent.CHANGE, handler1);
+				Hasher.addEventListener(HasherEvent.CHANGE, handler2);
+				Hasher.addEventListener(HasherEvent.CHANGE, handler3);
+				
+				ok(Hasher.hasEventListener(HasherEvent.CHANGE), "Has CHANGE Listener");
+				
+				Hasher.setHash('Lorem');
+				equals(Hasher.getHash(), 'Lorem');
+				
+				Hasher.setHash('Lorem/Ipsum');
+				equals(Hasher.getHash(), 'Lorem/Ipsum');
+				
+				Hasher.setHash('Lorem/Dolor&Amet/?foo=bar&ipsum=dolor&n=123&nan=abc123');
+				equals(Hasher.getHash(), 'Lorem/Dolor&Amet/?foo=bar&ipsum=dolor&n=123&nan=abc123');
+				equals(Hasher.getHashQuery(), 'foo=bar&ipsum=dolor&n=123&nan=abc123');
+				same(Hasher.getHashQueryAsObject(), {
+					foo: 'bar',
+					ipsum: 'dolor',
+					n: 123,
+					nan: 'abc123'
+				});
+				equals(Hasher.getHashQueryParam('n'), 123);
+				equals(Hasher.getHashQueryParam('nan'), 'abc123');
+				
+				Hasher.setHash('?foo=bar&ipsum=dolor');
+				equals(Hasher.getHash(), '?foo=bar&ipsum=dolor');
+				equals(Hasher.getHashQuery(), 'foo=bar&ipsum=dolor');
+				same(Hasher.getHashQueryAsObject(), {
+					foo: 'bar',
+					ipsum: 'dolor'
+				});
+				equals(Hasher.getHashQueryParam('foo'), 'bar');
+				
+				ok(! Hasher.hasEventListener(HasherEvent.INIT), "No INIT Listener");
+				Hasher.addEventListener(HasherEvent.INIT, function(e){
+					ok(false, "INIT event dispatched by accident"); //shouldn't run
+				});
+				ok(Hasher.hasEventListener(HasherEvent.INIT), "Has INIT Listener");
+				
+				
+				ok(! Hasher.hasEventListener(HasherEvent.STOP), "No STOP Listener");
+				Hasher.addEventListener(HasherEvent.STOP, function(e){
+					ok(false, "STOP event dispatched by accident"); //shouldn't run
+				});
+				ok(Hasher.hasEventListener(HasherEvent.STOP), "Has STOP Listener");
+				
+				
+				Hasher.removeAllEventListeners(HasherEvent.CHANGE);
+				ok(! Hasher.hasEventListener(HasherEvent.CHANGE), "No CHANGE Listener");
+				
+				
+				Hasher.removeAllEventListeners(true);
+				ok(! Hasher.hasEventListener(HasherEvent.INIT), "No INIT Listener");
+				ok(! Hasher.hasEventListener(HasherEvent.STOP), "No STOP Listener");
+				
+				location.hash = ''; //resets location.hash
+				
+				start();
+				
+			}
+			
+			test('#1', multipleTest);
+			
+			/* == */
+			
+			
+			var testsHashs = [
+				['foo', 'Foo Bar', ''],
+				['dolor', 'Dolor Sit Amet', ''],
+				['sit-amet/ipsum/?dolor=ipsum&maecennas=ullamcor', 'Sit Amet Ipsum', 'dolor=ipsum&maecennas=ullamcor'],
+				['Spêçïãl/Chårs FTW', 'Spêçïãl Chårs', ''],
+				['/asd', 'Asd', ''],
+				['/asd/qwerty/?foo=bar', 'Qwerty / Asd / ? Foo = Bar', 'foo=bar'],
+				['/asd/qwerty/', 'Asd Qwerty', '']
+			];
+			
+			
+			/* ==== set/get hash/title value ==== */
 			
 			module('set/get hash/title value');
 			
@@ -113,9 +229,10 @@
 				test(testName, testFn);
 				
 			}
+			/* == */
 			
-			/* */
-			//-- back
+			
+			/* ==== back ==== */
 			
 			module('back');
 			
@@ -169,9 +286,10 @@
 				
 				test(testName, testFn);
 			}
+			/* == */
 			
 			
-			//-- forward
+			/* ==== forward ==== */
 			
 			module('forward');
 			
@@ -223,58 +341,137 @@
 				
 				test(testName, testFn);
 			}
-			/* */
+			/* == */
 			
-			module('multiple listeners & changes');
 			
-			function multipleTest(){
+			/* ==== stop and dispose ==== */
+			
+			module('stop and dispose');
+			
+			var stopTest = function(){
+				stop(200);
+				expect(4);
 				
-				stop(600);
-				expect(19);
+				ok(! Hasher.hasEventListener(HasherEvent.STOP), "No STOP Listener");
 				
-				function handler1(evt){
-					ok(true, 'Called Handler #1');
-				}
+				Hasher.addEventListener(HasherEvent.STOP, function(evt){
+					
+					ok(true, "HasherEvent.STOP dispatched");
+					
+					Hasher.removeEventListener(HasherEvent.STOP, arguments.callee);
+					
+					ok(! Hasher.hasEventListener(HasherEvent.STOP), "Removed STOP Listener");
+					
+					start();
+				});
 				
-				function handler2(evt){
-					ok(true, 'Called Handler #2');
-				}
+				ok(Hasher.hasEventListener(HasherEvent.STOP), "Attached STOP Listener");
+				Hasher.stop();
+			};
+			
+			var stopFailTest = function(){
+				stop(200);
+				expect(4);
 				
-				function handler3(evt){
-					ok(true, 'Called Handler #3');
-				}
+				ok(! Hasher.hasEventListener(HasherEvent.STOP), "No STOP Listener");
 				
-				Hasher.removeAllEventListeners(true);
+				var handler = function(evt){
+					ok(false, "HasherEvent.STOP dispatched"); //shouldn't happen
+					Hasher.removeAllEventListeners(HasherEvent.STOP);
+					start();
+				};
+				Hasher.addEventListener(HasherEvent.STOP, handler);
 				
-				ok(!Hasher.hasEventListener(HasherEvent.CHANGE), "No CHANGE Listener");
+				ok(Hasher.hasEventListener(HasherEvent.STOP), "Attached STOP Listener");
+				Hasher.stop();
+				Hasher.stop();
 				
-				Hasher.addEventListener(HasherEvent.CHANGE, handler1);
-				Hasher.addEventListener(HasherEvent.CHANGE, handler2);
-				Hasher.addEventListener(HasherEvent.CHANGE, handler3);
+				var delayedStart = function(){
+					ok(true, 'Didn\'t dispatched STOP event.');
+					Hasher.removeAllEventListeners(HasherEvent.STOP);
+					ok(! Hasher.hasEventListener(HasherEvent.STOP), "Removed STOP Listener");
+					start();
+				};
 				
-				ok(Hasher.hasEventListener(HasherEvent.CHANGE), "Has CHANGE Listener");
+				setTimeout(delayedStart, 100);
+			};
+			
+			var initTest = function(){
+				stop(200);
+				expect(4);
 				
-				Hasher.setHash('Lorem');
-				equals(Hasher.getHash(), 'Lorem');
+				ok(! Hasher.hasEventListener(HasherEvent.INIT), "No INIT Listener");
 				
-				Hasher.setHash('Lorem/Ipsum');
-				equals(Hasher.getHash(), 'Lorem/Ipsum');
+				Hasher.addEventListener(HasherEvent.INIT, function(evt){
+					
+					ok(true, "HasherEvent.INIT dispatched");
+					
+					Hasher.removeEventListener(HasherEvent.INIT, arguments.callee);
+					
+					ok(! Hasher.hasEventListener(HasherEvent.INIT), "Removed INIT Listener");
+					
+					start();
+				});
 				
-				Hasher.setHash('Lorem/Dolor&Amet');
-				equals(Hasher.getHash(), 'Lorem/Dolor&Amet');
+				ok(Hasher.hasEventListener(HasherEvent.INIT), "Attached INIT Listener");
+				Hasher.init();
+			};
+			
+			var initFailTest = function(){
+				stop(200);
+				expect(4);
 				
-				Hasher.setHash('?foo=bar&ipsum=dolor');
-				equals(Hasher.getHash(), '?foo=bar&ipsum=dolor');
+				ok(! Hasher.hasEventListener(HasherEvent.INIT), "No INIT Listener");
 				
-				Hasher.removeAllEventListeners(HasherEvent.CHANGE);
+				var handler = function(evt){
+					ok(false, "HasherEvent.INIT dispatched"); //shouldn't happen
+					Hasher.removeAllEventListeners(HasherEvent.INIT);
+					start();
+				};
+				Hasher.addEventListener(HasherEvent.INIT, handler);
 				
-				ok(!Hasher.hasEventListener(HasherEvent.CHANGE), "No CHANGE Listener");
+				ok(Hasher.hasEventListener(HasherEvent.INIT), "Attached INIT Listener");
+				Hasher.init();
+				Hasher.init();
+				
+				var delayedStart = function(){
+					ok(true, 'Didn\'t dispatched INIT event.');
+					Hasher.removeAllEventListeners(HasherEvent.INIT);
+					ok(! Hasher.hasEventListener(HasherEvent.INIT), "Removed INIT Listener");
+					start();
+				};
+				
+				setTimeout(delayedStart, 100);
+			};
+			
+			var disposeTest = function(){
+				stop(200);
+				expect(5);
+				
+				ok((Hasher), "Hasher exists");
+				
+				Hasher.dispose();
+				
+				ok((! Hasher), "! Hasher");
+				ok(('Hasher' in window), "Hasher in window");
+				ok((Hasher === null), "Hasher === null");
+				ok(!(typeof Hasher === 'undefined'), "!(typeof Hasher === 'undefined')");
 				
 				start();
-				
-			}
+			};
 			
-			test('#1', multipleTest);
+			test('stop #1', stopTest);
+			test('stop fail #1', stopFailTest);
+			test('stop fail #2', stopFailTest);
+			test('init #1', initTest);
+			test('init fail #1', initFailTest);
+			test('init fail #2', initFailTest);
+			test('stop #2', stopTest);
+			test('init #2', initTest);
+			
+			test('dispose', disposeTest);
+			
+			/* == */
 			
 		</script>
 	</body>
