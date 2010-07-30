@@ -2,7 +2,7 @@
  * MM.EventDispatcher
  * - Class used to allow Custom Objects to dispatch events.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.8.1 (2010/07/27)
+ * @version 0.8.1 (2010/07/30)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 
@@ -16,6 +16,10 @@ var MM = MM || {};
  * @constructor
  */
 MM.EventDispatcher = function(){
+	/** 
+	 * Event Handlers
+	 * @type Object.<string, Array.<Function>>
+	 */
 	this._handlers = {};
 };
 
@@ -23,7 +27,7 @@ MM.EventDispatcher.prototype = {
 	
 	/**
 	 * Add Event Listener
-	 * @param {String} eType	Event Type.
+	 * @param {string} eType	Event Type.
 	 * @param {Function} fn	Event Handler.
 	 */
 	addEventListener : function(eType, fn){
@@ -35,7 +39,7 @@ MM.EventDispatcher.prototype = {
 	
 	/**
 	 * Remove Event Listener
-	 * @param {String} eType	Event Type.
+	 * @param {string} eType	Event Type.
 	 * @param {Function} fn	Event Handler.
 	 */
 	removeEventListener : function(eType, fn){
@@ -58,20 +62,20 @@ MM.EventDispatcher.prototype = {
 	
 	/**
 	 * Removes all Listeners from the EventDispatcher object.
-	 * @param {(String|Boolean)} eType	Event type or `true` if want to remove listeners of all event types.
+	 * @param {(string|boolean)} eType	Event type or `true` if want to remove listeners of all event types.
 	 */
 	removeAllEventListeners : function(eType){
-		if(eType === true){
-			this._handlers = {};
-		}else if(this.hasEventListener(eType)){
+		if(typeof eType === 'string' && this.hasEventListener(eType)){
 			delete this._handlers[eType];
+		}else if(eType){
+			this._handlers = {};
 		}
 	},
 	
 	/**
 	 * Checks if the EventDispatcher has any listeners registered for a specific type of event. 
-	 * @param {String} eType	Event Type.
-	 * @return {Boolean}
+	 * @param {string} eType	Event Type.
+	 * @return {boolean}
 	 */
 	hasEventListener : function(eType){
 		return (typeof this._handlers[eType] != 'undefined');
@@ -80,8 +84,8 @@ MM.EventDispatcher.prototype = {
 	/**
 	 * Dispatch Event
 	 * - Call all Handlers Listening to the Event.
-	 * @param {Event|String} evt	Custom Event Object (property `type` is required) or String with Event type.
-	 * @return {Boolean} If Event was successfully dispatched.
+	 * @param {(Object|string)} evt	Custom Event Object (property `type` is required) or String with Event type.
+	 * @return {boolean} If Event was successfully dispatched.
 	 */
 	dispatchEvent : function(evt){
 		evt = (typeof evt == 'string')? {type: evt} : evt; //create Object if not an Object to always call handlers with same type of argument.

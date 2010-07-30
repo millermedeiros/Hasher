@@ -18,8 +18,8 @@ MM.queryUtils = {
 	
 	/**
 	 * Gets full query as string with all special chars decoded.
-	 * @param {String} [url]	 URL to be parsed, defaults to `location.href`
-	 * @return {String}	Query string
+	 * @param {string} [url]	 URL to be parsed, defaults to `location.href`
+	 * @return {string}	Query string
 	 */
 	getQueryString : function(url){
 		url = url || location.href; //used location.href to avoid bug on IE6 and pseudo query string inside location.hash
@@ -31,8 +31,8 @@ MM.queryUtils = {
 	/**
 	 * Gets query as Object.
 	 * - Alias for `MM.queryUtils.toQueryObject( MM.queryUtils.getQueryString(url) )`
-	 * @param {String} [url]	URL to be parsed, default to location.href.
-	 * @return {Object}	Object with all the query "params => values" pairs.
+	 * @param {string} [url]	URL to be parsed, default to location.href.
+	 * @return {Object.<string, (string|number)>}	Object with all the query "params => values" pairs.
 	 */
 	getQueryObject : function(url){
 		return this.toQueryObject(this.getQueryString(url));
@@ -40,8 +40,8 @@ MM.queryUtils = {
 	
 	/**
 	 * Convert Query String into an Object
-	 * @param {String} queryString	 Query String to be parsed
-	 * @return {Object}	Object with all the query "params => values" pairs.
+	 * @param {string} queryString	 Query String to be parsed
+	 * @return {Object.<string, (string|number)>}	Object with all the query "params => values" pairs.
 	 */
 	toQueryObject : function(queryString){
 		var queryArr = queryString.replace('?', '').split('&'), 
@@ -58,9 +58,9 @@ MM.queryUtils = {
 	
 	/**
 	 * Get query parameter value.
-	 * @param {String} param	Parameter name.
-	 * @param {String} [url]	URL to be parsed, default to location.href
-	 * @return {String}	Parameter value.
+	 * @param {string} param	Parameter name.
+	 * @param {string} [url]	URL to be parsed, default to location.href
+	 * @return {(string|number)}	Parameter value.
 	 */
 	getParamValue : function(param, url){
 		var regexp = new RegExp('(\\?|&)'+ param + '=([^&]*)'), //matches `?param=value` or `&param=value`, value = $2
@@ -71,9 +71,9 @@ MM.queryUtils = {
 	
 	/**
 	 * Checks if query contains parameter.
-	 * @param {String} param	Parameter name.
-	 * @param {String} [url]	URL to be parsed, default to location.href
-	 * @return {Boolean} If parameter exist.
+	 * @param {string} param	Parameter name.
+	 * @param {string} [url]	URL to be parsed, default to location.href
+	 * @return {boolean} If parameter exist.
 	 */
 	hasParam : function(param, url){
 		var regexp = new RegExp('(\\?|&)'+ param +'=', 'g'); //matches `?param=` or `&param=`
@@ -83,7 +83,7 @@ MM.queryUtils = {
 	/**
 	 * Converts object into query string.
 	 * @param {Object} obj	Object with "params => values" pairs.
-	 * @return {String}	Formated query string starting with '?'.
+	 * @return {string}	Formated query string starting with '?'.
 	 */
 	toQueryString : function(obj){
 		var query = [],

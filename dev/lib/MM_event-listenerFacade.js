@@ -20,7 +20,7 @@ MM.event = MM.event || {};
 /**
 * Adds DOM Event Listener
 * @param {Element} elm Element.
-* @param {String} eType Event type.
+* @param {string} eType Event type.
 * @param {Function} fn Listener function.
 */
 MM.event.addListener = function(elm, eType, fn){
@@ -36,7 +36,7 @@ MM.event.addListener = function(elm, eType, fn){
 /**
 * Removes DOM Event Listener
 * @param {Element} elm Element.
-* @param {String} eType Event type.
+* @param {string} eType Event type.
 * @param {Function} fn Listener function.
 */
 MM.event.removeListener = function(elm, eType, fn){

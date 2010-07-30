@@ -5,36 +5,37 @@
  * @version 0.9.5 (2010/07/28)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
-(function(window, document, location, history, undef){
+(function(window, document, location, history){
 	
 	
 	//== Private Vars ==//
 	
-		/** @private {String} previous/current hash value */
-	var _hash, 
+	var 
+		/** @private {string} previous/current hash value */
+		_hash, 
 		
-		/** @private {Number} stores setInterval reference (used to check if hash changed on non-standard browsers) */
+		/** @private {number} stores setInterval reference (used to check if hash changed on non-standard browsers) */
 		_checkInterval,
 		
-		/** @private {Boolean} If Hasher is active and should listen/dispatch changes on the hash */
+		/** @private {boolean} If Hasher is active and should listen/dispatch changes on the hash */
 		_isActive,
 		
-		/** @private {iframe} iframe used for IE <= 7 */
+		/** @private {Element} iframe used for IE <= 7 */
 		_frame,
 		
-		/** @private {String} User Agent */
+		/** @private {string} User Agent */
 		UA = navigator.userAgent,
 		
-		/** @private {Boolean} if is IE */
+		/** @private {boolean} if is IE */
 		_isIE = /MSIE/.test(UA)  && (!window.opera),
 		
-		/** @private {Boolean} if is IE <= 7 */
+		/** @private {boolean} if is IE <= 7 */
 		_isLegacyIE = /MSIE (6|7)/.test(UA) && (!+"\v1"), //feature detection based on Andrea Giammarchi's solution: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html
 		
-		/** @private {Boolean} If browser supports the `hashchange` event - FF3.6+, IE8+, Chrome 5+, Safari 5+ */
+		/** @private {boolean} If browser supports the `hashchange` event - FF3.6+, IE8+, Chrome 5+, Safari 5+ */
 		_isHashChangeSupported = ('onhashchange' in window),
 		
-		/** @private {Boolean} If it is a local file */
+		/** @private {boolean} If it is a local file */
 		_isLocal = (location.protocol === 'file:'),
 		
 		//-- local storage for performance improvement and better compression --//
@@ -54,7 +55,7 @@
 	/**
 	 * Get hash value stored inside iframe
 	 * - used for IE <= 7. [HACK] 
-	 * @return {String}	Hash value without '#'.
+	 * @return {string}	Hash value without '#'.
 	 */
 	function _getFrameHash(){
 		return (_frame)? _frame.contentWindow.frameHash : null;
@@ -63,7 +64,7 @@
 	/**
 	 * Update iframe content, generating a history record and saving current hash/title on IE <= 7. [HACK]
 	 * - based on Really Simple History, SWFAddress and YUI.history solutions.
-	 * @param {string} hashValue	Hash value without '#'.
+	 * @param {(string|null)} hashValue	Hash value without '#'.
 	 * @private
 	 */
 	function _updateFrame(hashValue){
@@ -77,7 +78,7 @@
 	
 	/**
 	 * Stores new hash value and dispatch `HasherEvent.CHANGE` if Hasher is "active".
-	 * @param {String} newHash	New Hash Value.
+	 * @param {string} newHash	New Hash Value.
 	 * @private
 	 */
 	function _registerChange(newHash){
@@ -107,7 +108,7 @@
 	
 	/**
 	 * Get hash value from current URL
-	 * @return {String}	Hash value without '#'.
+	 * @return {string}	Hash value without '#'.
 	 * @private
 	 */
 	function _getWindowHash(){
@@ -204,7 +205,7 @@
 	
 	/**
 	 * Retrieve full URL.
-	 * @return {String}	Full URL.
+	 * @return {string}	Full URL.
 	 */
 	Hasher.getURL = function(){
 		return location.href;
@@ -212,7 +213,7 @@
 	
 	/**
 	 * Retrieve URL without query string and hash.
-	 * @return {String}	Base URL.
+	 * @return {string}	Base URL.
 	 */
 	Hasher.getBaseURL = function(){
 		return this.getURL().replace(/(\?.*)|(\#.*)/, ''); //removes everything after '?' and/or '#'
@@ -220,7 +221,7 @@
 	
 	/**
 	 * Set Hash value.
-	 * @param {String} value	Hash value without '#'.
+	 * @param {string} value	Hash value without '#'.
 	 */
 	Hasher.setHash = function(value){
 		value = (value)? value.replace(/^\#/, '') : value; //removes '#' from the beginning of string.
@@ -235,7 +236,7 @@
 	
 	/**
 	 * Return hash value as String.
-	 * @return {String}	Hash value without '#'.
+	 * @return {string}	Hash value without '#'.
 	 */
 	Hasher.getHash = function(){
 		//didn't used actual value of the `location.hash` to avoid breaking the application in case `location.hash` isn't available and also because value should always be synched. 
@@ -244,8 +245,8 @@
 	
 	/**
 	 * Return hash value as Array.
-	 * @param {String} [separator]	String used to divide hash (default = '/').	
-	 * @return {Array}	Hash splitted into an Array.  
+	 * @param {string} [separator]	String used to divide hash (default = '/').	
+	 * @return {Array.<string>}	Hash splitted into an Array.  
 	 */
 	Hasher.getHashAsArray = function(separator){
 		separator = separator || '/';
@@ -258,7 +259,7 @@
 	/**
 	 * Get Query portion of the Hash as a String
 	 * - alias to: `MM.queryUtils.getQueryString( Hasher.getHash() ).substr(1);`
-	 * @return {String}	Hash Query without '?'
+	 * @return {string}	Hash Query without '?'
 	 */
 	Hasher.getHashQuery = function(){
 		return _queryUtils.getQueryString( this.getHash() ).substr(1);
@@ -276,8 +277,8 @@
 	/**
 	 * Get parameter value from the query portion of the Hash
 	 * - alias to: `MM.queryUtils.getParamValue(paramName, Hasher.getHash() );`
-	 * @param {String} paramName	Parameter Name.
-	 * @return {String}	Parameter value.
+	 * @param {string} paramName	Parameter Name.
+	 * @return {string}	Parameter value.
 	 */
 	Hasher.getHashQueryParam = function(paramName){
 		return _queryUtils.getParamValue(paramName, this.getHash() );
@@ -285,7 +286,7 @@
 	
 	/**
 	 * Set page title
-	 * @param {String} value	Page Title
+	 * @param {string} value	Page Title
 	 */
 	Hasher.setTitle = function(value){
 		document.title = value;
@@ -293,7 +294,7 @@
 	
 	/**
 	 * Get page title
-	 * @return {String} Page Title
+	 * @return {string} Page Title
 	 */
 	Hasher.getTitle = function(){
 		return document.title;
@@ -338,4 +339,4 @@
 	//dispose Hasher on unload to avoid memory leaks
 	_eventFacade.addListener(window, 'unload', Hasher.dispose);
 	
-}(window, document, location, history));
+}(window, document, window.location, history));

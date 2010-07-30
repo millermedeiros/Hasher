@@ -373,7 +373,7 @@ ul.inheritsList
 					<a name=".getParamValue"> </a>
 					<div class="fixedFont">&lt;static&gt; 
 					
-					<span class="light">{String}</span>
+					<span class="light">{(string|number)}</span>
 					<span class="light">MM.queryUtils.</span><b>getParamValue</b>(param, url)
 					
 					</div>
@@ -390,13 +390,13 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{String}</span> <b>param</b>
+									<span class="light fixedFont">{string}</span> <b>param</b>
 									
 								</dt>
 								<dd>Parameter name.</dd>
 							
 								<dt>
-									<span class="light fixedFont">{String}</span> <b>url</b>
+									<span class="light fixedFont">{string}</span> <b>url</b>
 									<i>Optional</i>
 								</dt>
 								<dd>URL to be parsed, default to location.href</dd>
@@ -410,7 +410,7 @@ ul.inheritsList
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{String}</span> Parameter value.</dd>
+								<dd><span class="light fixedFont">{(string|number)}</span> Parameter value.</dd>
 							
 							</dl>
 						
@@ -422,7 +422,7 @@ ul.inheritsList
 					<a name=".getQueryObject"> </a>
 					<div class="fixedFont">&lt;static&gt; 
 					
-					<span class="light">{Object}</span>
+					<span class="light">{Object.<string|(string|number)>}</span>
 					<span class="light">MM.queryUtils.</span><b>getQueryObject</b>(url)
 					
 					</div>
@@ -439,7 +439,7 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{String}</span> <b>url</b>
+									<span class="light fixedFont">{string}</span> <b>url</b>
 									<i>Optional</i>
 								</dt>
 								<dd>URL to be parsed, default to location.href.</dd>
@@ -453,7 +453,7 @@ ul.inheritsList
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{Object}</span> Object with all the query "params => values" pairs.</dd>
+								<dd><span class="light fixedFont">{Object.<string|(string|number)>}</span> Object with all the query "params => values" pairs.</dd>
 							
 							</dl>
 						
@@ -465,7 +465,7 @@ ul.inheritsList
 					<a name=".getQueryString"> </a>
 					<div class="fixedFont">&lt;static&gt; 
 					
-					<span class="light">{String}</span>
+					<span class="light">{string}</span>
 					<span class="light">MM.queryUtils.</span><b>getQueryString</b>(url)
 					
 					</div>
@@ -482,7 +482,7 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{String}</span> <b>url</b>
+									<span class="light fixedFont">{string}</span> <b>url</b>
 									<i>Optional</i>
 								</dt>
 								<dd>URL to be parsed, defaults to `location.href`</dd>
@@ -496,7 +496,7 @@ ul.inheritsList
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{String}</span> Query string</dd>
+								<dd><span class="light fixedFont">{string}</span> Query string</dd>
 							
 							</dl>
 						
@@ -508,7 +508,7 @@ ul.inheritsList
 					<a name=".hasParam"> </a>
 					<div class="fixedFont">&lt;static&gt; 
 					
-					<span class="light">{Boolean}</span>
+					<span class="light">{boolean}</span>
 					<span class="light">MM.queryUtils.</span><b>hasParam</b>(param, url)
 					
 					</div>
@@ -525,13 +525,13 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{String}</span> <b>param</b>
+									<span class="light fixedFont">{string}</span> <b>param</b>
 									
 								</dt>
 								<dd>Parameter name.</dd>
 							
 								<dt>
-									<span class="light fixedFont">{String}</span> <b>url</b>
+									<span class="light fixedFont">{string}</span> <b>url</b>
 									<i>Optional</i>
 								</dt>
 								<dd>URL to be parsed, default to location.href</dd>
@@ -545,7 +545,7 @@ ul.inheritsList
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{Boolean}</span> If parameter exist.</dd>
+								<dd><span class="light fixedFont">{boolean}</span> If parameter exist.</dd>
 							
 							</dl>
 						
@@ -557,7 +557,7 @@ ul.inheritsList
 					<a name=".toQueryObject"> </a>
 					<div class="fixedFont">&lt;static&gt; 
 					
-					<span class="light">{Object}</span>
+					<span class="light">{Object.<string|(string|number)>}</span>
 					<span class="light">MM.queryUtils.</span><b>toQueryObject</b>(queryString)
 					
 					</div>
@@ -574,7 +574,7 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{String}</span> <b>queryString</b>
+									<span class="light fixedFont">{string}</span> <b>queryString</b>
 									
 								</dt>
 								<dd>Query String to be parsed</dd>
@@ -588,7 +588,7 @@ ul.inheritsList
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{Object}</span> Object with all the query "params => values" pairs.</dd>
+								<dd><span class="light fixedFont">{Object.<string|(string|number)>}</span> Object with all the query "params => values" pairs.</dd>
 							
 							</dl>
 						
@@ -600,7 +600,7 @@ ul.inheritsList
 					<a name=".toQueryString"> </a>
 					<div class="fixedFont">&lt;static&gt; 
 					
-					<span class="light">{String}</span>
+					<span class="light">{string}</span>
 					<span class="light">MM.queryUtils.</span><b>toQueryString</b>(obj)
 					
 					</div>
@@ -631,7 +631,7 @@ ul.inheritsList
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{String}</span> Formated query string starting with '?'.</dd>
+								<dd><span class="light fixedFont">{string}</span> Formated query string starting with '?'.</dd>
 							
 							</dl>
 						
@@ -652,7 +652,7 @@ ul.inheritsList
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Wed Jul 28 2010 19:48:42 GMT-0400 (EDT)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Fri Jul 30 2010 17:08:24 GMT-0400 (EDT)
 		</div>
 	</body>
 </html>

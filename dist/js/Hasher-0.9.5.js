@@ -1,6 +1,6 @@
 /*!
  * Hasher <http://github.com/millermedeiros/Hasher>
- * Includes: MM.EventDispatcher (0.8), MM.queryUtils (0.8), MM.event-listenerFacade (0.3)
+ * Includes: MM.EventDispatcher (0.8.1), MM.queryUtils (0.8), MM.event-listenerFacade (0.3)
  * @author Miller Medeiros <http://www.millermedeiros.com/>
  * @version 0.9.5 (2010/07/28)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
@@ -9,7 +9,7 @@
  * MM.EventDispatcher
  * - Class used to allow Custom Objects to dispatch events.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.8.1 (2010/07/27)
+ * @version 0.8.1 (2010/07/30)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 
@@ -23,6 +23,10 @@ var MM = MM || {};
  * @constructor
  */
 MM.EventDispatcher = function(){
+	/** 
+	 * Event Handlers
+	 * @type Object.<string, Array.<Function>>
+	 */
 	this._handlers = {};
 };
 
@@ -30,7 +34,7 @@ MM.EventDispatcher.prototype = {
 	
 	/**
 	 * Add Event Listener
-	 * @param {String} eType	Event Type.
+	 * @param {string} eType	Event Type.
 	 * @param {Function} fn	Event Handler.
 	 */
 	addEventListener : function(eType, fn){
@@ -42,7 +46,7 @@ MM.EventDispatcher.prototype = {
 	
 	/**
 	 * Remove Event Listener
-	 * @param {String} eType	Event Type.
+	 * @param {string} eType	Event Type.
 	 * @param {Function} fn	Event Handler.
 	 */
 	removeEventListener : function(eType, fn){
@@ -65,20 +69,20 @@ MM.EventDispatcher.prototype = {
 	
 	/**
 	 * Removes all Listeners from the EventDispatcher object.
-	 * @param {(String|Boolean)} eType	Event type or `true` if want to remove listeners of all event types.
+	 * @param {(string|boolean)} eType	Event type or `true` if want to remove listeners of all event types.
 	 */
 	removeAllEventListeners : function(eType){
-		if(eType === true){
-			this._handlers = {};
-		}else if(this.hasEventListener(eType)){
+		if(typeof eType === 'string' && this.hasEventListener(eType)){
 			delete this._handlers[eType];
+		}else if(eType){
+			this._handlers = {};
 		}
 	},
 	
 	/**
 	 * Checks if the EventDispatcher has any listeners registered for a specific type of event. 
-	 * @param {String} eType	Event Type.
-	 * @return {Boolean}
+	 * @param {string} eType	Event Type.
+	 * @return {boolean}
 	 */
 	hasEventListener : function(eType){
 		return (typeof this._handlers[eType] != 'undefined');
@@ -87,8 +91,8 @@ MM.EventDispatcher.prototype = {
 	/**
 	 * Dispatch Event
 	 * - Call all Handlers Listening to the Event.
-	 * @param {Event|String} evt	Custom Event Object (property `type` is required) or String with Event type.
-	 * @return {Boolean} If Event was successfully dispatched.
+	 * @param {(Object|string)} evt	Custom Event Object (property `type` is required) or String with Event type.
+	 * @return {boolean} If Event was successfully dispatched.
 	 */
 	dispatchEvent : function(evt){
 		evt = (typeof evt == 'string')? {type: evt} : evt; //create Object if not an Object to always call handlers with same type of argument.
@@ -128,8 +132,8 @@ MM.queryUtils = {
 	
 	/**
 	 * Gets full query as string with all special chars decoded.
-	 * @param {String} [url]	 URL to be parsed, defaults to `location.href`
-	 * @return {String}	Query string
+	 * @param {string} [url]	 URL to be parsed, defaults to `location.href`
+	 * @return {string}	Query string
 	 */
 	getQueryString : function(url){
 		url = url || location.href; //used location.href to avoid bug on IE6 and pseudo query string inside location.hash
@@ -141,8 +145,8 @@ MM.queryUtils = {
 	/**
 	 * Gets query as Object.
 	 * - Alias for `MM.queryUtils.toQueryObject( MM.queryUtils.getQueryString(url) )`
-	 * @param {String} [url]	URL to be parsed, default to location.href.
-	 * @return {Object}	Object with all the query "params => values" pairs.
+	 * @param {string} [url]	URL to be parsed, default to location.href.
+	 * @return {Object.<string, (string|number)>}	Object with all the query "params => values" pairs.
 	 */
 	getQueryObject : function(url){
 		return this.toQueryObject(this.getQueryString(url));
@@ -150,8 +154,8 @@ MM.queryUtils = {
 	
 	/**
 	 * Convert Query String into an Object
-	 * @param {String} queryString	 Query String to be parsed
-	 * @return {Object}	Object with all the query "params => values" pairs.
+	 * @param {string} queryString	 Query String to be parsed
+	 * @return {Object.<string, (string|number)>}	Object with all the query "params => values" pairs.
 	 */
 	toQueryObject : function(queryString){
 		var queryArr = queryString.replace('?', '').split('&'), 
@@ -168,9 +172,9 @@ MM.queryUtils = {
 	
 	/**
 	 * Get query parameter value.
-	 * @param {String} param	Parameter name.
-	 * @param {String} [url]	URL to be parsed, default to location.href
-	 * @return {String}	Parameter value.
+	 * @param {string} param	Parameter name.
+	 * @param {string} [url]	URL to be parsed, default to location.href
+	 * @return {(string|number)}	Parameter value.
 	 */
 	getParamValue : function(param, url){
 		var regexp = new RegExp('(\\?|&)'+ param + '=([^&]*)'), //matches `?param=value` or `&param=value`, value = $2
@@ -181,9 +185,9 @@ MM.queryUtils = {
 	
 	/**
 	 * Checks if query contains parameter.
-	 * @param {String} param	Parameter name.
-	 * @param {String} [url]	URL to be parsed, default to location.href
-	 * @return {Boolean} If parameter exist.
+	 * @param {string} param	Parameter name.
+	 * @param {string} [url]	URL to be parsed, default to location.href
+	 * @return {boolean} If parameter exist.
 	 */
 	hasParam : function(param, url){
 		var regexp = new RegExp('(\\?|&)'+ param +'=', 'g'); //matches `?param=` or `&param=`
@@ -193,7 +197,7 @@ MM.queryUtils = {
 	/**
 	 * Converts object into query string.
 	 * @param {Object} obj	Object with "params => values" pairs.
-	 * @return {String}	Formated query string starting with '?'.
+	 * @return {string}	Formated query string starting with '?'.
 	 */
 	toQueryString : function(obj){
 		var query = [],
@@ -229,7 +233,7 @@ MM.event = MM.event || {};
 /**
 * Adds DOM Event Listener
 * @param {Element} elm Element.
-* @param {String} eType Event type.
+* @param {string} eType Event type.
 * @param {Function} fn Listener function.
 */
 MM.event.addListener = function(elm, eType, fn){
@@ -245,7 +249,7 @@ MM.event.addListener = function(elm, eType, fn){
 /**
 * Removes DOM Event Listener
 * @param {Element} elm Element.
-* @param {String} eType Event type.
+* @param {string} eType Event type.
 * @param {Function} fn Listener function.
 */
 MM.event.removeListener = function(elm, eType, fn){
@@ -267,32 +271,32 @@ MM.event.removeListener = function(elm, eType, fn){
 /**
  * HasherEvent Object.
  * <p>According to the HTML5 spec `hashchange` event should have `oldURL` and `newURL` properties, since the only portion of the URL that changes is the hash I decided to use `oldHash` and `newHash` instead. (http://www.whatwg.org/specs/web-apps/current-work/multipage/history.html#event-hashchange)</p>
- * @param {String} eType	Hasher Event type.
- * @param {String} oldHash	Previous Hash.
- * @param {String} newHash	Current Hash.
+ * @param {string} eType	Hasher Event type.
+ * @param {(string|null)} oldHash	Previous Hash.
+ * @param {(string|null)} newHash	Current Hash.
  * @constructor
  */
 var HasherEvent = function(eType, oldHash, newHash){
 	/**
 	 * Event Type
-	 * @type String
+	 * @type string
 	 */
 	this.type = eType;
 	/**
 	 * Previous Hash value
-	 * @type String
+	 * @type (string|null)
 	 */
 	this.oldHash = oldHash;
 	/**
 	 * Current Hash value
-	 * @type String
+	 * @type (string|null)
 	 */
 	this.newHash = newHash;
 };
 
 /**
  * Returns string representation of the HasherEvent
- * @return {String} A string representation of the object.
+ * @return {string} A string representation of the object.
  */
 HasherEvent.prototype.toString = function(){
 	return '[HasherEvent type="'+ this.type +'" oldHash="'+ this.oldHash +'" newHash="'+ this.newHash +'"]';
@@ -302,21 +306,21 @@ HasherEvent.prototype.toString = function(){
 
 /**
  * Defines the value of the type property of an change event object.
- * @type String
+ * @type string
  * @constant
  */
 HasherEvent.CHANGE = 'change';
 
  /**
  * Defines the value of the type property of an init event object.
- * @type String
+ * @type string
  * @constant
  */
 HasherEvent.INIT = 'init';
 
 /**
  * Defines the value of the type property of an stop event object.
- * @type String
+ * @type string
  * @constant
  */
 HasherEvent.STOP = 'stop';
@@ -327,36 +331,37 @@ HasherEvent.STOP = 'stop';
  * @version 0.9.5 (2010/07/28)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
-(function(window, document, location, history, undef){
+(function(window, document, location, history){
 	
 	
 	//== Private Vars ==//
 	
-		/** @private {String} previous/current hash value */
-	var _hash, 
+	var 
+		/** @private {string} previous/current hash value */
+		_hash, 
 		
-		/** @private {Number} stores setInterval reference (used to check if hash changed on non-standard browsers) */
+		/** @private {number} stores setInterval reference (used to check if hash changed on non-standard browsers) */
 		_checkInterval,
 		
-		/** @private {Boolean} If Hasher is active and should listen/dispatch changes on the hash */
+		/** @private {boolean} If Hasher is active and should listen/dispatch changes on the hash */
 		_isActive,
 		
-		/** @private {iframe} iframe used for IE <= 7 */
+		/** @private {Element} iframe used for IE <= 7 */
 		_frame,
 		
-		/** @private {String} User Agent */
+		/** @private {string} User Agent */
 		UA = navigator.userAgent,
 		
-		/** @private {Boolean} if is IE */
+		/** @private {boolean} if is IE */
 		_isIE = /MSIE/.test(UA)  && (!window.opera),
 		
-		/** @private {Boolean} if is IE <= 7 */
+		/** @private {boolean} if is IE <= 7 */
 		_isLegacyIE = /MSIE (6|7)/.test(UA) && (!+"\v1"), //feature detection based on Andrea Giammarchi's solution: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html
 		
-		/** @private {Boolean} If browser supports the `hashchange` event - FF3.6+, IE8+, Chrome 5+, Safari 5+ */
+		/** @private {boolean} If browser supports the `hashchange` event - FF3.6+, IE8+, Chrome 5+, Safari 5+ */
 		_isHashChangeSupported = ('onhashchange' in window),
 		
-		/** @private {Boolean} If it is a local file */
+		/** @private {boolean} If it is a local file */
 		_isLocal = (location.protocol === 'file:'),
 		
 		//-- local storage for performance improvement and better compression --//
@@ -376,7 +381,7 @@ HasherEvent.STOP = 'stop';
 	/**
 	 * Get hash value stored inside iframe
 	 * - used for IE <= 7. [HACK] 
-	 * @return {String}	Hash value without '#'.
+	 * @return {string}	Hash value without '#'.
 	 */
 	function _getFrameHash(){
 		return (_frame)? _frame.contentWindow.frameHash : null;
@@ -385,7 +390,7 @@ HasherEvent.STOP = 'stop';
 	/**
 	 * Update iframe content, generating a history record and saving current hash/title on IE <= 7. [HACK]
 	 * - based on Really Simple History, SWFAddress and YUI.history solutions.
-	 * @param {string} hashValue	Hash value without '#'.
+	 * @param {(string|null)} hashValue	Hash value without '#'.
 	 * @private
 	 */
 	function _updateFrame(hashValue){
@@ -399,7 +404,7 @@ HasherEvent.STOP = 'stop';
 	
 	/**
 	 * Stores new hash value and dispatch `HasherEvent.CHANGE` if Hasher is "active".
-	 * @param {String} newHash	New Hash Value.
+	 * @param {string} newHash	New Hash Value.
 	 * @private
 	 */
 	function _registerChange(newHash){
@@ -429,7 +434,7 @@ HasherEvent.STOP = 'stop';
 	
 	/**
 	 * Get hash value from current URL
-	 * @return {String}	Hash value without '#'.
+	 * @return {string}	Hash value without '#'.
 	 * @private
 	 */
 	function _getWindowHash(){
@@ -526,7 +531,7 @@ HasherEvent.STOP = 'stop';
 	
 	/**
 	 * Retrieve full URL.
-	 * @return {String}	Full URL.
+	 * @return {string}	Full URL.
 	 */
 	Hasher.getURL = function(){
 		return location.href;
@@ -534,7 +539,7 @@ HasherEvent.STOP = 'stop';
 	
 	/**
 	 * Retrieve URL without query string and hash.
-	 * @return {String}	Base URL.
+	 * @return {string}	Base URL.
 	 */
 	Hasher.getBaseURL = function(){
 		return this.getURL().replace(/(\?.*)|(\#.*)/, ''); //removes everything after '?' and/or '#'
@@ -542,7 +547,7 @@ HasherEvent.STOP = 'stop';
 	
 	/**
 	 * Set Hash value.
-	 * @param {String} value	Hash value without '#'.
+	 * @param {string} value	Hash value without '#'.
 	 */
 	Hasher.setHash = function(value){
 		value = (value)? value.replace(/^\#/, '') : value; //removes '#' from the beginning of string.
@@ -557,7 +562,7 @@ HasherEvent.STOP = 'stop';
 	
 	/**
 	 * Return hash value as String.
-	 * @return {String}	Hash value without '#'.
+	 * @return {string}	Hash value without '#'.
 	 */
 	Hasher.getHash = function(){
 		//didn't used actual value of the `location.hash` to avoid breaking the application in case `location.hash` isn't available and also because value should always be synched. 
@@ -566,8 +571,8 @@ HasherEvent.STOP = 'stop';
 	
 	/**
 	 * Return hash value as Array.
-	 * @param {String} [separator]	String used to divide hash (default = '/').	
-	 * @return {Array}	Hash splitted into an Array.  
+	 * @param {string} [separator]	String used to divide hash (default = '/').	
+	 * @return {Array.<string>}	Hash splitted into an Array.  
 	 */
 	Hasher.getHashAsArray = function(separator){
 		separator = separator || '/';
@@ -580,7 +585,7 @@ HasherEvent.STOP = 'stop';
 	/**
 	 * Get Query portion of the Hash as a String
 	 * - alias to: `MM.queryUtils.getQueryString( Hasher.getHash() ).substr(1);`
-	 * @return {String}	Hash Query without '?'
+	 * @return {string}	Hash Query without '?'
 	 */
 	Hasher.getHashQuery = function(){
 		return _queryUtils.getQueryString( this.getHash() ).substr(1);
@@ -598,8 +603,8 @@ HasherEvent.STOP = 'stop';
 	/**
 	 * Get parameter value from the query portion of the Hash
 	 * - alias to: `MM.queryUtils.getParamValue(paramName, Hasher.getHash() );`
-	 * @param {String} paramName	Parameter Name.
-	 * @return {String}	Parameter value.
+	 * @param {string} paramName	Parameter Name.
+	 * @return {string}	Parameter value.
 	 */
 	Hasher.getHashQueryParam = function(paramName){
 		return _queryUtils.getParamValue(paramName, this.getHash() );
@@ -607,7 +612,7 @@ HasherEvent.STOP = 'stop';
 	
 	/**
 	 * Set page title
-	 * @param {String} value	Page Title
+	 * @param {string} value	Page Title
 	 */
 	Hasher.setTitle = function(value){
 		document.title = value;
@@ -615,7 +620,7 @@ HasherEvent.STOP = 'stop';
 	
 	/**
 	 * Get page title
-	 * @return {String} Page Title
+	 * @return {string} Page Title
 	 */
 	Hasher.getTitle = function(){
 		return document.title;
@@ -660,4 +665,4 @@ HasherEvent.STOP = 'stop';
 	//dispose Hasher on unload to avoid memory leaks
 	_eventFacade.addListener(window, 'unload', Hasher.dispose);
 	
-}(window, document, location, history));
+}(window, document, window.location, history));
