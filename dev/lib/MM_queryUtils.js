@@ -2,14 +2,9 @@
  * MM.queryUtils
  * - utilities for query string manipulation
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.8 (2010/07/28)
+ * @version 0.8.2 (2010/08/12)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
-
-/**
- * @namespace Miller Medeiros namespace
- */
-var MM = MM || {};
 
 /**
  * @namespace Utilities for query string manipulation.
@@ -63,6 +58,7 @@ MM.queryUtils = {
 	 * @return {(string|number)}	Parameter value.
 	 */
 	getParamValue : function(param, url){
+		url = url || location.href;
 		var regexp = new RegExp('(\\?|&)'+ param + '=([^&]*)'), //matches `?param=value` or `&param=value`, value = $2
 			result = regexp.exec(url),
 			value = (result && result[2])? result[2] : null;

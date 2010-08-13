@@ -7,11 +7,6 @@
  */
 
 /**
- * @namespace Miller Medeiros namespace
- */
-var MM = MM || {};
-
-/**
  * EventDispatcher Object, used to allow Custom Objects to dispatch events.
  * @constructor
  */

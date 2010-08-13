@@ -3,6 +3,7 @@
 	<head>
 		<link rel="stylesheet" href="./qunit/qunit.css" type="text/css" media="screen" />
 		<script type="text/javascript" src="./qunit/qunit.js"></script>
+		<script type="text/javascript" src="../../lib/MM.js"></script>
 		<script type="text/javascript" src="../../lib/MM_EventDispatcher.js"></script>
 		<script type="text/javascript" src="../../lib/MM_queryUtils.js"></script>
 		<script type="text/javascript" src="../../lib/MM_event-listenerFacade.js"></script>
@@ -213,10 +214,7 @@
 					Hasher.setHash(hash);
 					equals(Hasher.getHash(), hash, "Hasher.setHash() & Hasher.getHash()");
 					
-					// simple substring to test if regex is correct
-					var tmpHash = (hash.charAt(0) == '/')? hash.substr(1) : hash;
-					tmpHash = (tmpHash.charAt(tmpHash.length -1 ) == '/')? tmpHash.substring(0, tmpHash.length -1) : tmpHash;
-					var hashArray = tmpHash.split('/');
+					var hashArray = hash.split('/');
 					
 					same(Hasher.getHashAsArray(), hashArray, "Hasher.getHashAsArray()");
 					
@@ -268,10 +266,7 @@
 						equals(Hasher.getHash(), evt.newHash, "HasherEvent.newHash == Hasher.getHash()");
 						equals(Hasher.getHash(), hash, "Hasher.getHash()");
 						
-						// simple substring to test if regex is correct
-						var tmpHash = (hash.charAt(0) == '/')? hash.substr(1) : hash;
-						tmpHash = (tmpHash.charAt(tmpHash.length -1 ) == '/')? tmpHash.substring(0, tmpHash.length -1) : tmpHash;
-						var hashArray = tmpHash.split('/');
+						var hashArray = hash.split('/');
 						
 						same(Hasher.getHashAsArray(), hashArray, "Hasher.getHashAsArray()");
 						
@@ -323,10 +318,7 @@
 						equals(Hasher.getHash(), evt.newHash, "HasherEvent.newHash == Hasher.getHash()");
 						equals(Hasher.getHash(), hash, "Hasher.getHash()");
 						
-						// simple substring to test if regex is correct
-						var tmpHash = (hash.charAt(0) == '/')? hash.substr(1) : hash;
-						tmpHash = (tmpHash.charAt(tmpHash.length -1 ) == '/')? tmpHash.substring(0, tmpHash.length -1) : tmpHash;
-						var hashArray = tmpHash.split('/');
+						var hashArray = hash.split('/');
 						
 						same(Hasher.getHashAsArray(), hashArray, "Hasher.getHashAsArray()");
 						

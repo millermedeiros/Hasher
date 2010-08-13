@@ -8,11 +8,6 @@
  */
 
 /**
- * @namespace Miller Medeiros Namespace
- */
-var MM = MM || {};
-
-/**
  * @namespace Utilities for Browser Native Events
  */
 MM.event = MM.event || {};

@@ -225,7 +225,7 @@ ul.inheritsList
 				History Manager for rich-media applications.
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/C__Miller_Personal_millermedeiros_Hasher_dist_js_Hasher-0.9.5.js.html">Hasher-0.9.5.js</a>.
+					<br /><i>Defined in: </i> <a href="../symbols/src/C__Miller_Personal_millermedeiros_Hasher_dist_js_Hasher-0.9.6.js.html">Hasher-0.9.6.js</a>.
 				
 			</p>
 
@@ -254,6 +254,68 @@ ul.inheritsList
 			
 
 <!-- ============================== properties summary ===================== -->
+			
+				
+				
+				<table class="summaryTable" cellspacing="0" summary="A summary of the fields documented in the class Hasher.">
+					<caption>Field Summary</caption>
+					<thead>
+						<tr>
+							<th scope="col">Field Attributes</th>
+							<th scope="col">Field Name and Description</th>
+						</tr>
+					</thead>
+					<tbody>
+					
+						<tr>
+							<td class="attributes">&lt;static&gt; &nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								Hasher.<b><a href="../symbols/Hasher.html#.appendHash">appendHash</a></b>
+								</div>
+								<div class="description">String that should always be added to the end of Hash value.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&lt;static&gt; &nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								Hasher.<b><a href="../symbols/Hasher.html#.prependHash">prependHash</a></b>
+								</div>
+								<div class="description">String that should always be added to the beginning of Hash value.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&lt;static&gt; &nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								Hasher.<b><a href="../symbols/Hasher.html#.separator">separator</a></b>
+								</div>
+								<div class="description">String used to split hash paths; used by `Hasher.getHashAsArray()` to split paths.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&lt;static&gt; &nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								Hasher.<b><a href="../symbols/Hasher.html#.VERSION">VERSION</a></b>
+								</div>
+								<div class="description">Hasher Version Number</div>
+							</td>
+						</tr>
+					
+					</tbody>
+				</table>
+				
+				
+				
+				<dl class="inheritsList">
+				
+				</dl>
+				
 			
 
 <!-- ============================== methods summary ======================== -->
@@ -318,7 +380,7 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&lt;static&gt; &nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont">Hasher.<b><a href="../symbols/Hasher.html#.getHashAsArray">getHashAsArray</a></b>(separator)
+								<div class="fixedFont">Hasher.<b><a href="../symbols/Hasher.html#.getHashAsArray">getHashAsArray</a></b>()
 								</div>
 								<div class="description">Return hash value as Array.</div>
 							</td>
@@ -458,6 +520,99 @@ ul.inheritsList
 			
 
 <!-- ============================== field details ========================== -->		
+			
+				<div class="sectionTitle">
+					Field Detail
+				</div>
+				
+					<a name=".appendHash"> </a>
+					<div class="fixedFont">&lt;static&gt; 
+					
+					<span class="light">{string}</span>
+					<span class="light">Hasher.</span><b>appendHash</b>
+					
+					</div>
+					<div class="description">
+						String that should always be added to the end of Hash value.<ul><li>default value: '/';</li><li>will be automatically removed from `Hasher.getHash()`</li><li>avoid conflicts with elements that contain ID equal to hash value;</li></ul>
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name=".prependHash"> </a>
+					<div class="fixedFont">&lt;static&gt; 
+					
+					<span class="light">{string}</span>
+					<span class="light">Hasher.</span><b>prependHash</b>
+					
+					</div>
+					<div class="description">
+						String that should always be added to the beginning of Hash value.<ul><li>default value: '/';</li><li>will be automatically removed from `Hasher.getHash()`</li><li>avoid conflicts with elements that contain ID equal to hash value;</li></ul>
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name=".separator"> </a>
+					<div class="fixedFont">&lt;static&gt; 
+					
+					<span class="light">{string}</span>
+					<span class="light">Hasher.</span><b>separator</b>
+					
+					</div>
+					<div class="description">
+						String used to split hash paths; used by `Hasher.getHashAsArray()` to split paths.<ul><li>default value: '/';</li></ul>
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name=".VERSION"> </a>
+					<div class="fixedFont">&lt;static&gt; 
+					
+					<span class="light">{string}</span>
+					<span class="light">Hasher.</span><b>VERSION</b>
+					
+					</div>
+					<div class="description">
+						Hasher Version Number
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					
+				
 			
 
 <!-- ============================== method details ========================= -->		
@@ -609,7 +764,7 @@ ul.inheritsList
 					<div class="fixedFont">&lt;static&gt; 
 					
 					<span class="light">{Array.<string>}</span>
-					<span class="light">Hasher.</span><b>getHashAsArray</b>(separator)
+					<span class="light">Hasher.</span><b>getHashAsArray</b>()
 					
 					</div>
 					<div class="description">
@@ -620,17 +775,6 @@ ul.inheritsList
 					
 					
 					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{string}</span> <b>separator</b>
-									<i>Optional</i>
-								</dt>
-								<dd>String used to divide hash (default = '/').</dd>
-							
-							</dl>
 						
 						
 						
@@ -989,7 +1133,7 @@ ul.inheritsList
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Fri Jul 30 2010 17:08:23 GMT-0400 (EDT)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Thu Aug 12 2010 23:20:40 GMT-0400 (EDT)
 		</div>
 	</body>
 </html>

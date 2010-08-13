@@ -2,14 +2,13 @@
  * Hasher <http://github.com/millermedeiros/Hasher>
  * Includes: MM.EventDispatcher (0.8.1), MM.queryUtils (0.8), MM.event-listenerFacade (0.3)
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.9.5 (2010/07/28)
+ * @version 0.9.6 (2010/08/12)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 /*
- * MM.EventDispatcher
- * - Class used to allow Custom Objects to dispatch events.
+ * MM - main
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.8.1 (2010/07/30)
+ * @version 0.1 (2010/08/12)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 
@@ -17,6 +16,13 @@
  * @namespace Miller Medeiros namespace
  */
 var MM = MM || {};
+/*
+ * MM.EventDispatcher
+ * - Class used to allow Custom Objects to dispatch events.
+ * @author Miller Medeiros <http://www.millermedeiros.com/>
+ * @version 0.8.1 (2010/07/30)
+ * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
+ */
 
 /**
  * EventDispatcher Object, used to allow Custom Objects to dispatch events.
@@ -121,11 +127,6 @@ MM.EventDispatcher.prototype = {
  */
 
 /**
- * @namespace Miller Medeiros namespace
- */
-var MM = MM || {};
-
-/**
  * @namespace Utilities for query string manipulation.
  */
 MM.queryUtils = {
@@ -219,11 +220,6 @@ MM.queryUtils = {
  * @version 0.3 (2010/06/23)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
-
-/**
- * @namespace Miller Medeiros Namespace
- */
-var MM = MM || {};
 
 /**
  * @namespace Utilities for Browser Native Events
@@ -328,7 +324,7 @@ HasherEvent.STOP = 'stop';
  * Hasher
  * - History Manager for rich-media applications.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.9.5 (2010/07/28)
+ * @version 0.9.5.2 (2010/08/12)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 (function(window, document, location, history){
@@ -379,9 +375,20 @@ HasherEvent.STOP = 'stop';
 	//== Private methods ==//
 	
 	/**
+	 * Remove `Hasher.prependHash` and `Hasher.appendHash` from hashValue
+	 * @param {string} hash	Hash value
+	 * @private
+	 */
+	function _trimHash(hash){
+		var regexp = new RegExp('^\\'+ Hasher.prependHash +'|\\'+ Hasher.appendHash +'$', 'g'); //match appendHash and prependHash
+		return hash.replace(regexp, '');
+	}
+	
+	/**
 	 * Get hash value stored inside iframe
 	 * - used for IE <= 7. [HACK] 
 	 * @return {string}	Hash value without '#'.
+	 * @private
 	 */
 	function _getFrameHash(){
 		return (_frame)? _frame.contentWindow.frameHash : null;
@@ -416,7 +423,7 @@ HasherEvent.STOP = 'stop';
 				_updateFrame(newHash);
 			}
 			if(_isActive){
-				Hasher.dispatchEvent(new HasherEvent(HasherEvent.CHANGE, tmpHash, newHash));
+				Hasher.dispatchEvent(new HasherEvent(HasherEvent.CHANGE, _trimHash(tmpHash), _trimHash(newHash)));
 			}
 		}
 	}
@@ -441,7 +448,7 @@ HasherEvent.STOP = 'stop';
 		//parsed full URL instead of getting location.hash because Firefox decode hash value (and all the other browsers don't)
 		//also because of IE8 bug with hash query in local file [issue #6]
 		var result = /#(.*)$/.exec( Hasher.getURL() );
-		return (result && result[1])? decodeURIComponent( result[1] ) : '';
+		return (result && result[1])? decodeURIComponent(result[1]) : '';
 	}
 	
 	/**
@@ -479,6 +486,44 @@ HasherEvent.STOP = 'stop';
 	 * @extends MM.EventDispatcher
 	 */
 	this.Hasher = Hasher; //register Hasher to the global scope
+	
+	/**
+	 * Hasher Version Number
+	 * @type string
+	 * @const
+	 */
+	Hasher.VERSION = '0.9.6';
+	
+	/**
+	 * String that should always be added to the end of Hash value.
+	 * <ul>
+	 * <li>default value: '/';</li>
+	 * <li>will be automatically removed from `Hasher.getHash()`</li>
+	 * <li>avoid conflicts with elements that contain ID equal to hash value;</li>
+	 * </ul>
+	 * @type string
+	 */
+	Hasher.appendHash = '/';
+	
+	/**
+	 * String that should always be added to the beginning of Hash value.
+	 * <ul>
+	 * <li>default value: '/';</li>
+	 * <li>will be automatically removed from `Hasher.getHash()`</li>
+	 * <li>avoid conflicts with elements that contain ID equal to hash value;</li>
+	 * </ul>
+	 * @type string
+	 */
+	Hasher.prependHash = '/';
+	
+	/**
+	 * String used to split hash paths; used by `Hasher.getHashAsArray()` to split paths.
+	 * <ul>
+	 * <li>default value: '/';</li>
+	 * </ul>
+	 * @type string
+	 */
+	Hasher.separator = '/';
 	
 	/**
 	 * Start listening/dispatching changes in the hash/history.
@@ -551,6 +596,7 @@ HasherEvent.STOP = 'stop';
 	 */
 	Hasher.setHash = function(value){
 		value = (value)? value.replace(/^\#/, '') : value; //removes '#' from the beginning of string.
+		value = (value)? this.prependHash + value + this.appendHash : value;
 		if(value != _hash){
 			_registerChange(value); //avoid breaking the application if for some reason `location.hash` don't change
 			if(_isIE && _isLocal){
@@ -565,21 +611,16 @@ HasherEvent.STOP = 'stop';
 	 * @return {string}	Hash value without '#'.
 	 */
 	Hasher.getHash = function(){
-		//didn't used actual value of the `location.hash` to avoid breaking the application in case `location.hash` isn't available and also because value should always be synched. 
-		return _hash;
+		//didn't used actual value of the `location.hash` to avoid breaking the application in case `location.hash` isn't available and also because value should always be synched.
+		return _trimHash(_hash);
 	};
 	
 	/**
-	 * Return hash value as Array.
-	 * @param {string} [separator]	String used to divide hash (default = '/').	
+	 * Return hash value as Array.	
 	 * @return {Array.<string>}	Hash splitted into an Array.  
 	 */
-	Hasher.getHashAsArray = function(separator){
-		separator = separator || '/';
-		var hash = this.getHash(),
-			regexp = new RegExp('^\\'+ separator +'|\\'+ separator +'$', 'g'); //match separator at the end or begin of string
-		hash = hash.replace(regexp, '');
-		return hash.split(separator);
+	Hasher.getHashAsArray = function(){
+		return this.getHash().split(this.separator);
 	};
 	
 	/**
