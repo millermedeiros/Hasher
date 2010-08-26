@@ -17,7 +17,7 @@
 		/** @private {number} stores setInterval reference (used to check if hash changed on non-standard browsers) */
 		_checkInterval,
 		
-		/** @private {boolean} If Hasher is active and should listen/dispatch changes on the hash */
+		/** @private {boolean} If Hasher is active and should listen/dispatch changes on the window location hash */
 		_isActive,
 		
 		/** @private {Element} iframe used for IE <= 7 */
@@ -40,7 +40,7 @@
 		
 		//-- local storage for performance improvement and better compression --//
 		
-		/** @private {Object} @extends MM.EventDispatcher */
+		/** @private {MM.EventDispatcher} @extends MM.EventDispatcher */
 		Hasher = new MM.EventDispatcher(),
 		
 		/** @private {MM.queryUtils} Utilities for query string manipulation */
@@ -50,7 +50,7 @@
 		_eventFacade = MM.event;
 		
 	
-	//== Private methods ==//
+	//== Private Methods ==//
 	
 	/**
 	 * Remove `Hasher.prependHash` and `Hasher.appendHash` from hashValue
@@ -95,14 +95,12 @@
 	function _registerChange(newHash){
 		newHash = decodeURIComponent(newHash); //fix IE8 while offline
 		if(_hash != newHash){
-			var tmpHash = _hash;
+			var oldHash = _hash;
 			_hash = newHash; //should come before event dispatch to make sure user can get proper value inside event handler
 			if(_isLegacyIE){
 				_updateFrame(newHash);
 			}
-			if(_isActive){
-				Hasher.dispatchEvent(new HasherEvent(HasherEvent.CHANGE, _trimHash(tmpHash), _trimHash(newHash)));
-			}
+			Hasher.dispatchEvent(new HasherEvent(HasherEvent.CHANGE, _trimHash(oldHash), _trimHash(newHash)));
 		}
 	}
 	
@@ -211,7 +209,7 @@
 			return;
 		}
 		
-		var tmpHash = _hash;
+		var oldHash = _hash;
 		_hash = _getWindowHash();
 		
 		//thought about branching/overloading Hasher.init() to avoid checking multiple times but don't think worth doing it since it probably won't be called multiple times. [?] 
@@ -230,7 +228,7 @@
 		}
 		
 		_isActive = true;
-		this.dispatchEvent(new HasherEvent(HasherEvent.INIT, tmpHash, _hash));
+		this.dispatchEvent(new HasherEvent(HasherEvent.INIT, oldHash, _hash));
 	};
 	
 	/**
@@ -273,8 +271,7 @@
 	 * @param {string} value	Hash value without '#'.
 	 */
 	Hasher.setHash = function(value){
-		value = (value)? value.replace(/^\#/, '') : value; //removes '#' from the beginning of string.
-		value = (value)? this.prependHash + value + this.appendHash : value;
+		value = (value)? this.prependHash + value.replace(/^\#/, '') + this.appendHash : value; //removes '#' from the beginning of string and append/prepend default values.
 		if(value != _hash){
 			_registerChange(value); //avoid breaking the application if for some reason `location.hash` don't change
 			if(_isIE && _isLocal){
@@ -371,17 +368,20 @@
 	/**
 	 * Removes all event listeners, stops Hasher and destroy Hasher object.
 	 * - IMPORTANT: Hasher won't work after calling this method, Hasher Object will be deleted.
-	 * - automatically called on `window.onunload`.
 	 */
 	Hasher.dispose = function(){
-		_eventFacade.removeListener(window, 'unload', Hasher.dispose);
 		Hasher.removeAllEventListeners(true);
 		Hasher.stop();
 		_hash = _checkInterval = _isActive = _frame = UA  = _isIE = _isLegacyIE = _isHashChangeSupported = _isLocal = _queryUtils = _eventFacade = Hasher = window.Hasher = null;
 		//can't use `delete window.hasher;` because on IE it throws errors, `window` isn't actually an object, delete can only be used on Object properties.
 	};
 	
-	//dispose Hasher on unload to avoid memory leaks
-	_eventFacade.addListener(window, 'unload', Hasher.dispose);
+	/**
+	 * Returns string representation of the Hasher object.
+	 * @return {string} A string representation of the object.
+	 */
+	Hasher.toString = function(){
+		return '[Hasher version="'+ this.VERSION +'" hash="'+ this.getHash() +'"]';
+	};
 	
 }(window, document, window.location, history));
