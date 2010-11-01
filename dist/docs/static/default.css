@@ -1,0 +1,239 @@
+/* default.css */
+body
+{
+	font: 12px "Lucida Grande", Tahoma, Arial, Helvetica, sans-serif;
+	min-width: 800px;
+    max-width: 1024px;
+}
+
+.header
+{
+	clear: both;
+	background-color: #ccc;
+	padding: 8px;
+}
+
+a
+{
+    text-decoration: none;
+    color: #a00;
+}
+
+h1
+{
+	font-size: 150%;
+	font-weight: bold;
+	padding: 0;
+	margin: 1em 0 0 .3em;
+}
+
+hr
+{
+	border: none 0;
+	border-top: 1px solid #7F8FB1;
+	height: 1px;
+}
+
+pre.code
+{
+	display: block;
+	padding: 8px;
+	border: 1px dashed #ccc;
+}
+
+#index
+{
+	margin-top: 24px;
+	float: left;
+	/* width: 160px; */
+    width: 15%;
+	position: absolute;
+	left: 8px;
+	/* background-color: #F3F3F3; */
+	padding: 8px;
+}
+
+#symbolList
+{
+    position:relative;
+    float:right;
+    margin: 0;
+    padding: 0 0em 0 0em;
+    width: 17%;
+}
+
+#symbolList ul
+{
+    padding: 0;
+    margin: 0;
+    padding-left: 8px;
+	list-style: none;
+}
+
+#symbolList h3 
+{
+    margin-top:1.2em;
+    margin-bottom: 0.5em;
+}
+
+#symbolList ul li
+{
+    padding: 0;
+    margin: 0;
+}
+
+#content
+{
+    text-align: left;
+    position: relative;
+	margin-left: auto;
+    margin-right: auto;
+    padding-left: 0.3em;
+    padding-right: 0.5em;
+    width: 62%;
+	/* width: 600px; */
+}
+
+.classList
+{
+	list-style-type: none;
+	padding: 0;
+	margin: 0 0 0 8px;
+	font-family: arial, sans-serif;
+	font-size: 1em;
+	overflow: auto;
+}
+
+.classList li
+{
+	padding: 0;
+	margin: 0 0 8px 0;
+}
+
+.summaryTable { width: 100%; }
+
+h1.classTitle
+{
+	font-size:170%;
+	line-height:130%;
+}
+
+h2 { font-size: 110%; }
+caption, div.sectionTitle
+{
+	background-color: #ddd;
+	color: #343436;
+	font-size:130%;
+	text-align: left;
+	padding: 2px 6px 2px 6px;
+    margin-top: 1.5em;
+	border: 1px #ddd solid;
+}
+
+div.sectionTitle { margin-bottom: 8px; }
+.summaryTable thead { display: none; }
+
+.summaryTable td
+{
+	vertical-align: top;
+	padding: 4px;
+	border-bottom: 1px #7F8FB1 solid;
+	border-right: 1px #7F8FB1 solid;
+}
+
+/*col#summaryAttributes {}*/
+.summaryTable td.attributes
+{
+	border-left: 1px #7F8FB1 solid;
+	width: 140px;
+	text-align: right;
+}
+
+.fixedFont b 
+{
+    color: #aa0000;
+}
+
+td.attributes, .fixedFont
+{
+	line-height: 15px;
+	/* color: #002EBE; */
+	font-family: "Courier New",Courier,monospace;
+	font-size: 13px;
+}
+
+.modifiers {
+    float: right;
+    /* padding: 0 2em 0 2em; */
+    padding: 0;
+}
+
+.member .description
+{
+    margin: 0.75em 0 0 0;
+    padding: 0 0.5em 0 0.5em;
+}
+
+.summaryTable td.nameDescription
+{
+	text-align: left;
+	font-size: 13px;
+	line-height: 15px;
+}
+
+.summaryTable td.nameDescription, .description
+{
+	line-height: 15px;
+	padding: 4px;
+	padding-left: 4px;
+}
+
+.summaryTable { margin-bottom: 8px; }
+
+ul.inheritsList
+{
+	list-style: square;
+	margin-left: 20px;
+	padding-left: 0;
+}
+
+.detailList {
+	margin-left: 20px; 
+	line-height: 15px;
+}
+.detailList dt { margin-left: 20px; }
+
+.detailList .heading
+{
+	font-weight: bold;
+	padding-bottom: 6px;
+	margin-left: 0;
+}
+
+.member 
+{
+    border: 1px solid #ccc;
+    background: #f8f8ff;
+    margin: 1em 0 1em 0;
+    padding: 0.75em;
+}
+
+.light, td.attributes, .light a:link, .light a:visited
+{
+	color: #777;
+	font-style: italic;
+}
+
+code {
+    display: block;
+    margin: 1em;
+    border: 1px solid #aaa;
+    padding: 1em;
+    background: #f8f8ff;
+}
+
+.fineprint
+{
+	text-align: right;
+	font-size: 10px;
+}

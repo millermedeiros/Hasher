@@ -1,42 +1,43 @@
 /*!
  * Hasher <http://github.com/millermedeiros/Hasher>
- * Includes: MM.EventDispatcher (0.8.1), MM.queryUtils (0.8), MM.event-listenerFacade (0.3)
+ * Includes: MM.EventDispatcher (0.8.2), MM.queryUtils (0.8.2), MM.event-listenerFacade (0.3)
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.9.6 (2010/08/12)
+ * @version 0.9.7 (2010/11/01)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 /*
- * MM - main
- * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.1 (2010/08/12)
+ * Miller Medeiros JS Library
+ * @author Miller Medeiros
+ * @version 0.1 (2010/09/10)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
-
-/**
- * @namespace Miller Medeiros namespace
+ 
+ /**
+ * @namespace Miller Medeiros Namespace
  */
-var MM = MM || {};
-/*
- * MM.EventDispatcher
- * - Class used to allow Custom Objects to dispatch events.
- * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.8.1 (2010/07/30)
- * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
- */
-
+ var millermedeiros = {};
 /**
  * EventDispatcher Object, used to allow Custom Objects to dispatch events.
  * @constructor
+ * @author Miller Medeiros <http://www.millermedeiros.com/>
+ * @version 0.8.2 (2010/08/26)
+ * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
-MM.EventDispatcher = function(){
+millermedeiros.EventDispatcher = function(){
 	/** 
 	 * Event Handlers
 	 * @type Object.<string, Array.<Function>>
 	 */
 	this._handlers = {};
+	
+	/**
+	 * Disabled Event Types (events types that shouldn't be dispatched)
+	 * @type Array.<string>
+	 */
+	this._disabled = [];
 };
 
-MM.EventDispatcher.prototype = {
+millermedeiros.EventDispatcher.prototype = {
 	
 	/**
 	 * Add Event Listener
@@ -115,21 +116,67 @@ MM.EventDispatcher.prototype = {
 			return true;
 		}
 		return false;
+	},
+	
+	/**
+	 * Check if Event will be dispatched (i.e. If event type is enabled)
+	 * @param {string} evtType	Event type.	
+	 * @return {boolean} If Event will be dispatched.
+	 */
+	willDispatch : function(evtType){
+		var n = this._disabled.length;
+		while(n--){
+			if(this._disabled[n] === evtType){
+				return false;
+			}
+		}
+		return true;
+	},
+	
+	/**
+	 * Disable Event dispatching by type
+	 * @param {...string} evtTypes	Event types that should be disabled (events types that shouldn't be dispatched)
+	 */
+	disableEvent : function(evtTypes){
+		var types = Array.prototype.slice.call(arguments, 0),
+			n = types.length,
+			curType;
+		while(n--){
+			curType = types[n];
+			if(this.willDispatch(curType)){ //avoid adding multiple times
+				this._disabled.push(curType);
+			}
+		}
+	},
+	
+	/**
+	 * Enable Event dispatching by type
+	 * @param {...string} evtTypes	Event types that should be enabled (events types that should be dispatched)
+	 */
+	enableEvent : function(evtTypes){
+		var types = Array.prototype.slice.call(arguments, 0),
+			n = types.length,
+			m,
+			curType;
+		while(n--){
+			curType = types[n];
+			m = this._disabled.length;
+			while(m--){
+				if(this._disabled[m] === curType){
+					this._disabled.splice(m, 1);
+				}
+			}
+		}
 	}
 	
 };
-/*
- * MM.queryUtils
- * - utilities for query string manipulation
- * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.8 (2010/07/28)
- * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
- */
-
 /**
  * @namespace Utilities for query string manipulation.
+ * @author Miller Medeiros <http://www.millermedeiros.com/>
+ * @version 0.8.2 (2010/08/12)
+ * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
-MM.queryUtils = {
+millermedeiros.queryUtils = {
 	
 	/**
 	 * Gets full query as string with all special chars decoded.
@@ -145,7 +192,7 @@ MM.queryUtils = {
 	
 	/**
 	 * Gets query as Object.
-	 * - Alias for `MM.queryUtils.toQueryObject( MM.queryUtils.getQueryString(url) )`
+	 * - Alias for `millermedeiros.queryUtils.toQueryObject( millermedeiros.queryUtils.getQueryString(url) )`
 	 * @param {string} [url]	URL to be parsed, default to location.href.
 	 * @return {Object.<string, (string|number)>}	Object with all the query "params => values" pairs.
 	 */
@@ -178,6 +225,7 @@ MM.queryUtils = {
 	 * @return {(string|number)}	Parameter value.
 	 */
 	getParamValue : function(param, url){
+		url = url || location.href;
 		var regexp = new RegExp('(\\?|&)'+ param + '=([^&]*)'), //matches `?param=value` or `&param=value`, value = $2
 			result = regexp.exec(url),
 			value = (result && result[2])? result[2] : null;
@@ -213,7 +261,7 @@ MM.queryUtils = {
 	
 };
 /*
- * MM.event - DOM Event Listener Facade
+ * millermedeiros.event - DOM Event Listener Facade
  * - Cross-browser DOM Event Listener attachment/detachment.
  * - Based on Peter-Paul Koch addEventSimple <http://www.quirksmode.org/js/eventSimple.html>
  * @author Miller Medeiros <http://www.millermedeiros.com/>
@@ -224,7 +272,7 @@ MM.queryUtils = {
 /**
  * @namespace Utilities for Browser Native Events
  */
-MM.event = MM.event || {};
+millermedeiros.event = millermedeiros.event || {};
 
 /**
 * Adds DOM Event Listener
@@ -232,7 +280,7 @@ MM.event = MM.event || {};
 * @param {string} eType Event type.
 * @param {Function} fn Listener function.
 */
-MM.event.addListener = function(elm, eType, fn){
+millermedeiros.event.addListener = function(elm, eType, fn){
 	if(elm.addEventListener){
 		elm.addEventListener(eType, fn, false);
 	}else if(elm.attachEvent){
@@ -248,7 +296,7 @@ MM.event.addListener = function(elm, eType, fn){
 * @param {string} eType Event type.
 * @param {Function} fn Listener function.
 */
-MM.event.removeListener = function(elm, eType, fn){
+millermedeiros.event.removeListener = function(elm, eType, fn){
 	if(elm.removeEventListener){
 		elm.removeEventListener(eType, fn, false);
 	}else if(elm.detachEvent){
@@ -324,7 +372,7 @@ HasherEvent.STOP = 'stop';
  * Hasher
  * - History Manager for rich-media applications.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.9.5.2 (2010/08/12)
+ * @version 0.9.6 (2010/11/01)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 (function(window, document, location, history){
@@ -339,7 +387,7 @@ HasherEvent.STOP = 'stop';
 		/** @private {number} stores setInterval reference (used to check if hash changed on non-standard browsers) */
 		_checkInterval,
 		
-		/** @private {boolean} If Hasher is active and should listen/dispatch changes on the hash */
+		/** @private {boolean} If Hasher is active and should listen/dispatch changes on the window location hash */
 		_isActive,
 		
 		/** @private {Element} iframe used for IE <= 7 */
@@ -351,28 +399,31 @@ HasherEvent.STOP = 'stop';
 		/** @private {boolean} if is IE */
 		_isIE = /MSIE/.test(UA)  && (!window.opera),
 		
-		/** @private {boolean} if is IE <= 7 */
-		_isLegacyIE = /MSIE (6|7)/.test(UA) && (!+"\v1"), //feature detection based on Andrea Giammarchi's solution: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html
-		
 		/** @private {boolean} If browser supports the `hashchange` event - FF3.6+, IE8+, Chrome 5+, Safari 5+ */
 		_isHashChangeSupported = ('onhashchange' in window),
+		
+		/** @private {boolean} if is IE <= 7 */
+		_isLegacyIE = /MSIE (6|7)/.test(UA) && !_isHashChangeSupported, //check if is IE6-7 since hash change is only supported on IE8+ and changing hash value on IE6-7 doesn't generate history record.
 		
 		/** @private {boolean} If it is a local file */
 		_isLocal = (location.protocol === 'file:'),
 		
 		//-- local storage for performance improvement and better compression --//
 		
-		/** @private {Object} @extends MM.EventDispatcher */
-		Hasher = new MM.EventDispatcher(),
+		/** @private {millermedeiros} Miller Medeiros Namespace */
+		mm = millermedeiros,
 		
-		/** @private {MM.queryUtils} Utilities for query string manipulation */
-		_queryUtils = MM.queryUtils,
+		/** @private {millermedeiros.EventDispatcher} @extends millermedeiros.EventDispatcher */
+		Hasher = new mm.EventDispatcher(),
 		
-		/** @private {MM.event} Browser native events facade */
-		_eventFacade = MM.event;
+		/** @private {millermedeiros.queryUtils} Utilities for query string manipulation */
+		_queryUtils = mm.queryUtils,
+		
+		/** @private {millermedeiros.event} Browser native events facade */
+		_eventFacade = mm.event;
 		
 	
-	//== Private methods ==//
+	//== Private Methods ==//
 	
 	/**
 	 * Remove `Hasher.prependHash` and `Hasher.appendHash` from hashValue
@@ -417,14 +468,12 @@ HasherEvent.STOP = 'stop';
 	function _registerChange(newHash){
 		newHash = decodeURIComponent(newHash); //fix IE8 while offline
 		if(_hash != newHash){
-			var tmpHash = _hash;
+			var oldHash = _hash;
 			_hash = newHash; //should come before event dispatch to make sure user can get proper value inside event handler
 			if(_isLegacyIE){
 				_updateFrame(newHash);
 			}
-			if(_isActive){
-				Hasher.dispatchEvent(new HasherEvent(HasherEvent.CHANGE, _trimHash(tmpHash), _trimHash(newHash)));
-			}
+			Hasher.dispatchEvent(new HasherEvent(HasherEvent.CHANGE, _trimHash(oldHash), _trimHash(newHash)));
 		}
 	}
 	
@@ -483,7 +532,7 @@ HasherEvent.STOP = 'stop';
 	/**
 	 * Hasher
 	 * @namespace History Manager for rich-media applications.
-	 * @extends MM.EventDispatcher
+	 * @extends millermedeiros.EventDispatcher
 	 */
 	this.Hasher = Hasher; //register Hasher to the global scope
 	
@@ -492,7 +541,7 @@ HasherEvent.STOP = 'stop';
 	 * @type string
 	 * @const
 	 */
-	Hasher.VERSION = '0.9.6';
+	Hasher.VERSION = '0.9.7';
 	
 	/**
 	 * String that should always be added to the end of Hash value.
@@ -533,7 +582,7 @@ HasherEvent.STOP = 'stop';
 			return;
 		}
 		
-		var tmpHash = _hash;
+		var oldHash = _hash;
 		_hash = _getWindowHash();
 		
 		//thought about branching/overloading Hasher.init() to avoid checking multiple times but don't think worth doing it since it probably won't be called multiple times. [?] 
@@ -552,7 +601,7 @@ HasherEvent.STOP = 'stop';
 		}
 		
 		_isActive = true;
-		this.dispatchEvent(new HasherEvent(HasherEvent.INIT, tmpHash, _hash));
+		this.dispatchEvent(new HasherEvent(HasherEvent.INIT, oldHash, _hash));
 	};
 	
 	/**
@@ -595,8 +644,7 @@ HasherEvent.STOP = 'stop';
 	 * @param {string} value	Hash value without '#'.
 	 */
 	Hasher.setHash = function(value){
-		value = (value)? value.replace(/^\#/, '') : value; //removes '#' from the beginning of string.
-		value = (value)? this.prependHash + value + this.appendHash : value;
+		value = (value)? this.prependHash + value.replace(/^\#/, '') + this.appendHash : value; //removes '#' from the beginning of string and append/prepend default values.
 		if(value != _hash){
 			_registerChange(value); //avoid breaking the application if for some reason `location.hash` don't change
 			if(_isIE && _isLocal){
@@ -625,7 +673,7 @@ HasherEvent.STOP = 'stop';
 	
 	/**
 	 * Get Query portion of the Hash as a String
-	 * - alias to: `MM.queryUtils.getQueryString( Hasher.getHash() ).substr(1);`
+	 * - alias to: `millermedeiros.queryUtils.getQueryString( Hasher.getHash() ).substr(1);`
 	 * @return {string}	Hash Query without '?'
 	 */
 	Hasher.getHashQuery = function(){
@@ -634,7 +682,7 @@ HasherEvent.STOP = 'stop';
 	
 	/**
 	 * Get Query portion of the Hash as an Object
-	 * - alias to: `MM.queryUtils.toQueryObject( Hasher.getHashQueryString() );`
+	 * - alias to: `millermedeiros.queryUtils.toQueryObject( Hasher.getHashQueryString() );`
 	 * @return {Object} Hash Query
 	 */
 	Hasher.getHashQueryAsObject = function(){
@@ -643,7 +691,7 @@ HasherEvent.STOP = 'stop';
 	
 	/**
 	 * Get parameter value from the query portion of the Hash
-	 * - alias to: `MM.queryUtils.getParamValue(paramName, Hasher.getHash() );`
+	 * - alias to: `millermedeiros.queryUtils.getParamValue(paramName, Hasher.getHash() );`
 	 * @param {string} paramName	Parameter Name.
 	 * @return {string}	Parameter value.
 	 */
@@ -693,17 +741,20 @@ HasherEvent.STOP = 'stop';
 	/**
 	 * Removes all event listeners, stops Hasher and destroy Hasher object.
 	 * - IMPORTANT: Hasher won't work after calling this method, Hasher Object will be deleted.
-	 * - automatically called on `window.onunload`.
 	 */
 	Hasher.dispose = function(){
-		_eventFacade.removeListener(window, 'unload', Hasher.dispose);
 		Hasher.removeAllEventListeners(true);
 		Hasher.stop();
 		_hash = _checkInterval = _isActive = _frame = UA  = _isIE = _isLegacyIE = _isHashChangeSupported = _isLocal = _queryUtils = _eventFacade = Hasher = window.Hasher = null;
 		//can't use `delete window.hasher;` because on IE it throws errors, `window` isn't actually an object, delete can only be used on Object properties.
 	};
 	
-	//dispose Hasher on unload to avoid memory leaks
-	_eventFacade.addListener(window, 'unload', Hasher.dispose);
+	/**
+	 * Returns string representation of the Hasher object.
+	 * @return {string} A string representation of the object.
+	 */
+	Hasher.toString = function(){
+		return '[Hasher version="'+ this.VERSION +'" hash="'+ this.getHash() +'"]';
+	};
 	
 }(window, document, window.location, history));

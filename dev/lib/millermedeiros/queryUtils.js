@@ -1,15 +1,10 @@
-/*
- * MM.queryUtils
- * - utilities for query string manipulation
+/**
+ * @namespace Utilities for query string manipulation.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
  * @version 0.8.2 (2010/08/12)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
-
-/**
- * @namespace Utilities for query string manipulation.
- */
-MM.queryUtils = {
+millermedeiros.queryUtils = {
 	
 	/**
 	 * Gets full query as string with all special chars decoded.
@@ -25,7 +20,7 @@ MM.queryUtils = {
 	
 	/**
 	 * Gets query as Object.
-	 * - Alias for `MM.queryUtils.toQueryObject( MM.queryUtils.getQueryString(url) )`
+	 * - Alias for `millermedeiros.queryUtils.toQueryObject( millermedeiros.queryUtils.getQueryString(url) )`
 	 * @param {string} [url]	URL to be parsed, default to location.href.
 	 * @return {Object.<string, (string|number)>}	Object with all the query "params => values" pairs.
 	 */

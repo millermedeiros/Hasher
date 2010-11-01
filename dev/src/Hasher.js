@@ -2,7 +2,7 @@
  * Hasher
  * - History Manager for rich-media applications.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.9.5.2 (2010/08/12)
+ * @version 0.9.6 (2010/11/01)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 (function(window, document, location, history){
@@ -29,25 +29,28 @@
 		/** @private {boolean} if is IE */
 		_isIE = /MSIE/.test(UA)  && (!window.opera),
 		
-		/** @private {boolean} if is IE <= 7 */
-		_isLegacyIE = /MSIE (6|7)/.test(UA) && (!+"\v1"), //feature detection based on Andrea Giammarchi's solution: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html
-		
 		/** @private {boolean} If browser supports the `hashchange` event - FF3.6+, IE8+, Chrome 5+, Safari 5+ */
 		_isHashChangeSupported = ('onhashchange' in window),
+		
+		/** @private {boolean} if is IE <= 7 */
+		_isLegacyIE = /MSIE (6|7)/.test(UA) && !_isHashChangeSupported, //check if is IE6-7 since hash change is only supported on IE8+ and changing hash value on IE6-7 doesn't generate history record.
 		
 		/** @private {boolean} If it is a local file */
 		_isLocal = (location.protocol === 'file:'),
 		
 		//-- local storage for performance improvement and better compression --//
 		
-		/** @private {MM.EventDispatcher} @extends MM.EventDispatcher */
-		Hasher = new MM.EventDispatcher(),
+		/** @private {millermedeiros} Miller Medeiros Namespace */
+		mm = millermedeiros,
 		
-		/** @private {MM.queryUtils} Utilities for query string manipulation */
-		_queryUtils = MM.queryUtils,
+		/** @private {millermedeiros.EventDispatcher} @extends millermedeiros.EventDispatcher */
+		Hasher = new mm.EventDispatcher(),
 		
-		/** @private {MM.event} Browser native events facade */
-		_eventFacade = MM.event;
+		/** @private {millermedeiros.queryUtils} Utilities for query string manipulation */
+		_queryUtils = mm.queryUtils,
+		
+		/** @private {millermedeiros.event} Browser native events facade */
+		_eventFacade = mm.event;
 		
 	
 	//== Private Methods ==//
@@ -159,7 +162,7 @@
 	/**
 	 * Hasher
 	 * @namespace History Manager for rich-media applications.
-	 * @extends MM.EventDispatcher
+	 * @extends millermedeiros.EventDispatcher
 	 */
 	this.Hasher = Hasher; //register Hasher to the global scope
 	
@@ -300,7 +303,7 @@
 	
 	/**
 	 * Get Query portion of the Hash as a String
-	 * - alias to: `MM.queryUtils.getQueryString( Hasher.getHash() ).substr(1);`
+	 * - alias to: `millermedeiros.queryUtils.getQueryString( Hasher.getHash() ).substr(1);`
 	 * @return {string}	Hash Query without '?'
 	 */
 	Hasher.getHashQuery = function(){
@@ -309,7 +312,7 @@
 	
 	/**
 	 * Get Query portion of the Hash as an Object
-	 * - alias to: `MM.queryUtils.toQueryObject( Hasher.getHashQueryString() );`
+	 * - alias to: `millermedeiros.queryUtils.toQueryObject( Hasher.getHashQueryString() );`
 	 * @return {Object} Hash Query
 	 */
 	Hasher.getHashQueryAsObject = function(){
@@ -318,7 +321,7 @@
 	
 	/**
 	 * Get parameter value from the query portion of the Hash
-	 * - alias to: `MM.queryUtils.getParamValue(paramName, Hasher.getHash() );`
+	 * - alias to: `millermedeiros.queryUtils.getParamValue(paramName, Hasher.getHash() );`
 	 * @param {string} paramName	Parameter Name.
 	 * @return {string}	Parameter value.
 	 */

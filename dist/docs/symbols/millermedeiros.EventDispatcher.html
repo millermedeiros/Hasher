@@ -1,0 +1,535 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="generator" content="JsDoc Toolkit" />
+		
+		<title>JsDoc Reference - millermedeiros.EventDispatcher</title>
+
+        <link rel="stylesheet" href="../static/default.css" type="text/css" media="screen" charset="utf-8" />
+	</head>
+
+	<body>
+<!-- ============================== header ================================= -->	
+		<!-- begin static/header.html -->
+		<div id="header">
+</div>
+		<!-- end static/header.html -->
+
+        
+
+<!-- ============================== classes index ============================ -->
+		<div id="index">
+            <div id="docs">
+                
+            </div>
+			
+<h2>Index</h2>
+<ul class="classList">
+  <li><a href="../files.html">File Index</a></li>
+  <li><a href="../index.html">Class Index</a></li>
+  <li><a href="../symbolindex.html">Symbol Index</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="classList">
+	
+	<li><i><a href="../symbols/_global_.html">_global_</a></i></li>
+	
+	<li><a href="../symbols/Hasher.html">Hasher</a></li>
+	
+	<li><a href="../symbols/HasherEvent.html">HasherEvent</a></li>
+	
+	<li><a href="../symbols/millermedeiros.html">millermedeiros</a></li>
+	
+	<li><a href="../symbols/millermedeiros.event.html">millermedeiros.event</a></li>
+	
+	<li><a href="../symbols/millermedeiros.EventDispatcher.html">millermedeiros.EventDispatcher</a></li>
+	
+	<li><a href="../symbols/millermedeiros.queryUtils.html">millermedeiros.queryUtils</a></li>
+	
+</ul>
+
+		</div>
+		
+        <div id="symbolList">
+           <!-- constructor list -->
+           
+             <h3>
+                 Class 
+             </h3>
+             <ul>
+                <li  class="fixedFont">
+                  <a href="../symbols/millermedeiros.EventDispatcher.html">EventDispatcher</a>
+                </li>
+             </ul>
+           
+           <!-- end constructor list -->
+
+           <!-- properties list -->
+           
+           
+           <!-- end properties list -->
+
+           <!-- function summary -->
+           
+           
+             <h3>Methods</h3>
+             <ul>
+               
+                   <li class="fixedFont">
+                        <a href="../symbols/millermedeiros.EventDispatcher.html#addEventListener">addEventListener</a>
+                    </li>
+               
+                   <li class="fixedFont">
+                        <a href="../symbols/millermedeiros.EventDispatcher.html#disableEvent">disableEvent</a>
+                    </li>
+               
+                   <li class="fixedFont">
+                        <a href="../symbols/millermedeiros.EventDispatcher.html#dispatchEvent">dispatchEvent</a>
+                    </li>
+               
+                   <li class="fixedFont">
+                        <a href="../symbols/millermedeiros.EventDispatcher.html#enableEvent">enableEvent</a>
+                    </li>
+               
+                   <li class="fixedFont">
+                        <a href="../symbols/millermedeiros.EventDispatcher.html#hasEventListener">hasEventListener</a>
+                    </li>
+               
+                   <li class="fixedFont">
+                        <a href="../symbols/millermedeiros.EventDispatcher.html#removeAllEventListeners">removeAllEventListeners</a>
+                    </li>
+               
+                   <li class="fixedFont">
+                        <a href="../symbols/millermedeiros.EventDispatcher.html#removeEventListener">removeEventListener</a>
+                    </li>
+               
+                   <li class="fixedFont">
+                        <a href="../symbols/millermedeiros.EventDispatcher.html#willDispatch">willDispatch</a>
+                    </li>
+               
+             </ul>
+           
+           <!-- end function summary -->
+
+           <!-- events summary -->
+           
+           
+           <!-- end events summary -->
+        </div>
+
+		<div id="content">
+<!-- ============================== class title ============================ -->
+			<h1 class="classTitle">
+				Class millermedeiros.EventDispatcher
+			</h1>
+
+<!-- ============================== class summary ========================== -->			
+			<p class="description">
+				<br />Version
+					0.8.2 (2010/08/26)Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>.<br />
+				
+				
+			
+				
+				
+				
+					<br /><i>Defined in: </i> <a href="../symbols/src/c__Miller_Personal_millermedeiros_Hasher_dist_js_Hasher-0.9.7.js.html">Hasher-0.9.7.js</a>.
+				
+			</p>
+
+<!-- ============================== constructor details ==================== -->		
+			
+			<div class="details"><a name="constructor"> </a>
+				<div class="sectionTitle">
+					Class Detail
+				</div>
+				
+				<div class="fixedFont">
+						<b>millermedeiros.EventDispatcher</b>()
+				</div>
+				
+				<div class="description">
+					<p>EventDispatcher Object, used to allow Custom Objects to dispatch events.</p>
+					<br /><i>Author: </i>Miller Medeiros <http://www.millermedeiros.com/>.
+				</div>
+				
+				
+				
+				
+					
+					
+					
+					
+					
+					
+					
+
+			</div>
+			
+
+<!-- ============================== field details ========================== -->		
+			
+
+<!-- ============================== method details ========================= -->		
+			
+              <div class="details">
+				<div class="sectionTitle">
+					Method Detail
+				</div>
+				
+                  <div class="member">
+					<a name="addEventListener"> </a>
+					<div class="fixedFont">
+                      <div class="modifiers">
+                      </div>
+					
+					<b>addEventListener</b>(eType, fn)
+					
+					</div>
+					<div class="description">
+						<p>Add Event Listener</p>
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{string}</span> <b>eType</b>
+									
+								</dt>
+								<dd>Event Type.</dd>
+							
+								<dt>
+									<span class="light fixedFont">{Function}</span> <b>fn</b>
+									
+								</dt>
+								<dd>Event Handler.</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+                  </div>
+				
+                  <div class="member">
+					<a name="disableEvent"> </a>
+					<div class="fixedFont">
+                      <div class="modifiers">
+                      </div>
+					
+					<b>disableEvent</b>(evtTypes)
+					
+					</div>
+					<div class="description">
+						<p>Disable Event dispatching by type</p>
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{...string}</span> <b>evtTypes</b>
+									
+								</dt>
+								<dd>Event types that should be disabled (events types that shouldn't be dispatched)</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+                  </div>
+				
+                  <div class="member">
+					<a name="dispatchEvent"> </a>
+					<div class="fixedFont">
+                      <div class="modifiers">
+                      </div>
+					<span class="light">{boolean}</span>
+					<b>dispatchEvent</b>(evt)
+					
+					</div>
+					<div class="description">
+						<p>Dispatch Event
+- Call all Handlers Listening to the Event.</p>
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{(Object|string)}</span> <b>evt</b>
+									
+								</dt>
+								<dd>Custom Event Object (property `type` is required) or String with Event type.</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{boolean}</span> If Event was successfully dispatched.</dd>
+							
+							</dl>
+						
+						
+						
+
+                  </div>
+				
+                  <div class="member">
+					<a name="enableEvent"> </a>
+					<div class="fixedFont">
+                      <div class="modifiers">
+                      </div>
+					
+					<b>enableEvent</b>(evtTypes)
+					
+					</div>
+					<div class="description">
+						<p>Enable Event dispatching by type</p>
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{...string}</span> <b>evtTypes</b>
+									
+								</dt>
+								<dd>Event types that should be enabled (events types that should be dispatched)</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+                  </div>
+				
+                  <div class="member">
+					<a name="hasEventListener"> </a>
+					<div class="fixedFont">
+                      <div class="modifiers">
+                      </div>
+					<span class="light">{boolean}</span>
+					<b>hasEventListener</b>(eType)
+					
+					</div>
+					<div class="description">
+						<p>Checks if the EventDispatcher has any listeners registered for a specific type of event.</p>
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{string}</span> <b>eType</b>
+									
+								</dt>
+								<dd>Event Type.</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{boolean}</span> </dd>
+							
+							</dl>
+						
+						
+						
+
+                  </div>
+				
+                  <div class="member">
+					<a name="removeAllEventListeners"> </a>
+					<div class="fixedFont">
+                      <div class="modifiers">
+                      </div>
+					
+					<b>removeAllEventListeners</b>(eType)
+					
+					</div>
+					<div class="description">
+						<p>Removes all Listeners from the EventDispatcher object.</p>
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{(string|boolean)}</span> <b>eType</b>
+									
+								</dt>
+								<dd>Event type or `true` if want to remove listeners of all event types.</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+                  </div>
+				
+                  <div class="member">
+					<a name="removeEventListener"> </a>
+					<div class="fixedFont">
+                      <div class="modifiers">
+                      </div>
+					
+					<b>removeEventListener</b>(eType, fn)
+					
+					</div>
+					<div class="description">
+						<p>Remove Event Listener</p>
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{string}</span> <b>eType</b>
+									
+								</dt>
+								<dd>Event Type.</dd>
+							
+								<dt>
+									<span class="light fixedFont">{Function}</span> <b>fn</b>
+									
+								</dt>
+								<dd>Event Handler.</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+                  </div>
+				
+                  <div class="member">
+					<a name="willDispatch"> </a>
+					<div class="fixedFont">
+                      <div class="modifiers">
+                      </div>
+					<span class="light">{boolean}</span>
+					<b>willDispatch</b>(evtType)
+					
+					</div>
+					<div class="description">
+						<p>Check if Event will be dispatched (i.e. If event type is enabled)</p>
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{string}</span> <b>evtType</b>
+									
+								</dt>
+								<dd>Event type.</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{boolean}</span> If Event will be dispatched.</dd>
+							
+							</dl>
+						
+						
+						
+
+                  </div>
+				
+              </div>
+			
+			
+<!-- ============================== event details ========================= -->		
+			
+			<hr />
+		</div>
+
+		
+<!-- ============================== footer ================================= -->
+		<div class="fineprint" style="clear:both;text-align:center">
+			
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Mon Nov 01 2010 11:38:25 GMT-0400 (EDT)
+		</div>
+	</body>
+</html>

@@ -1,16 +1,11 @@
-/*
- * MM.EventDispatcher
- * - Class used to allow Custom Objects to dispatch events.
+/**
+ * EventDispatcher Object, used to allow Custom Objects to dispatch events.
+ * @constructor
  * @author Miller Medeiros <http://www.millermedeiros.com/>
  * @version 0.8.2 (2010/08/26)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
-
-/**
- * EventDispatcher Object, used to allow Custom Objects to dispatch events.
- * @constructor
- */
-MM.EventDispatcher = function(){
+millermedeiros.EventDispatcher = function(){
 	/** 
 	 * Event Handlers
 	 * @type Object.<string, Array.<Function>>
@@ -24,7 +19,7 @@ MM.EventDispatcher = function(){
 	this._disabled = [];
 };
 
-MM.EventDispatcher.prototype = {
+millermedeiros.EventDispatcher.prototype = {
 	
 	/**
 	 * Add Event Listener
@@ -128,12 +123,12 @@ MM.EventDispatcher.prototype = {
 		var types = Array.prototype.slice.call(arguments, 0),
 			n = types.length,
 			curType;
-		 while(n--){
-		 	curType = types[n];
+		while(n--){
+			curType = types[n];
 			if(this.willDispatch(curType)){ //avoid adding multiple times
-		 		this._disabled.push(curType);
+				this._disabled.push(curType);
 			}
-		 }
+		}
 	},
 	
 	/**
@@ -145,15 +140,15 @@ MM.EventDispatcher.prototype = {
 			n = types.length,
 			m,
 			curType;
-		 while(n--){
-		 	curType = types[n];
-		 	m = this._disabled.length;
+		while(n--){
+			curType = types[n];
+			m = this._disabled.length;
 			while(m--){
 				if(this._disabled[m] === curType){
 					this._disabled.splice(m, 1);
 				}
 			}
-		 }
+		}
 	}
 	
 };

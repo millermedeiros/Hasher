@@ -1,5 +1,5 @@
 /*
- * MM.event - DOM Event Listener Facade
+ * millermedeiros.event - DOM Event Listener Facade
  * - Cross-browser DOM Event Listener attachment/detachment.
  * - Based on Peter-Paul Koch addEventSimple <http://www.quirksmode.org/js/eventSimple.html>
  * @author Miller Medeiros <http://www.millermedeiros.com/>
@@ -10,7 +10,7 @@
 /**
  * @namespace Utilities for Browser Native Events
  */
-MM.event = MM.event || {};
+millermedeiros.event = millermedeiros.event || {};
 
 /**
 * Adds DOM Event Listener
@@ -18,7 +18,7 @@ MM.event = MM.event || {};
 * @param {string} eType Event type.
 * @param {Function} fn Listener function.
 */
-MM.event.addListener = function(elm, eType, fn){
+millermedeiros.event.addListener = function(elm, eType, fn){
 	if(elm.addEventListener){
 		elm.addEventListener(eType, fn, false);
 	}else if(elm.attachEvent){
@@ -34,7 +34,7 @@ MM.event.addListener = function(elm, eType, fn){
 * @param {string} eType Event type.
 * @param {Function} fn Listener function.
 */
-MM.event.removeListener = function(elm, eType, fn){
+millermedeiros.event.removeListener = function(elm, eType, fn){
 	if(elm.removeEventListener){
 		elm.removeEventListener(eType, fn, false);
 	}else if(elm.detachEvent){
