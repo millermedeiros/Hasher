@@ -1,21 +1,23 @@
 /*!
  * Hasher <http://github.com/millermedeiros/Hasher>
- * Includes: MM.EventDispatcher (0.8.2), MM.queryUtils (0.8.2), MM.event-listenerFacade (0.3)
+ * Includes: millermedeiros.EventDispatcher (0.8.2), millermedeiros.queryUtils (0.8.2), millermedeiros.event-listenerFacade (0.3)
  * @author Miller Medeiros <http://www.millermedeiros.com/>
  * @version 0.9.7 (2010/11/01)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
+(function(window, document){
 /*
  * Miller Medeiros JS Library
  * @author Miller Medeiros
- * @version 0.1 (2010/09/10)
+ * @version 0.1.1 (2010/11/01)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
  
- /**
+/**
  * @namespace Miller Medeiros Namespace
+ * @name millermedeiros
  */
- var millermedeiros = {};
+var millermedeiros = window.millermedeiros = {};
 /**
  * EventDispatcher Object, used to allow Custom Objects to dispatch events.
  * @constructor
@@ -170,96 +172,102 @@ millermedeiros.EventDispatcher.prototype = {
 	}
 	
 };
-/**
- * @namespace Utilities for query string manipulation.
- * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.8.2 (2010/08/12)
- * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
- */
-millermedeiros.queryUtils = {
+(function(window, millermedeiros){
 	
+	var location = window.location; //local storage for better minification
+
 	/**
-	 * Gets full query as string with all special chars decoded.
-	 * @param {string} [url]	 URL to be parsed, defaults to `location.href`
-	 * @return {string}	Query string
+	 * @namespace Utilities for query string manipulation.
+	 * @author Miller Medeiros <http://www.millermedeiros.com/>
+	 * @version 0.8.3 (2010/11/01)
+	 * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
 	 */
-	getQueryString : function(url){
-		url = url || location.href; //used location.href to avoid bug on IE6 and pseudo query string inside location.hash
-		url = url.replace(/#[\w\W]*/, ''); //removes hash (to avoid getting hash query)
-		var queryString = /\?[a-zA-Z0-9\=\&\%\$\-\_\.\+\!\*\'\(\)\,]+/.exec(url); //valid chars according to: http://www.ietf.org/rfc/rfc1738.txt
-		return (queryString)? decodeURIComponent(queryString[0]) : '';
-	},
-	
-	/**
-	 * Gets query as Object.
-	 * - Alias for `millermedeiros.queryUtils.toQueryObject( millermedeiros.queryUtils.getQueryString(url) )`
-	 * @param {string} [url]	URL to be parsed, default to location.href.
-	 * @return {Object.<string, (string|number)>}	Object with all the query "params => values" pairs.
-	 */
-	getQueryObject : function(url){
-		return this.toQueryObject(this.getQueryString(url));
-	},
-	
-	/**
-	 * Convert Query String into an Object
-	 * @param {string} queryString	 Query String to be parsed
-	 * @return {Object.<string, (string|number)>}	Object with all the query "params => values" pairs.
-	 */
-	toQueryObject : function(queryString){
-		var queryArr = queryString.replace('?', '').split('&'), 
-			n = queryArr.length,
-			queryObj = {},
-			value;
-		while (n--) {
-			queryArr[n] = queryArr[n].split('=');
-			value = queryArr[n][1];
-			queryObj[queryArr[n][0]] = isNaN(value)? value : parseFloat(value);
-		}
-		return queryObj;
-	},
-	
-	/**
-	 * Get query parameter value.
-	 * @param {string} param	Parameter name.
-	 * @param {string} [url]	URL to be parsed, default to location.href
-	 * @return {(string|number)}	Parameter value.
-	 */
-	getParamValue : function(param, url){
-		url = url || location.href;
-		var regexp = new RegExp('(\\?|&)'+ param + '=([^&]*)'), //matches `?param=value` or `&param=value`, value = $2
-			result = regexp.exec(url),
-			value = (result && result[2])? result[2] : null;
-		return isNaN(value)? value : parseFloat(value);
-	},
-	
-	/**
-	 * Checks if query contains parameter.
-	 * @param {string} param	Parameter name.
-	 * @param {string} [url]	URL to be parsed, default to location.href
-	 * @return {boolean} If parameter exist.
-	 */
-	hasParam : function(param, url){
-		var regexp = new RegExp('(\\?|&)'+ param +'=', 'g'); //matches `?param=` or `&param=`
-		return regexp.test(this.getQueryString(url));
-	},
-	
-	/**
-	 * Converts object into query string.
-	 * @param {Object} obj	Object with "params => values" pairs.
-	 * @return {string}	Formated query string starting with '?'.
-	 */
-	toQueryString : function(obj){
-		var query = [],
-			param;
-		for(param in obj){
-			if(obj.hasOwnProperty(param)){ //avoid copying properties from the prototype
-				query.push(param +'='+ obj[param]);
+	millermedeiros.queryUtils = {
+		
+		/**
+		 * Gets full query as string with all special chars decoded.
+		 * @param {string} [url]	 URL to be parsed, defaults to `location.href`
+		 * @return {string}	Query string
+		 */
+		getQueryString : function(url){
+			url = url || location.href; //used location.href to avoid bug on IE6 and pseudo query string inside location.hash
+			url = url.replace(/#[\w\W]*/, ''); //removes hash (to avoid getting hash query)
+			var queryString = /\?[a-zA-Z0-9\=\&\%\$\-\_\.\+\!\*\'\(\)\,]+/.exec(url); //valid chars according to: http://www.ietf.org/rfc/rfc1738.txt
+			return (queryString)? decodeURIComponent(queryString[0]) : '';
+		},
+		
+		/**
+		 * Gets query as Object.
+		 * - Alias for `millermedeiros.queryUtils.toQueryObject( millermedeiros.queryUtils.getQueryString(url) )`
+		 * @param {string} [url]	URL to be parsed, default to location.href.
+		 * @return {Object.<string, (string|number)>}	Object with all the query "params => values" pairs.
+		 */
+		getQueryObject : function(url){
+			return this.toQueryObject(this.getQueryString(url));
+		},
+		
+		/**
+		 * Convert Query String into an Object
+		 * @param {string} queryString	 Query String to be parsed
+		 * @return {Object.<string, (string|number)>}	Object with all the query "params => values" pairs.
+		 */
+		toQueryObject : function(queryString){
+			var queryArr = queryString.replace('?', '').split('&'), 
+				n = queryArr.length,
+				queryObj = {},
+				value;
+			while (n--) {
+				queryArr[n] = queryArr[n].split('=');
+				value = queryArr[n][1];
+				queryObj[queryArr[n][0]] = isNaN(value)? value : parseFloat(value);
 			}
+			return queryObj;
+		},
+		
+		/**
+		 * Get query parameter value.
+		 * @param {string} param	Parameter name.
+		 * @param {string} [url]	URL to be parsed, default to location.href
+		 * @return {(string|number)}	Parameter value.
+		 */
+		getParamValue : function(param, url){
+			url = url || location.href;
+			var regexp = new RegExp('(\\?|&)'+ param + '=([^&]*)'), //matches `?param=value` or `&param=value`, value = $2
+				result = regexp.exec(url),
+				value = (result && result[2])? result[2] : null;
+			return isNaN(value)? value : parseFloat(value);
+		},
+		
+		/**
+		 * Checks if query contains parameter.
+		 * @param {string} param	Parameter name.
+		 * @param {string} [url]	URL to be parsed, default to location.href
+		 * @return {boolean} If parameter exist.
+		 */
+		hasParam : function(param, url){
+			var regexp = new RegExp('(\\?|&)'+ param +'=', 'g'); //matches `?param=` or `&param=`
+			return regexp.test(this.getQueryString(url));
+		},
+		
+		/**
+		 * Converts object into query string.
+		 * @param {Object} obj	Object with "params => values" pairs.
+		 * @return {string}	Formated query string starting with '?'.
+		 */
+		toQueryString : function(obj){
+			var query = [],
+				param;
+			for(param in obj){
+				if(obj.hasOwnProperty(param)){ //avoid copying properties from the prototype
+					query.push(param +'='+ obj[param]);
+				}
+			}
+			return (query.length)? '?'+ query.join('&') : '';
 		}
-		return (query.length)? '?'+ query.join('&') : '';
-	}
-	
-};
+		
+	};
+
+}(window, millermedeiros));
 /*
  * millermedeiros.event - DOM Event Listener Facade
  * - Cross-browser DOM Event Listener attachment/detachment.
@@ -305,69 +313,84 @@ millermedeiros.event.removeListener = function(elm, eType, fn){
 		elm['on' + eType] = null;
 	}
 };
+}(window, window.document));
 /*
  * Hasher Event
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.2 (2010/04/18)
+ * @version 0.3 (2010/11/01)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
-
-/**
- * HasherEvent Object.
- * <p>According to the HTML5 spec `hashchange` event should have `oldURL` and `newURL` properties, since the only portion of the URL that changes is the hash I decided to use `oldHash` and `newHash` instead. (http://www.whatwg.org/specs/web-apps/current-work/multipage/history.html#event-hashchange)</p>
- * @param {string} eType	Hasher Event type.
- * @param {(string|null)} oldHash	Previous Hash.
- * @param {(string|null)} newHash	Current Hash.
- * @constructor
- */
-var HasherEvent = function(eType, oldHash, newHash){
+(function(window){
+	
+	//--------------------------------------------------------------------------------------
+	// Constructor
+	//--------------------------------------------------------------------------------------
+	
 	/**
-	 * Event Type
+	 * HasherEvent Object.
+	 * <p>According to the HTML5 spec `hashchange` event should have `oldURL` and `newURL` properties, since the only portion of the URL that changes is the hash I decided to use `oldHash` and `newHash` instead. (http://www.whatwg.org/specs/web-apps/current-work/multipage/history.html#event-hashchange)</p>
+	 * @param {string} eType	Hasher Event type.
+	 * @param {(string|null)} oldHash	Previous Hash.
+	 * @param {(string|null)} newHash	Current Hash.
+	 * @constructor
+	 * @name HasherEvent
+	 */
+	var HasherEvent = window.HasherEvent = function(eType, oldHash, newHash){
+		/**
+		 * Event Type
+		 * @type string
+		 */
+		this.type = eType;
+		/**
+		 * Previous Hash value
+		 * @type (string|null)
+		 */
+		this.oldHash = oldHash;
+		/**
+		 * Current Hash value
+		 * @type (string|null)
+		 */
+		this.newHash = newHash;
+	};
+	
+	//--------------------------------------------------------------------------------------
+	// Methods
+	//--------------------------------------------------------------------------------------
+	
+	/**
+	 * Returns string representation of the HasherEvent
+	 * @return {string} A string representation of the object.
+	 */
+	HasherEvent.prototype.toString = function(){
+		return '[HasherEvent type="'+ this.type +'" oldHash="'+ this.oldHash +'" newHash="'+ this.newHash +'"]';
+	};
+	
+	//--------------------------------------------------------------------------------------
+	// Constants
+	//--------------------------------------------------------------------------------------
+	
+	/**
+	 * Defines the value of the type property of an change event object.
 	 * @type string
+	 * @constant
 	 */
-	this.type = eType;
+	HasherEvent.CHANGE = 'change';
+	
+	 /**
+	 * Defines the value of the type property of an init event object.
+	 * @type string
+	 * @constant
+	 */
+	HasherEvent.INIT = 'init';
+	
 	/**
-	 * Previous Hash value
-	 * @type (string|null)
+	 * Defines the value of the type property of an stop event object.
+	 * @type string
+	 * @constant
 	 */
-	this.oldHash = oldHash;
-	/**
-	 * Current Hash value
-	 * @type (string|null)
-	 */
-	this.newHash = newHash;
-};
-
-/**
- * Returns string representation of the HasherEvent
- * @return {string} A string representation of the object.
- */
-HasherEvent.prototype.toString = function(){
-	return '[HasherEvent type="'+ this.type +'" oldHash="'+ this.oldHash +'" newHash="'+ this.newHash +'"]';
-};
-
-//-- Constants --//
-
-/**
- * Defines the value of the type property of an change event object.
- * @type string
- * @constant
- */
-HasherEvent.CHANGE = 'change';
-
- /**
- * Defines the value of the type property of an init event object.
- * @type string
- * @constant
- */
-HasherEvent.INIT = 'init';
-
-/**
- * Defines the value of the type property of an stop event object.
- * @type string
- * @constant
- */
-HasherEvent.STOP = 'stop';
+	HasherEvent.STOP = 'stop';
+	
+}(window));
 /*
  * Hasher
  * - History Manager for rich-media applications.
@@ -375,12 +398,40 @@ HasherEvent.STOP = 'stop';
  * @version 0.9.6 (2010/11/01)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
-(function(window, document, location, history){
+(function(window, document){
 	
-	
-	//== Private Vars ==//
+	//--------------------------------------------------------------------------------------
+	// Private Vars
+	//--------------------------------------------------------------------------------------
 	
 	var 
+		
+		//--- local storage for brevity, performance improvement and better compression ---//
+		
+		/** @private {Location} */
+		location = window.location,
+		
+		/** @private {History} */
+		history = window.history,
+		
+		/** @private {HasherEvent} */
+		HasherEvent = window.HasherEvent,
+		
+		/** @private {millermedeiros} */
+		millermedeiros = window.millermedeiros,
+		
+		/** @private {millermedeiros.EventDispatcher} @extends millermedeiros.EventDispatcher */
+		Hasher = new millermedeiros.EventDispatcher(),
+		
+		/** @private {millermedeiros.queryUtils} Utilities for query string manipulation */
+		_queryUtils = millermedeiros.queryUtils,
+		
+		/** @private {millermedeiros.event} Browser native events facade */
+		_eventFacade = millermedeiros.event,
+		
+		
+		//--- local vars ---//
+		
 		/** @private {string} previous/current hash value */
 		_hash, 
 		
@@ -393,37 +444,28 @@ HasherEvent.STOP = 'stop';
 		/** @private {Element} iframe used for IE <= 7 */
 		_frame,
 		
+		
+		//--- sniffing/feature detection ---//
+		
 		/** @private {string} User Agent */
-		UA = navigator.userAgent,
+		_UA = navigator.userAgent,
 		
 		/** @private {boolean} if is IE */
-		_isIE = /MSIE/.test(UA)  && (!window.opera),
+		_isIE = /MSIE/.test(_UA) && (!window.opera),
 		
 		/** @private {boolean} If browser supports the `hashchange` event - FF3.6+, IE8+, Chrome 5+, Safari 5+ */
 		_isHashChangeSupported = ('onhashchange' in window),
 		
 		/** @private {boolean} if is IE <= 7 */
-		_isLegacyIE = /MSIE (6|7)/.test(UA) && !_isHashChangeSupported, //check if is IE6-7 since hash change is only supported on IE8+ and changing hash value on IE6-7 doesn't generate history record.
+		_isLegacyIE = _isIE && !_isHashChangeSupported, //check if is IE6-7 since hash change is only supported on IE8+ and changing hash value on IE6-7 doesn't generate history record.
 		
 		/** @private {boolean} If it is a local file */
-		_isLocal = (location.protocol === 'file:'),
-		
-		//-- local storage for performance improvement and better compression --//
-		
-		/** @private {millermedeiros} Miller Medeiros Namespace */
-		mm = millermedeiros,
-		
-		/** @private {millermedeiros.EventDispatcher} @extends millermedeiros.EventDispatcher */
-		Hasher = new mm.EventDispatcher(),
-		
-		/** @private {millermedeiros.queryUtils} Utilities for query string manipulation */
-		_queryUtils = mm.queryUtils,
-		
-		/** @private {millermedeiros.event} Browser native events facade */
-		_eventFacade = mm.event;
-		
+		_isLocal = (location.protocol === 'file:');
 	
-	//== Private Methods ==//
+	
+	//--------------------------------------------------------------------------------------
+	// Private Methods
+	//--------------------------------------------------------------------------------------
 	
 	/**
 	 * Remove `Hasher.prependHash` and `Hasher.appendHash` from hashValue
@@ -527,14 +569,17 @@ HasherEvent.STOP = 'stop';
 	}
 	
 	
-	//== Public (API) ==//
+	//--------------------------------------------------------------------------------------
+	// Public (API)
+	//--------------------------------------------------------------------------------------
 	
 	/**
 	 * Hasher
 	 * @namespace History Manager for rich-media applications.
 	 * @extends millermedeiros.EventDispatcher
+	 * @name Hasher
 	 */
-	this.Hasher = Hasher; //register Hasher to the global scope
+	window.Hasher = Hasher; //register Hasher to the global scope
 	
 	/**
 	 * Hasher Version Number
@@ -745,7 +790,7 @@ HasherEvent.STOP = 'stop';
 	Hasher.dispose = function(){
 		Hasher.removeAllEventListeners(true);
 		Hasher.stop();
-		_hash = _checkInterval = _isActive = _frame = UA  = _isIE = _isLegacyIE = _isHashChangeSupported = _isLocal = _queryUtils = _eventFacade = Hasher = window.Hasher = null;
+		_hash = _checkInterval = _isActive = _frame = _UA  = _isIE = _isLegacyIE = _isHashChangeSupported = _isLocal = _queryUtils = _eventFacade = Hasher = window.Hasher = null;
 		//can't use `delete window.hasher;` because on IE it throws errors, `window` isn't actually an object, delete can only be used on Object properties.
 	};
 	
@@ -757,4 +802,4 @@ HasherEvent.STOP = 'stop';
 		return '[Hasher version="'+ this.VERSION +'" hash="'+ this.getHash() +'"]';
 	};
 	
-}(window, document, window.location, history));
+}(window, window.document));

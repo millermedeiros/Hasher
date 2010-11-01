@@ -5,12 +5,40 @@
  * @version 0.9.6 (2010/11/01)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
-(function(window, document, location, history){
+(function(window, document){
 	
-	
-	//== Private Vars ==//
+	//--------------------------------------------------------------------------------------
+	// Private Vars
+	//--------------------------------------------------------------------------------------
 	
 	var 
+		
+		//--- local storage for brevity, performance improvement and better compression ---//
+		
+		/** @private {Location} */
+		location = window.location,
+		
+		/** @private {History} */
+		history = window.history,
+		
+		/** @private {HasherEvent} */
+		HasherEvent = window.HasherEvent,
+		
+		/** @private {millermedeiros} */
+		millermedeiros = window.millermedeiros,
+		
+		/** @private {millermedeiros.EventDispatcher} @extends millermedeiros.EventDispatcher */
+		Hasher = new millermedeiros.EventDispatcher(),
+		
+		/** @private {millermedeiros.queryUtils} Utilities for query string manipulation */
+		_queryUtils = millermedeiros.queryUtils,
+		
+		/** @private {millermedeiros.event} Browser native events facade */
+		_eventFacade = millermedeiros.event,
+		
+		
+		//--- local vars ---//
+		
 		/** @private {string} previous/current hash value */
 		_hash, 
 		
@@ -23,37 +51,28 @@
 		/** @private {Element} iframe used for IE <= 7 */
 		_frame,
 		
+		
+		//--- sniffing/feature detection ---//
+		
 		/** @private {string} User Agent */
-		UA = navigator.userAgent,
+		_UA = navigator.userAgent,
 		
 		/** @private {boolean} if is IE */
-		_isIE = /MSIE/.test(UA)  && (!window.opera),
+		_isIE = /MSIE/.test(_UA) && (!window.opera),
 		
 		/** @private {boolean} If browser supports the `hashchange` event - FF3.6+, IE8+, Chrome 5+, Safari 5+ */
 		_isHashChangeSupported = ('onhashchange' in window),
 		
 		/** @private {boolean} if is IE <= 7 */
-		_isLegacyIE = /MSIE (6|7)/.test(UA) && !_isHashChangeSupported, //check if is IE6-7 since hash change is only supported on IE8+ and changing hash value on IE6-7 doesn't generate history record.
+		_isLegacyIE = _isIE && !_isHashChangeSupported, //check if is IE6-7 since hash change is only supported on IE8+ and changing hash value on IE6-7 doesn't generate history record.
 		
 		/** @private {boolean} If it is a local file */
-		_isLocal = (location.protocol === 'file:'),
-		
-		//-- local storage for performance improvement and better compression --//
-		
-		/** @private {millermedeiros} Miller Medeiros Namespace */
-		mm = millermedeiros,
-		
-		/** @private {millermedeiros.EventDispatcher} @extends millermedeiros.EventDispatcher */
-		Hasher = new mm.EventDispatcher(),
-		
-		/** @private {millermedeiros.queryUtils} Utilities for query string manipulation */
-		_queryUtils = mm.queryUtils,
-		
-		/** @private {millermedeiros.event} Browser native events facade */
-		_eventFacade = mm.event;
-		
+		_isLocal = (location.protocol === 'file:');
 	
-	//== Private Methods ==//
+	
+	//--------------------------------------------------------------------------------------
+	// Private Methods
+	//--------------------------------------------------------------------------------------
 	
 	/**
 	 * Remove `Hasher.prependHash` and `Hasher.appendHash` from hashValue
@@ -157,14 +176,17 @@
 	}
 	
 	
-	//== Public (API) ==//
+	//--------------------------------------------------------------------------------------
+	// Public (API)
+	//--------------------------------------------------------------------------------------
 	
 	/**
 	 * Hasher
 	 * @namespace History Manager for rich-media applications.
 	 * @extends millermedeiros.EventDispatcher
+	 * @name Hasher
 	 */
-	this.Hasher = Hasher; //register Hasher to the global scope
+	window.Hasher = Hasher; //register Hasher to the global scope
 	
 	/**
 	 * Hasher Version Number
@@ -375,7 +397,7 @@
 	Hasher.dispose = function(){
 		Hasher.removeAllEventListeners(true);
 		Hasher.stop();
-		_hash = _checkInterval = _isActive = _frame = UA  = _isIE = _isLegacyIE = _isHashChangeSupported = _isLocal = _queryUtils = _eventFacade = Hasher = window.Hasher = null;
+		_hash = _checkInterval = _isActive = _frame = _UA  = _isIE = _isLegacyIE = _isHashChangeSupported = _isLocal = _queryUtils = _eventFacade = Hasher = window.Hasher = null;
 		//can't use `delete window.hasher;` because on IE it throws errors, `window` isn't actually an object, delete can only be used on Object properties.
 	};
 	
@@ -387,4 +409,4 @@
 		return '[Hasher version="'+ this.VERSION +'" hash="'+ this.getHash() +'"]';
 	};
 	
-}(window, document, window.location, history));
+}(window, window.document));

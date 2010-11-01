@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<project name="Hasher" default="all" basedir="../../">
+<project name="Hasher" default="all" basedir="./">
 	<description>
 		Hasher Build Task. Unify files, compress, validate, generate documentation and distribution files.
 	</description>
@@ -28,10 +28,12 @@
 		<echo message="Building ${dist.name}" />
 		<concat destfile="${dist.dir}/${dist.name}" fixlastline="yes" eol="unix">
             <fileset file="${src.dir}/copyright.inc" />
+            <fileset file="${lib.dir}/millermedeiros/intro.js" />
             <fileset file="${lib.dir}/millermedeiros/main.js" />
             <fileset file="${lib.dir}/millermedeiros/EventDispatcher.js" />
             <fileset file="${lib.dir}/millermedeiros/queryUtils.js" />
             <fileset file="${lib.dir}/millermedeiros/event-listenerFacade.js" />
+            <fileset file="${lib.dir}/millermedeiros/outro.js" />
             <fileset file="${src.dir}/HasherEvent.js" />
             <fileset file="${src.dir}/Hasher.js" />
         </concat>
