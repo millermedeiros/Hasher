@@ -2,7 +2,7 @@
  * EventDispatcher Object, used to allow Custom Objects to dispatch events.
  * @constructor
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.9 (2010/11/05)
+ * @version 1.0 (2010/11/05)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 millermedeiros.EventDispatcher = function(){
@@ -85,7 +85,7 @@ millermedeiros.EventDispatcher.prototype = {
 	 */
 	dispatchEvent : function(evt){
 		evt = (typeof evt === 'string')? {type: evt} : evt; //create Object if not an Object to always call handlers with same type of argument.
-		if(this.hasEventListener(evt.type) && this.willDispatch(evt.type)){
+		if(this.hasEventListener(evt.type) && this.isEventEnabled(evt.type)){
 			var typeHandlers = this._handlers[evt.type], //stored for performance
 				curHandler,
 				i,
@@ -101,11 +101,11 @@ millermedeiros.EventDispatcher.prototype = {
 	},
 	
 	/**
-	 * Check if Event type is enabled and will be dispatched
+	 * Check if Event type is enabled
 	 * @param {string} evtType	Event type.	
 	 * @return {boolean} If Event will be dispatched.
 	 */
-	willDispatch : function(evtType){
+	isEventEnabled : function(evtType){
 		var n = this._disabled.length;
 		while(n--){
 			if(this._disabled[n] === evtType){
@@ -125,7 +125,7 @@ millermedeiros.EventDispatcher.prototype = {
 			curType;
 		while(n--){
 			curType = types[n];
-			if(this.willDispatch(curType)){ //avoid adding multiple times
+			if(this.isEventEnabled(curType)){ //avoid adding multiple times
 				this._disabled.push(curType);
 			}
 		}

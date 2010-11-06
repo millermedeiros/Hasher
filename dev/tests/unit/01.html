@@ -3,7 +3,7 @@
 	<head>
 		<link rel="stylesheet" href="./qunit/qunit.css" type="text/css" media="screen" />
 		<script type="text/javascript" src="./qunit/qunit.js"></script>
-		<script type="text/javascript" src="../../../dist/js/Hasher-0.9.8.js"></script>
+		<script type="text/javascript" src="../../../dist/js/Hasher-0.9.9.js"></script>
 		<title>Untitled</title>
 	</head>
 	<body>
@@ -557,6 +557,52 @@
 			test('disable INIT', disableInitTest);
 			test('disable CHANGE', disableChangeTest);
 			test('disable STOP', disableStopTest);
+			
+			/* === */
+			
+			/* ==== extras ==== */
+			
+			module('extras');
+			
+			var accentsTest = function(){
+				stop(200);
+				expect(3);
+				
+				var str_arr  = [
+					['ÂÃÄÀÁÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖØÙÚÛÜİŞßàáâãäåæçèéêëìíîïğñòóôõöøùúûüışÿ', 'AAAAAAAECEEEEIIIIDNOOOOOOUUUUYPBaaaaaaaeceeeeiiiiDnoooooouuuuypy'],
+					['Special chars ÂÃÄÀÁÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖØÙÚÛÜİŞßàáâãäåæçèéêëìíîïğñòóôõöøùúûüışÿ for the win!', 'Special chars AAAAAAAECEEEEIIIIDNOOOOOOUUUUYPBaaaaaaaeceeeeiiiiDnoooooouuuuypy for the win!'],
+					['Spëcîal chÂrs fØr the wìn!', 'Special chArs fOr the win!']
+				];
+				
+				same(Hasher.removeAccents(str_arr[0][0]), str_arr[0][1]);
+				same(Hasher.removeAccents(str_arr[1][0]), str_arr[1][1]);
+				same(Hasher.removeAccents(str_arr[2][0]), str_arr[2][1]);
+				
+				start();
+			};
+			
+			var hyphenateTest = function(){
+				stop(200);
+				expect(3);
+				
+				var str_arr  = [
+					['ÂÃÄÀÁÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖØÙÚÛÜİŞßàáâãäåæçèéêëìíîïğñòóôõöøùúûüışÿ', 'AAAAAAAECEEEEIIIIDNOOOOOOUUUUYPBaaaaaaaeceeeeiiiiDnoooooouuuuypy'],
+					['Special chars ÂÃÄÀÁÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖØÙÚÛÜİŞßàáâãäåæçèéêëìíîïğñòóôõöøùúûüışÿ for the win!', 'Special-chars-AAAAAAAECEEEEIIIIDNOOOOOOUUUUYPBaaaaaaaeceeeeiiiiDnoooooouuuuypy-for-the-win'],
+					['Spëcîal chÂrs fØr the wìn!', 'Special-chArs-fOr-the-win'],
+					['camelCaseText', 'camel-case-text'],
+					['camelCaseText with     mixed  spacing', 'camel-case-text-with-mixed-spacing'],
+					['camelCaseText with     mixed  spacing & Spëcîal chÂrs', 'camel-case-text-with-mixed-spacing-Special-chArs']
+				];
+				
+				same(Hasher.hyphenate(str_arr[0][0]), str_arr[0][1]);
+				same(Hasher.hyphenate(str_arr[1][0]), str_arr[1][1]);
+				same(Hasher.hyphenate(str_arr[2][0]), str_arr[2][1]);
+				
+				start();
+			};
+			
+			test('remove accents', accentsTest);
+			test('hyphenate', hyphenateTest);
 			
 			/* === */
 			

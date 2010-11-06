@@ -147,11 +147,19 @@
                     </li>
                
                    <li class="fixedFont">
+                        <a href="../symbols/Hasher.html#.hyphenate">hyphenate</a>
+                    </li>
+               
+                   <li class="fixedFont">
                         <a href="../symbols/Hasher.html#.init">init</a>
                     </li>
                
                    <li class="fixedFont">
                         <a href="../symbols/Hasher.html#.isActive">isActive</a>
+                    </li>
+               
+                   <li class="fixedFont">
+                        <a href="../symbols/Hasher.html#.removeAccents">removeAccents</a>
                     </li>
                
                    <li class="fixedFont">
@@ -200,7 +208,7 @@
 
                     
                         <dl class="inheritsList">
-                        <dt>Methods borrowed from class <a href="../symbols/millermedeiros.EventDispatcher.html">millermedeiros.EventDispatcher</a>: </dt><dd><a href="../symbols/millermedeiros.EventDispatcher.html#addEventListener">addEventListener</a>, <a href="../symbols/millermedeiros.EventDispatcher.html#disableEvent">disableEvent</a>, <a href="../symbols/millermedeiros.EventDispatcher.html#dispatchEvent">dispatchEvent</a>, <a href="../symbols/millermedeiros.EventDispatcher.html#enableEvent">enableEvent</a>, <a href="../symbols/millermedeiros.EventDispatcher.html#hasEventListener">hasEventListener</a>, <a href="../symbols/millermedeiros.EventDispatcher.html#removeAllEventListeners">removeAllEventListeners</a>, <a href="../symbols/millermedeiros.EventDispatcher.html#removeEventListener">removeEventListener</a>, <a href="../symbols/millermedeiros.EventDispatcher.html#willDispatch">willDispatch</a></dd>
+                        <dt>Methods borrowed from class <a href="../symbols/millermedeiros.EventDispatcher.html">millermedeiros.EventDispatcher</a>: </dt><dd><a href="../symbols/millermedeiros.EventDispatcher.html#addEventListener">addEventListener</a>, <a href="../symbols/millermedeiros.EventDispatcher.html#disableEvent">disableEvent</a>, <a href="../symbols/millermedeiros.EventDispatcher.html#dispatchEvent">dispatchEvent</a>, <a href="../symbols/millermedeiros.EventDispatcher.html#enableEvent">enableEvent</a>, <a href="../symbols/millermedeiros.EventDispatcher.html#hasEventListener">hasEventListener</a>, <a href="../symbols/millermedeiros.EventDispatcher.html#isEventEnabled">isEventEnabled</a>, <a href="../symbols/millermedeiros.EventDispatcher.html#removeAllEventListeners">removeAllEventListeners</a>, <a href="../symbols/millermedeiros.EventDispatcher.html#removeEventListener">removeEventListener</a></dd>
                         </dl>
                     
 
@@ -211,7 +219,7 @@
 				History Manager for rich-media applications.
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/C__Miller_Personal_millermedeiros_Hasher_dist_js_Hasher-0.9.8.js.html">Hasher-0.9.8.js</a>.
+					<br /><i>Defined in: </i> <a href="../symbols/src/C__Miller_Personal_millermedeiros_Hasher_dist_js_Hasher-0.9.9.js.html">Hasher-0.9.9.js</a>.
 				
 			</p>
 
@@ -782,6 +790,56 @@
                   </div>
 				
                   <div class="member">
+					<a name=".hyphenate"> </a>
+					<div class="fixedFont">
+                      <div class="modifiers">&lt;static&gt; 
+                      </div>
+					<span class="light">{string}</span>
+					<span class="light">Hasher.</span><b>hyphenate</b>(str)
+					
+					</div>
+					<div class="description">
+						<p>Replaces spaces with hyphens, split camel case text, remove non-word chars and remove accents.
+- based on Miller Medeiros JS Library -> millermedeiros.stringUtils.hyphenate</p>
+						
+						
+					</div>
+					
+					
+					
+					<pre class="code">Hasher.hyphenate('Lorem Ipsum  ?#$%^&*  sp����lCh�rs') -> 'Lorem-Ipsum-special-chars'</pre>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{string}</span> <b>str</b>
+									
+								</dt>
+								<dd>String to be formated.</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{string}</span> Formated String</dd>
+							
+							</dl>
+						
+						
+						
+
+                  </div>
+				
+                  <div class="member">
 					<a name=".init"> </a>
 					<div class="fixedFont">
                       <div class="modifiers">&lt;static&gt; 
@@ -835,6 +893,56 @@
 							<dt class="heading">Returns:</dt>
 							
 								<dd><span class="light fixedFont">{boolean}</span> If Hasher is listening to changes on the browser history and/or hash value.</dd>
+							
+							</dl>
+						
+						
+						
+
+                  </div>
+				
+                  <div class="member">
+					<a name=".removeAccents"> </a>
+					<div class="fixedFont">
+                      <div class="modifiers">&lt;static&gt; 
+                      </div>
+					<span class="light">{string}</span>
+					<span class="light">Hasher.</span><b>removeAccents</b>(str)
+					
+					</div>
+					<div class="description">
+						<p>Replaces all accented chars with regular ones
+- copied from Miller Medeiros JS Library -> millermedeiros.stringUtils.replaceAccents</p>
+						
+						
+					</div>
+					
+					
+					
+					<pre class="code">Hasher.removeAccents('Lorem Ipsum  ?#$%^&*  sp����lCh�rs') -> 'Lorem Ipsum  ?#$%^&*  specialChars'</pre>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{string}</span> <b>str</b>
+									
+								</dt>
+								<dd>String to be formated.</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{string}</span> Formated String</dd>
 							
 							</dl>
 						
@@ -994,7 +1102,8 @@
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both;text-align:center">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Fri Nov 05 2010 20:39:44 GMT-0400 (EDT)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blankt">JsDoc Toolkit</a> 2.4.0 on Fri Nov 05 2010 22:01:32 GMT-0400 (EDT)
+			 | template based on Steffen Siering <a href="http://github.com/urso/jsdoc-simple">jsdoc-simple</a>.
 		</div>
 	</body>
 </html>
