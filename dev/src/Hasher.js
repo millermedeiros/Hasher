@@ -2,7 +2,7 @@
  * Hasher
  * - History Manager for rich-media applications.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.9.6 (2010/11/01)
+ * @version 0.9.8 (2010/11/01)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 (function(window, document){
@@ -45,7 +45,7 @@
 		/** @private {number} stores setInterval reference (used to check if hash changed on non-standard browsers) */
 		_checkInterval,
 		
-		/** @private {boolean} If Hasher is active and should listen/dispatch changes on the window location hash */
+		/** @private {boolean} If Hasher is active and should listen to changes on the window location hash */
 		_isActive,
 		
 		/** @private {Element} iframe used for IE <= 7 */
@@ -76,10 +76,12 @@
 	
 	/**
 	 * Remove `Hasher.prependHash` and `Hasher.appendHash` from hashValue
-	 * @param {string} hash	Hash value
+	 * @param {string} [hash]	Hash value
+	 * @return {string}
 	 * @private
 	 */
 	function _trimHash(hash){
+		hash = hash || '';
 		var regexp = new RegExp('^\\'+ Hasher.prependHash +'|\\'+ Hasher.appendHash +'$', 'g'); //match appendHash and prependHash
 		return hash.replace(regexp, '');
 	}
@@ -191,7 +193,7 @@
 	/**
 	 * Hasher Version Number
 	 * @type string
-	 * @const
+	 * @constant
 	 */
 	Hasher.VERSION = '::VERSION_NUMBER::';
 	
@@ -228,6 +230,7 @@
 	
 	/**
 	 * Start listening/dispatching changes in the hash/history.
+	 * - Hasher won't dispatch CHANGE events by manually typing a new value or pressing the back/forward buttons before calling this method.
 	 */
 	Hasher.init = function(){
 		if(_isActive){
@@ -253,11 +256,13 @@
 		}
 		
 		_isActive = true;
-		this.dispatchEvent(new HasherEvent(HasherEvent.INIT, oldHash, _hash));
+		this.dispatchEvent(new HasherEvent(HasherEvent.INIT, _trimHash(oldHash), _trimHash(_hash)));
 	};
 	
 	/**
 	 * Stop listening/dispatching changes in the hash/history.
+	 * - Hasher won't dispatch CHANGE events by manually typing a new value or pressing the back/forward buttons after calling this method, unless you call Hasher.init() again.
+	 * - Hasher will still dispatch changes made programatically by calling Hasher.setHash();
 	 */
 	Hasher.stop = function(){
 		if(!_isActive){
@@ -272,7 +277,15 @@
 		}
 		
 		_isActive = false;
-		this.dispatchEvent(new HasherEvent(HasherEvent.STOP, _hash, _hash)); //since it didn't changed oldHash and newHash should be the same. [?]
+		this.dispatchEvent(new HasherEvent(HasherEvent.STOP, _trimHash(_hash), _trimHash(_hash))); //since it didn't changed oldHash and newHash should be the same. [?]
+	};
+	
+	/**
+	 * Retrieve if Hasher is listening to changes on the browser history and/or hash value.
+	 * @return {boolean}	If Hasher is listening to changes on the browser history and/or hash value.
+	 */
+	Hasher.isActive = function(){
+		return _isActive;
 	};
 	
 	/**

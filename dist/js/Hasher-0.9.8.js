@@ -1,8 +1,8 @@
 /*!
  * Hasher <http://github.com/millermedeiros/Hasher>
- * Includes: millermedeiros.EventDispatcher (0.8.2), millermedeiros.queryUtils (0.8.2), millermedeiros.event-listenerFacade (0.3)
+ * Includes: millermedeiros.EventDispatcher (0.9), millermedeiros.queryUtils (0.8.2), millermedeiros.event-listenerFacade (0.3)
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.9.7 (2010/11/01)
+ * @version 0.9.8 (2010/11/05)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 (function(window, document){
@@ -22,7 +22,7 @@ var millermedeiros = window.millermedeiros = {};
  * EventDispatcher Object, used to allow Custom Objects to dispatch events.
  * @constructor
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.8.2 (2010/08/26)
+ * @version 0.9 (2010/11/05)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 millermedeiros.EventDispatcher = function(){
@@ -47,7 +47,7 @@ millermedeiros.EventDispatcher.prototype = {
 	 * @param {Function} fn	Event Handler.
 	 */
 	addEventListener : function(eType, fn){
-		if(typeof this._handlers[eType] == 'undefined'){
+		if(typeof this._handlers[eType] === 'undefined'){
 			this._handlers[eType] = [];
 		}
 		this._handlers[eType].push(fn);
@@ -94,7 +94,7 @@ millermedeiros.EventDispatcher.prototype = {
 	 * @return {boolean}
 	 */
 	hasEventListener : function(eType){
-		return (typeof this._handlers[eType] != 'undefined');
+		return (typeof this._handlers[eType] !== 'undefined');
 	},
 
 	/**
@@ -104,8 +104,8 @@ millermedeiros.EventDispatcher.prototype = {
 	 * @return {boolean} If Event was successfully dispatched.
 	 */
 	dispatchEvent : function(evt){
-		evt = (typeof evt == 'string')? {type: evt} : evt; //create Object if not an Object to always call handlers with same type of argument.
-		if(this.hasEventListener(evt.type)){
+		evt = (typeof evt === 'string')? {type: evt} : evt; //create Object if not an Object to always call handlers with same type of argument.
+		if(this.hasEventListener(evt.type) && this.willDispatch(evt.type)){
 			var typeHandlers = this._handlers[evt.type], //stored for performance
 				curHandler,
 				i,
@@ -121,7 +121,7 @@ millermedeiros.EventDispatcher.prototype = {
 	},
 	
 	/**
-	 * Check if Event will be dispatched (i.e. If event type is enabled)
+	 * Check if Event type is enabled and will be dispatched
 	 * @param {string} evtType	Event type.	
 	 * @return {boolean} If Event will be dispatched.
 	 */
@@ -163,9 +163,10 @@ millermedeiros.EventDispatcher.prototype = {
 		while(n--){
 			curType = types[n];
 			m = this._disabled.length;
-			while(m--){
+			while(m--){ //Array.prototype.indexOf isn't available on all browsers
 				if(this._disabled[m] === curType){
 					this._disabled.splice(m, 1);
+					break; //avoid looping more than necessary
 				}
 			}
 		}
@@ -395,7 +396,7 @@ millermedeiros.event.removeListener = function(elm, eType, fn){
  * Hasher
  * - History Manager for rich-media applications.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.9.6 (2010/11/01)
+ * @version 0.9.8 (2010/11/01)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 (function(window, document){
@@ -438,7 +439,7 @@ millermedeiros.event.removeListener = function(elm, eType, fn){
 		/** @private {number} stores setInterval reference (used to check if hash changed on non-standard browsers) */
 		_checkInterval,
 		
-		/** @private {boolean} If Hasher is active and should listen/dispatch changes on the window location hash */
+		/** @private {boolean} If Hasher is active and should listen to changes on the window location hash */
 		_isActive,
 		
 		/** @private {Element} iframe used for IE <= 7 */
@@ -469,10 +470,12 @@ millermedeiros.event.removeListener = function(elm, eType, fn){
 	
 	/**
 	 * Remove `Hasher.prependHash` and `Hasher.appendHash` from hashValue
-	 * @param {string} hash	Hash value
+	 * @param {string} [hash]	Hash value
+	 * @return {string}
 	 * @private
 	 */
 	function _trimHash(hash){
+		hash = hash || '';
 		var regexp = new RegExp('^\\'+ Hasher.prependHash +'|\\'+ Hasher.appendHash +'$', 'g'); //match appendHash and prependHash
 		return hash.replace(regexp, '');
 	}
@@ -584,9 +587,9 @@ millermedeiros.event.removeListener = function(elm, eType, fn){
 	/**
 	 * Hasher Version Number
 	 * @type string
-	 * @const
+	 * @constant
 	 */
-	Hasher.VERSION = '0.9.7';
+	Hasher.VERSION = '0.9.8';
 	
 	/**
 	 * String that should always be added to the end of Hash value.
@@ -621,6 +624,7 @@ millermedeiros.event.removeListener = function(elm, eType, fn){
 	
 	/**
 	 * Start listening/dispatching changes in the hash/history.
+	 * - Hasher won't dispatch CHANGE events by manually typing a new value or pressing the back/forward buttons before calling this method.
 	 */
 	Hasher.init = function(){
 		if(_isActive){
@@ -646,11 +650,13 @@ millermedeiros.event.removeListener = function(elm, eType, fn){
 		}
 		
 		_isActive = true;
-		this.dispatchEvent(new HasherEvent(HasherEvent.INIT, oldHash, _hash));
+		this.dispatchEvent(new HasherEvent(HasherEvent.INIT, _trimHash(oldHash), _trimHash(_hash)));
 	};
 	
 	/**
 	 * Stop listening/dispatching changes in the hash/history.
+	 * - Hasher won't dispatch CHANGE events by manually typing a new value or pressing the back/forward buttons after calling this method, unless you call Hasher.init() again.
+	 * - Hasher will still dispatch changes made programatically by calling Hasher.setHash();
 	 */
 	Hasher.stop = function(){
 		if(!_isActive){
@@ -665,7 +671,15 @@ millermedeiros.event.removeListener = function(elm, eType, fn){
 		}
 		
 		_isActive = false;
-		this.dispatchEvent(new HasherEvent(HasherEvent.STOP, _hash, _hash)); //since it didn't changed oldHash and newHash should be the same. [?]
+		this.dispatchEvent(new HasherEvent(HasherEvent.STOP, _trimHash(_hash), _trimHash(_hash))); //since it didn't changed oldHash and newHash should be the same. [?]
+	};
+	
+	/**
+	 * Retrieve if Hasher is listening to changes on the browser history and/or hash value.
+	 * @return {boolean}	If Hasher is listening to changes on the browser history and/or hash value.
+	 */
+	Hasher.isActive = function(){
+		return _isActive;
 	};
 	
 	/**

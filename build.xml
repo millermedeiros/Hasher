@@ -71,7 +71,7 @@
 			<arg line="-jar" />
 			<arg path="${jsdoc-toolkit.dir}/jsrun.jar" />
 			<arg value="${jsdoc-toolkit.dir}/app/run.js" />
-			<arg value="-t=${jsdoc-toolkit.dir}/templates/urso-jsdoc-simple" />
+			<arg value="-t=${jsdoc-toolkit.dir}/templates/hasher" />
 			<arg value="-d=${docs.dir}" />
 		</apply>
 		<echo message="Documentation generated" />
@@ -85,7 +85,11 @@
 		</jslint>
 	</target>
 	
-	<target name="all" depends="purge, -mkdirs, concat, lint, minify, generateDoc">
+	<target name="compile" depends="concat, lint, minify">
+		<echo message="Compiled." />
+	</target>
+	
+	<target name="all" depends="purge, -mkdirs, compile, generateDoc">
 		<echo message="Build Complete." />
 	</target>
 	

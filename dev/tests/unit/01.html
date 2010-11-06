@@ -3,7 +3,7 @@
 	<head>
 		<link rel="stylesheet" href="./qunit/qunit.css" type="text/css" media="screen" />
 		<script type="text/javascript" src="./qunit/qunit.js"></script>
-		<script type="text/javascript" src="../../../dist/js/Hasher-0.9.7.js"></script>
+		<script type="text/javascript" src="../../../dist/js/Hasher-0.9.8.js"></script>
 		<title>Untitled</title>
 	</head>
 	<body>
@@ -28,7 +28,7 @@
 			 *		----------------------------------------------------------------------- 
 			 * 
 			 * 		IMPORTANT: 
-			 * 			- unit test doesn't work properly on Chrome because of browser bug:
+			 * 			- unit test doesn't work properly on Chrome <= 6 because of browser bug:
 			 * 			  http://code.google.com/p/chromium/issues/detail?id=45419
 			 * 
 			 * 		-----------------------------------------------------------------------
@@ -331,14 +331,15 @@
 			/* == */
 			
 			
-			/* ==== stop and dispose ==== */
+			/* ==== init and stop ==== */
 			
-			module('stop and dispose');
+			module('init and stop');
 			
 			var stopTest = function(){
 				stop(200);
-				expect(4);
+				expect(5);
 				
+				ok(Hasher.isActive(), "Is active");
 				ok(! Hasher.hasEventListener(HasherEvent.STOP), "No STOP Listener");
 				
 				Hasher.addEventListener(HasherEvent.STOP, function(evt){
@@ -358,8 +359,9 @@
 			
 			var stopFailTest = function(){
 				stop(200);
-				expect(4);
+				expect(5);
 				
+				ok(! Hasher.isActive(), "Is not active");
 				ok(! Hasher.hasEventListener(HasherEvent.STOP), "No STOP Listener");
 				
 				var handler = function(evt){
@@ -385,12 +387,13 @@
 			
 			var initTest = function(){
 				stop(200);
-				expect(4);
+				expect(6);
 				
+				ok(! Hasher.isActive(), "Is not active");
 				ok(! Hasher.hasEventListener(HasherEvent.INIT), "No INIT Listener");
 				
 				Hasher.addEventListener(HasherEvent.INIT, function(evt){
-					
+					ok(Hasher.isActive(), "Is active");
 					ok(true, "HasherEvent.INIT dispatched");
 					
 					Hasher.removeEventListener(HasherEvent.INIT, arguments.callee);
@@ -406,8 +409,9 @@
 			
 			var initFailTest = function(){
 				stop(200);
-				expect(4);
+				expect(6);
 				
+				ok(Hasher.isActive(), "Is active");
 				ok(! Hasher.hasEventListener(HasherEvent.INIT), "No INIT Listener");
 				
 				var handler = function(evt){
@@ -423,6 +427,7 @@
 				
 				var delayedStart = function(){
 					ok(true, 'Didn\'t dispatched INIT event.');
+					ok(Hasher.isActive(), "Is active");
 					Hasher.removeAllEventListeners(HasherEvent.INIT);
 					ok(! Hasher.hasEventListener(HasherEvent.INIT), "Removed INIT Listener");
 					start();
@@ -430,6 +435,134 @@
 				
 				setTimeout(delayedStart, 100);
 			};
+			
+			test('stop #1', stopTest);
+			test('stop fail #1', stopFailTest);
+			test('stop fail #2', stopFailTest);
+			test('init #1', initTest);
+			test('init fail #1', initFailTest);
+			test('init fail #2', initFailTest);
+			test('stop #2', stopTest);
+			test('init #2', initTest);
+			test('stop #3', stopTest);
+			
+			/* == */
+			
+			/* ==== disable events ==== */
+			
+			module('disable');
+			
+			
+			var disableInitTest = function(){
+				stop(200);
+				expect(6);
+				
+				ok(! Hasher.isActive(), "Is not active");
+				ok(! Hasher.hasEventListener(HasherEvent.INIT), "No INIT Listener");
+				
+				var handler = function(evt){
+					ok(false, "HasherEvent.INIT dispatched"); //shouldn't happen
+					Hasher.removeAllEventListeners(HasherEvent.INIT);
+					start();
+				};
+				Hasher.addEventListener(HasherEvent.INIT, handler);
+				
+				ok(Hasher.hasEventListener(HasherEvent.INIT), "Attached INIT Listener");
+				
+				Hasher.disableEvent(HasherEvent.INIT);
+				
+				Hasher.init();
+				
+				var delayedStart = function(){
+					ok(true, 'Didn\'t dispatched INIT event.');
+					ok(Hasher.isActive(), "Is active");
+					Hasher.removeAllEventListeners(HasherEvent.INIT);
+					ok(! Hasher.hasEventListener(HasherEvent.INIT), "Removed INIT Listener");
+					start();
+				};
+				
+				setTimeout(delayedStart, 100);
+				
+			};
+			
+			
+			var disableChangeTest = function(){
+				stop(200);
+				expect(6);
+				
+				ok(Hasher.isActive(), "Is active");
+				ok(! Hasher.hasEventListener(HasherEvent.CHANGE), "No CHANGE Listener");
+				
+				var handler = function(evt){
+					ok(false, "HasherEvent.CHANGE dispatched"); //shouldn't happen
+					Hasher.removeAllEventListeners(HasherEvent.CHANGE);
+					start();
+				};
+				Hasher.addEventListener(HasherEvent.CHANGE, handler);
+				
+				ok(Hasher.hasEventListener(HasherEvent.CHANGE), "Attached CHANGE Listener");
+				
+				Hasher.disableEvent(HasherEvent.CHANGE);
+				
+				Hasher.setHash('01');
+				Hasher.setHash('02');
+				Hasher.back();
+				Hasher.forward();
+				
+				var delayedStart = function(){
+					ok(true, 'Didn\'t dispatched CHANGE event.');
+					ok(Hasher.isActive(), "Is active");
+					Hasher.removeAllEventListeners(HasherEvent.CHANGE);
+					ok(! Hasher.hasEventListener(HasherEvent.CHANGE), "Removed CHANGE Listener");
+					start();
+				};
+				
+				setTimeout(delayedStart, 100);
+				
+			};
+			
+			
+			var disableStopTest = function(){
+				stop(200);
+				expect(6);
+				
+				ok(Hasher.isActive(), "Is active");
+				ok(! Hasher.hasEventListener(HasherEvent.STOP), "No STOP Listener");
+				
+				var handler = function(evt){
+					ok(false, "HasherEvent.STOP dispatched"); //shouldn't happen
+					Hasher.removeAllEventListeners(HasherEvent.STOP);
+					start();
+				};
+				Hasher.addEventListener(HasherEvent.STOP, handler);
+				
+				ok(Hasher.hasEventListener(HasherEvent.STOP), "Attached STOP Listener");
+				
+				Hasher.disableEvent(HasherEvent.STOP);
+				
+				Hasher.stop();
+				
+				var delayedStart = function(){
+					ok(true, 'Didn\'t dispatched STOP event.');
+					ok(! Hasher.isActive(), "Is not active");
+					Hasher.removeAllEventListeners(HasherEvent.STOP);
+					ok(! Hasher.hasEventListener(HasherEvent.STOP), "Removed INIT Listener");
+					start();
+				};
+				
+				setTimeout(delayedStart, 100);
+				
+			};
+			
+			test('disable INIT', disableInitTest);
+			test('disable CHANGE', disableChangeTest);
+			test('disable STOP', disableStopTest);
+			
+			/* === */
+			
+			/* ==== dispose ==== */
+			
+			module('dispose');
 			
 			var disposeTest = function(){
 				stop(200);
@@ -447,18 +580,7 @@
 				start();
 			};
 			
-			test('stop #1', stopTest);
-			test('stop fail #1', stopFailTest);
-			test('stop fail #2', stopFailTest);
-			test('init #1', initTest);
-			test('init fail #1', initFailTest);
-			test('init fail #2', initFailTest);
-			test('stop #2', stopTest);
-			test('init #2', initTest);
-			
 			test('dispose', disposeTest);
-			
-			/* == */
 			
 		</script>
 	</body>

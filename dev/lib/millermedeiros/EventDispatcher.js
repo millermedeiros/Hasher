@@ -2,7 +2,7 @@
  * EventDispatcher Object, used to allow Custom Objects to dispatch events.
  * @constructor
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.8.2 (2010/08/26)
+ * @version 0.9 (2010/11/05)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 millermedeiros.EventDispatcher = function(){
@@ -27,7 +27,7 @@ millermedeiros.EventDispatcher.prototype = {
 	 * @param {Function} fn	Event Handler.
 	 */
 	addEventListener : function(eType, fn){
-		if(typeof this._handlers[eType] == 'undefined'){
+		if(typeof this._handlers[eType] === 'undefined'){
 			this._handlers[eType] = [];
 		}
 		this._handlers[eType].push(fn);
@@ -74,7 +74,7 @@ millermedeiros.EventDispatcher.prototype = {
 	 * @return {boolean}
 	 */
 	hasEventListener : function(eType){
-		return (typeof this._handlers[eType] != 'undefined');
+		return (typeof this._handlers[eType] !== 'undefined');
 	},
 
 	/**
@@ -84,8 +84,8 @@ millermedeiros.EventDispatcher.prototype = {
 	 * @return {boolean} If Event was successfully dispatched.
 	 */
 	dispatchEvent : function(evt){
-		evt = (typeof evt == 'string')? {type: evt} : evt; //create Object if not an Object to always call handlers with same type of argument.
-		if(this.hasEventListener(evt.type)){
+		evt = (typeof evt === 'string')? {type: evt} : evt; //create Object if not an Object to always call handlers with same type of argument.
+		if(this.hasEventListener(evt.type) && this.willDispatch(evt.type)){
 			var typeHandlers = this._handlers[evt.type], //stored for performance
 				curHandler,
 				i,
@@ -101,7 +101,7 @@ millermedeiros.EventDispatcher.prototype = {
 	},
 	
 	/**
-	 * Check if Event will be dispatched (i.e. If event type is enabled)
+	 * Check if Event type is enabled and will be dispatched
 	 * @param {string} evtType	Event type.	
 	 * @return {boolean} If Event will be dispatched.
 	 */
@@ -143,9 +143,10 @@ millermedeiros.EventDispatcher.prototype = {
 		while(n--){
 			curType = types[n];
 			m = this._disabled.length;
-			while(m--){
+			while(m--){ //Array.prototype.indexOf isn't available on all browsers
 				if(this._disabled[m] === curType){
 					this._disabled.splice(m, 1);
+					break; //avoid looping more than necessary
 				}
 			}
 		}
