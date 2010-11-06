@@ -169,7 +169,7 @@
 	 */
 	function _checkHistoryLegacyIE(){
 		var windowHash = _getWindowHash(),
-			frameHash = _getFrameHash();
+			frameHash = _trimHash(_getFrameHash());
 		if(frameHash != _hash && frameHash != windowHash){ //detect changes made pressing browser history buttons. Workaround since history.back() and history.forward() doesn't update hash value on IE6/7 but updates content of the iframe.
 			Hasher.setHash(frameHash);
 		}else if(windowHash != _hash){ //detect if hash changed (manually or using setHash)

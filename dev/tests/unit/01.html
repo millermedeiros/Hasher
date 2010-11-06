@@ -143,7 +143,8 @@
 				ok(! Hasher.hasEventListener(HasherEvent.INIT), "No INIT Listener");
 				ok(! Hasher.hasEventListener(HasherEvent.STOP), "No STOP Listener");
 				
-				location.hash = ''; //resets location.hash
+				Hasher.setHash(''); //resets hash value
+				
 				
 				start();
 				
