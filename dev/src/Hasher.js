@@ -1,8 +1,7 @@
-/*
- * Hasher
- * - History Manager for rich-media applications.
+/*!!
+ * Hasher <http://github.com/millermedeiros/Hasher>
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version ::VERSION_NUMBER::
+ * @version ::VERSION_NUMBER:: (::BUILD_DATE::)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 (function(window, document){

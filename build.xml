@@ -26,6 +26,9 @@
 
 	<target name="concat" depends="-mkdirs" description="Concatenate Files and outputs uncompressed version of Hasher.">
 		<echo message="Building ${dist.name}" />
+		<tstamp>
+      <format property="build.date" pattern="yyyy/MM/dd hh:mm aa" unit="hour"/>
+    </tstamp>
 		<concat destfile="${dist.dir}/${dist.name}" fixlastline="yes" eol="unix">
             <fileset file="${src.dir}/copyright.inc" />
             <fileset file="${lib.dir}/millermedeiros/intro.js" />
@@ -35,8 +38,9 @@
             <fileset file="${lib.dir}/millermedeiros/outro.js" />
             <fileset file="${lib.dir}/js-signals/js-signals.js" />
             <fileset file="${src.dir}/Hasher.js" />
-        </concat>
+    </concat>
 		<replace file="${dist.dir}/${dist.name}" token="::VERSION_NUMBER::" value="${version.number}"/>
+		<replace file="${dist.dir}/${dist.name}" token="::BUILD_DATE::" value="${build.date}"/>
 		<replace file="${dist.dir}/${dist.name}" token="::evtDispatcher_version::" value="${evtDispatcher.version}"/>
 		<replace file="${dist.dir}/${dist.name}" token="::queryUtils_version::" value="${queryUtils.version}"/>
 		<replace file="${dist.dir}/${dist.name}" token="::listenerFacade_version::" value="${listenerFacade.version}"/>

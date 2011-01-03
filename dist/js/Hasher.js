@@ -1,18 +1,10 @@
-/*!
- * Hasher <http://github.com/millermedeiros/Hasher>
- * Includes: js-signals (::js-signals_version::), millermedeiros.queryUtils (0.8.2), millermedeiros.event-listenerFacade (0.3)
- * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.9.9 ::BUILD_DATE::
- * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
- */
-(function(window, document){
-/*
+/*!!
  * Miller Medeiros JS Library
  * @author Miller Medeiros
  * @version 0.1.1 (2010/11/01)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
- 
+(function(window, document){
 /**
  * @namespace Miller Medeiros Namespace
  * @name millermedeiros
@@ -533,11 +525,10 @@ millermedeiros.event.removeListener = function(elm, eType, fn){
 		
 	};
 }());
-/*
- * Hasher
- * - History Manager for rich-media applications.
+/*!!
+ * Hasher <http://github.com/millermedeiros/Hasher>
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.9.9
+ * @version 0.9.9 (2011/01/02 11:08 PM)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 (function(window, document){
