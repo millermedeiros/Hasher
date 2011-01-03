@@ -1,4 +1,4 @@
-![hasher-logo.gif](http://github.com/millermedeiros/Hasher/raw/master/assets/hasher-logo.gif)
+![hasher-logo.gif](https://github.com/millermedeiros/Hasher/raw/master/assets/hasher-logo.gif)
 
 Hasher is a set of JavaScript functions to control browser history for rich-media websites and applications.
 It works as an abstraction of browsers native methods plus some extra helper methods, it also has the advantage of dispatching Events when the history state change across multiple browsers (since this feature isn't supported by all of them).
@@ -27,6 +27,23 @@ It works as an abstraction of browsers native methods plus some extra helper met
  - Follow best practices/standards.
  - Standalone.
  - Fully unit tested.
+
+## Basic Example ##
+    
+    //handle hash changes
+    function handleChanges(newHash, oldHash){
+      switch(newHash){
+        case 'lorem':
+          alert('ipsum');
+        case 'foo':
+          alert('bar');
+      }
+    }
+     
+    Hasher.changed.add(handleChanges); //add hash change listener
+    Hasher.init(); //initialize hasher
+    
+    Hasher.setHash('foo'); //change hash value (generates new history record)
 
 ## Important ##
 
