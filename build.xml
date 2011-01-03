@@ -30,14 +30,12 @@
             <fileset file="${src.dir}/copyright.inc" />
             <fileset file="${lib.dir}/millermedeiros/intro.js" />
             <fileset file="${lib.dir}/millermedeiros/main.js" />
-            <fileset file="${lib.dir}/millermedeiros/EventDispatcher.js" />
             <fileset file="${lib.dir}/millermedeiros/queryUtils.js" />
             <fileset file="${lib.dir}/millermedeiros/event-listenerFacade.js" />
             <fileset file="${lib.dir}/millermedeiros/outro.js" />
-            <fileset file="${src.dir}/HasherEvent.js" />
+            <fileset file="${lib.dir}/js-signals/js-signals.js" />
             <fileset file="${src.dir}/Hasher.js" />
         </concat>
-		<replace file="${dist.dir}/${dist.name}" token="::version::" value="${version.number} ${version.date}"/>
 		<replace file="${dist.dir}/${dist.name}" token="::VERSION_NUMBER::" value="${version.number}"/>
 		<replace file="${dist.dir}/${dist.name}" token="::evtDispatcher_version::" value="${evtDispatcher.version}"/>
 		<replace file="${dist.dir}/${dist.name}" token="::queryUtils_version::" value="${queryUtils.version}"/>
@@ -76,7 +74,7 @@
 		</apply>
 		<echo message="Documentation generated" />
 	</target>
-	
+
 	<target name="lint" description="Validate source code using JSLint.">
 		<jslint haltOnFailure="false" options="browser, onevar, undef, bitwise, newcap, immed">
 			<formatter type="plain" />
@@ -84,8 +82,8 @@
 			<fileset dir="${dist.dir}" includes="*.js" excludes="*.min.js" />
 		</jslint>
 	</target>
-	
-	<target name="compile" depends="concat, lint, minify">
+
+	<target name="compile" depends="concat, minify">
 		<echo message="Compiled." />
 	</target>
 	

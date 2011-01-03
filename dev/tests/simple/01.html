@@ -4,7 +4,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>Hasher simple test</title>
-		<script type="text/javascript" src="../../../dist/js/Hasher-0.9.9.js"></script>
+		<script type="text/javascript" src="../../../dist/js/Hasher.js"></script>
 		<style type="text/css">
 			#logger{
 				background-color:#eee; border:1px solid #ddd; margin: 20px 0;
@@ -25,9 +25,9 @@
 				<li><a href="javascript:Hasher.forward();">Hasher.forward()</a></li>
 				<li><a href="javascript:Hasher.init();">Hasher.init()</a></li>
 				<li><a href="javascript:Hasher.stop();">Hasher.stop()</a></li>
-				<li><a href="javascript:Hasher.disableEvent(HasherEvent.CHANGE);">Hasher.disableEvent(HasherEvent.CHANGE)</a></li>
-				<li><a href="javascript:Hasher.enableEvent(HasherEvent.CHANGE);">Hasher.enableEvent(HasherEvent.CHANGE)</a></li>
-				<li><a href="javascript:log(Hasher.isEventEnabled(HasherEvent.CHANGE));">Hasher.isEventEnabled(HasherEvent.CHANGE)</a></li>
+				<li><a href="javascript:Hasher.changed.disable();">Hasher.changed.disable()</a></li>
+				<li><a href="javascript:Hasher.changed.enable();">Hasher.changed.enable()</a></li>
+				<li><a href="javascript:log(Hasher.changed.isEnabled());">Hasher.changed.isEnabled()</a></li>
 			</ul>
 			<ul>
 				<li><a href="javascript:clearLog();">clear log</a></li>
@@ -48,32 +48,32 @@
 				document.getElementById('logger').innerHTML = '';
 			}
 			
-			function onChange(e){
-				log('onChange:', Hasher.getHash(), Hasher.getHashAsArray());
+			function onChange(a, b){
+				log('onChange: '+ Hasher.getHash() +' - ['+ Hasher.getHashAsArray() +']');
 			}
 			
-			function onChange2(e){
-				log('onChange2:', e);
+			function onChange2(a, b){
+				log('onChange2: '+ a +' - '+ b);
 			}
 			
-			function onChange3(e){
+			function onChange3(a, b){
 				log('onChange3');
 			}
 			
-			Hasher.addEventListener(HasherEvent.CHANGE, onChange);
+			Hasher.changed.add(onChange);
 			
-			Hasher.addEventListener(HasherEvent.INIT, function(e){
-			    log(e);
+			Hasher.initialized.add(function(e){
+			    log('initialized', e);
 			});
 			
 			Hasher.init();
 			
 			//used to test multiple listeners to the same event
-			Hasher.addEventListener(HasherEvent.CHANGE, onChange2);
-			Hasher.addEventListener(HasherEvent.CHANGE, onChange3);
+			Hasher.changed.add(onChange2);
+			Hasher.changed.add(onChange3);
 			
-			Hasher.addEventListener(HasherEvent.STOP, function(e){
-				log(e);
+			Hasher.stopped.add(function(e){
+				log('stopped', e);
 			});
 		</script>
     </body>

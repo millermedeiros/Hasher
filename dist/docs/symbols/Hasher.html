@@ -38,15 +38,17 @@
 	
 	<li><a href="../symbols/Hasher.html">Hasher</a></li>
 	
-	<li><a href="../symbols/HasherEvent.html">HasherEvent</a></li>
-	
 	<li><a href="../symbols/millermedeiros.html">millermedeiros</a></li>
 	
 	<li><a href="../symbols/millermedeiros.event.html">millermedeiros.event</a></li>
 	
-	<li><a href="../symbols/millermedeiros.EventDispatcher.html">millermedeiros.EventDispatcher</a></li>
-	
 	<li><a href="../symbols/millermedeiros.queryUtils.html">millermedeiros.queryUtils</a></li>
+	
+	<li><a href="../symbols/signals.html">signals</a></li>
+	
+	<li><a href="../symbols/signals.Signal.html">signals.Signal</a></li>
+	
+	<li><a href="../symbols/signals.SignalBinding.html">signals.SignalBinding</a></li>
 	
 </ul>
 
@@ -77,11 +79,23 @@
                  </li>
                
                  <li class="fixedFont">
+                   <a href="../symbols/Hasher.html#.changed">changed</a>
+                 </li>
+               
+                 <li class="fixedFont">
+                   <a href="../symbols/Hasher.html#.initialized">initialized</a>
+                 </li>
+               
+                 <li class="fixedFont">
                    <a href="../symbols/Hasher.html#.prependHash">prependHash</a>
                  </li>
                
                  <li class="fixedFont">
                    <a href="../symbols/Hasher.html#.separator">separator</a>
+                 </li>
+               
+                 <li class="fixedFont">
+                   <a href="../symbols/Hasher.html#.stopped">stopped</a>
                  </li>
                
                  <li class="fixedFont">
@@ -197,29 +211,12 @@
 <!-- ============================== class summary ========================== -->			
 			<p class="description">
 				
-				<br />Extends
-					<a href="../symbols/millermedeiros.EventDispatcher.html">millermedeiros.EventDispatcher</a>.<br />
-
-                    
-                        <dl class="inheritsList">
-                        
-                        </dl>
-                    
-
-                    
-                        <dl class="inheritsList">
-                        <dt>Methods borrowed from class <a href="../symbols/millermedeiros.EventDispatcher.html">millermedeiros.EventDispatcher</a>: </dt><dd><a href="../symbols/millermedeiros.EventDispatcher.html#addEventListener">addEventListener</a>, <a href="../symbols/millermedeiros.EventDispatcher.html#disableEvent">disableEvent</a>, <a href="../symbols/millermedeiros.EventDispatcher.html#dispatchEvent">dispatchEvent</a>, <a href="../symbols/millermedeiros.EventDispatcher.html#enableEvent">enableEvent</a>, <a href="../symbols/millermedeiros.EventDispatcher.html#hasEventListener">hasEventListener</a>, <a href="../symbols/millermedeiros.EventDispatcher.html#isEventEnabled">isEventEnabled</a>, <a href="../symbols/millermedeiros.EventDispatcher.html#removeAllEventListeners">removeAllEventListeners</a>, <a href="../symbols/millermedeiros.EventDispatcher.html#removeEventListener">removeEventListener</a></dd>
-                        </dl>
-                    
-
-                    
-
 				
 			
 				History Manager for rich-media applications.
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/C__Miller_Personal_millermedeiros_Hasher_dist_js_Hasher-0.9.9.js.html">Hasher-0.9.9.js</a>.
+					<br /><i>Defined in: </i> <a href="../symbols/src/_Users_millermedeiros_Documents_Projects__open_source_Hasher_dist_js_Hasher.js.html">Hasher.js</a>.
 				
 			</p>
 
@@ -291,6 +288,54 @@
                   </div>
 				
                   <div class="member">
+					<a name=".changed"> </a>
+					<div class="fixedFont">
+                      <div class="modifiers">&lt;static&gt; 
+                      </div>
+					
+					<span class="light">{<a href="../symbols/signals.Signal.html">signals.Signal</a>}</span>
+					<span class="light">Hasher.</span><b>changed</b>
+					
+					</div>
+					<div class="description">
+						<p>Signal dispatched when hash value changes</p>
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+                  </div>
+				
+                  <div class="member">
+					<a name=".initialized"> </a>
+					<div class="fixedFont">
+                      <div class="modifiers">&lt;static&gt; 
+                      </div>
+					
+					<span class="light">{<a href="../symbols/signals.Signal.html">signals.Signal</a>}</span>
+					<span class="light">Hasher.</span><b>initialized</b>
+					
+					</div>
+					<div class="description">
+						<p>Signal dispatched when hasher is initialized</p>
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+                  </div>
+				
+                  <div class="member">
 					<a name=".prependHash"> </a>
 					<div class="fixedFont">
                       <div class="modifiers">&lt;static&gt; 
@@ -336,6 +381,30 @@
 <ul>
 <li>default value: '/';</li>
 </ul>
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+                  </div>
+				
+                  <div class="member">
+					<a name=".stopped"> </a>
+					<div class="fixedFont">
+                      <div class="modifiers">&lt;static&gt; 
+                      </div>
+					
+					<span class="light">{<a href="../symbols/signals.Signal.html">signals.Signal</a>}</span>
+					<span class="light">Hasher.</span><b>stopped</b>
+					
+					</div>
+					<div class="description">
+						<p>Signal dispatched when hasher is stopped</p>
 						
 						
 					</div>
@@ -1102,7 +1171,7 @@
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both;text-align:center">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blankt">JsDoc Toolkit</a> 2.4.0 on Fri Nov 05 2010 22:44:02 GMT-0400 (EDT)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blankt">JsDoc Toolkit</a> 2.4.0 on Sun Jan 02 2011 22:28:00 GMT-0500 (EST)
 			 | template based on Steffen Siering <a href="http://github.com/urso/jsdoc-simple">jsdoc-simple</a>.
 		</div>
 	</body>

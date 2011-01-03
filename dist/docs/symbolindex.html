@@ -74,15 +74,17 @@
 	
 	<li><a href="symbols/Hasher.html">Hasher</a></li>
 	
-	<li><a href="symbols/HasherEvent.html">HasherEvent</a></li>
-	
 	<li><a href="symbols/millermedeiros.html">millermedeiros</a></li>
 	
 	<li><a href="symbols/millermedeiros.event.html">millermedeiros.event</a></li>
 	
-	<li><a href="symbols/millermedeiros.EventDispatcher.html">millermedeiros.EventDispatcher</a></li>
-	
 	<li><a href="symbols/millermedeiros.queryUtils.html">millermedeiros.queryUtils</a></li>
+	
+	<li><a href="symbols/signals.html">signals</a></li>
+	
+	<li><a href="symbols/signals.Signal.html">signals.Signal</a></li>
+	
+	<li><a href="symbols/signals.SignalBinding.html">signals.SignalBinding</a></li>
 	
 </ul>
 
@@ -95,12 +97,10 @@
                 <table id="symbolOverview">
                   
                     <tr class="symbolEntry">
-                      <td class="symbolName">addEventListener</td>
+                      <td class="symbolName">add</td>
                       <td>
                         
-                          <a href="symbols/millermedeiros.EventDispatcher.html#addEventListener">millermedeiros.EventDispatcher#addEventListener</a>
-                        
-                          <a href="symbols/millermedeiros.EventDispatcher.html#addEventListener">millermedeiros.EventDispatcher#addEventListener</a>
+                          <a href="symbols/signals.Signal.html#add">signals.Signal#add</a>
                         
                       </td>
                     </tr>
@@ -110,6 +110,15 @@
                       <td>
                         
                           <a href="symbols/millermedeiros.event.html#.addListener">millermedeiros.event.addListener</a>
+                        
+                      </td>
+                    </tr>
+                  
+                    <tr class="symbolEntry">
+                      <td class="symbolName">addOnce</td>
+                      <td>
+                        
+                          <a href="symbols/signals.Signal.html#addOnce">signals.Signal#addOnce</a>
                         
                       </td>
                     </tr>
@@ -133,32 +142,48 @@
                     </tr>
                   
                     <tr class="symbolEntry">
-                      <td class="symbolName">CHANGE</td>
+                      <td class="symbolName">changed</td>
                       <td>
                         
-                          <a href="symbols/HasherEvent.html#.CHANGE">HasherEvent.CHANGE</a>
+                          <a href="symbols/Hasher.html#.changed">Hasher.changed</a>
                         
                       </td>
                     </tr>
                   
                     <tr class="symbolEntry">
-                      <td class="symbolName">disableEvent</td>
+                      <td class="symbolName">context</td>
                       <td>
                         
-                          <a href="symbols/millermedeiros.EventDispatcher.html#disableEvent">millermedeiros.EventDispatcher#disableEvent</a>
-                        
-                          <a href="symbols/millermedeiros.EventDispatcher.html#disableEvent">millermedeiros.EventDispatcher#disableEvent</a>
+                          <a href="symbols/signals.SignalBinding.html#context">signals.SignalBinding#context</a>
                         
                       </td>
                     </tr>
                   
                     <tr class="symbolEntry">
-                      <td class="symbolName">dispatchEvent</td>
+                      <td class="symbolName">detach</td>
                       <td>
                         
-                          <a href="symbols/millermedeiros.EventDispatcher.html#dispatchEvent">millermedeiros.EventDispatcher#dispatchEvent</a>
+                          <a href="symbols/signals.SignalBinding.html#detach">signals.SignalBinding#detach</a>
                         
-                          <a href="symbols/millermedeiros.EventDispatcher.html#dispatchEvent">millermedeiros.EventDispatcher#dispatchEvent</a>
+                      </td>
+                    </tr>
+                  
+                    <tr class="symbolEntry">
+                      <td class="symbolName">disable</td>
+                      <td>
+                        
+                          <a href="symbols/signals.Signal.html#disable">signals.Signal#disable</a>
+                        
+                          <a href="symbols/signals.SignalBinding.html#disable">signals.SignalBinding#disable</a>
+                        
+                      </td>
+                    </tr>
+                  
+                    <tr class="symbolEntry">
+                      <td class="symbolName">dispatch</td>
+                      <td>
+                        
+                          <a href="symbols/signals.Signal.html#dispatch">signals.Signal#dispatch</a>
                         
                       </td>
                     </tr>
@@ -169,16 +194,20 @@
                         
                           <a href="symbols/Hasher.html#.dispose">Hasher.dispose</a>
                         
+                          <a href="symbols/signals.Signal.html#dispose">signals.Signal#dispose</a>
+                        
+                          <a href="symbols/signals.SignalBinding.html#dispose">signals.SignalBinding#dispose</a>
+                        
                       </td>
                     </tr>
                   
                     <tr class="symbolEntry">
-                      <td class="symbolName">enableEvent</td>
+                      <td class="symbolName">enable</td>
                       <td>
                         
-                          <a href="symbols/millermedeiros.EventDispatcher.html#enableEvent">millermedeiros.EventDispatcher#enableEvent</a>
+                          <a href="symbols/signals.Signal.html#enable">signals.Signal#enable</a>
                         
-                          <a href="symbols/millermedeiros.EventDispatcher.html#enableEvent">millermedeiros.EventDispatcher#enableEvent</a>
+                          <a href="symbols/signals.SignalBinding.html#enable">signals.SignalBinding#enable</a>
                         
                       </td>
                     </tr>
@@ -195,10 +224,10 @@
                     </tr>
                   
                     <tr class="symbolEntry">
-                      <td class="symbolName">EventDispatcher</td>
+                      <td class="symbolName">execute</td>
                       <td>
                         
-                          <a href="symbols/millermedeiros.EventDispatcher.html">millermedeiros.EventDispatcher</a>
+                          <a href="symbols/signals.SignalBinding.html#execute">signals.SignalBinding#execute</a>
                         
                       </td>
                     </tr>
@@ -267,6 +296,24 @@
                     </tr>
                   
                     <tr class="symbolEntry">
+                      <td class="symbolName">getListener</td>
+                      <td>
+                        
+                          <a href="symbols/signals.SignalBinding.html#getListener">signals.SignalBinding#getListener</a>
+                        
+                      </td>
+                    </tr>
+                  
+                    <tr class="symbolEntry">
+                      <td class="symbolName">getNumListeners</td>
+                      <td>
+                        
+                          <a href="symbols/signals.Signal.html#getNumListeners">signals.Signal#getNumListeners</a>
+                        
+                      </td>
+                    </tr>
+                  
+                    <tr class="symbolEntry">
                       <td class="symbolName">getParamValue</td>
                       <td>
                         
@@ -321,12 +368,10 @@
                     </tr>
                   
                     <tr class="symbolEntry">
-                      <td class="symbolName">hasEventListener</td>
+                      <td class="symbolName">halt</td>
                       <td>
                         
-                          <a href="symbols/millermedeiros.EventDispatcher.html#hasEventListener">millermedeiros.EventDispatcher#hasEventListener</a>
-                        
-                          <a href="symbols/millermedeiros.EventDispatcher.html#hasEventListener">millermedeiros.EventDispatcher#hasEventListener</a>
+                          <a href="symbols/signals.Signal.html#halt">signals.Signal#halt</a>
                         
                       </td>
                     </tr>
@@ -336,15 +381,6 @@
                       <td>
                         
                           <a href="symbols/Hasher.html">Hasher</a>
-                        
-                      </td>
-                    </tr>
-                  
-                    <tr class="symbolEntry">
-                      <td class="symbolName">HasherEvent</td>
-                      <td>
-                        
-                          <a href="symbols/HasherEvent.html">HasherEvent</a>
                         
                       </td>
                     </tr>
@@ -368,19 +404,19 @@
                     </tr>
                   
                     <tr class="symbolEntry">
-                      <td class="symbolName">INIT</td>
+                      <td class="symbolName">init</td>
                       <td>
                         
-                          <a href="symbols/HasherEvent.html#.INIT">HasherEvent.INIT</a>
+                          <a href="symbols/Hasher.html#.init">Hasher.init</a>
                         
                       </td>
                     </tr>
                   
                     <tr class="symbolEntry">
-                      <td class="symbolName">init</td>
+                      <td class="symbolName">initialized</td>
                       <td>
                         
-                          <a href="symbols/Hasher.html#.init">Hasher.init</a>
+                          <a href="symbols/Hasher.html#.initialized">Hasher.initialized</a>
                         
                       </td>
                     </tr>
@@ -395,12 +431,30 @@
                     </tr>
                   
                     <tr class="symbolEntry">
-                      <td class="symbolName">isEventEnabled</td>
+                      <td class="symbolName">isDef</td>
                       <td>
                         
-                          <a href="symbols/millermedeiros.EventDispatcher.html#isEventEnabled">millermedeiros.EventDispatcher#isEventEnabled</a>
+                          <a href="symbols/signals.html#.isDef">signals.isDef</a>
                         
-                          <a href="symbols/millermedeiros.EventDispatcher.html#isEventEnabled">millermedeiros.EventDispatcher#isEventEnabled</a>
+                      </td>
+                    </tr>
+                  
+                    <tr class="symbolEntry">
+                      <td class="symbolName">isEnabled</td>
+                      <td>
+                        
+                          <a href="symbols/signals.Signal.html#isEnabled">signals.Signal#isEnabled</a>
+                        
+                          <a href="symbols/signals.SignalBinding.html#isEnabled">signals.SignalBinding#isEnabled</a>
+                        
+                      </td>
+                    </tr>
+                  
+                    <tr class="symbolEntry">
+                      <td class="symbolName">isOnce</td>
+                      <td>
+                        
+                          <a href="symbols/signals.SignalBinding.html#isOnce">signals.SignalBinding#isOnce</a>
                         
                       </td>
                     </tr>
@@ -435,6 +489,15 @@
                     </tr>
                   
                     <tr class="symbolEntry">
+                      <td class="symbolName">remove</td>
+                      <td>
+                        
+                          <a href="symbols/signals.Signal.html#remove">signals.Signal#remove</a>
+                        
+                      </td>
+                    </tr>
+                  
+                    <tr class="symbolEntry">
                       <td class="symbolName">removeAccents</td>
                       <td>
                         
@@ -444,23 +507,10 @@
                     </tr>
                   
                     <tr class="symbolEntry">
-                      <td class="symbolName">removeAllEventListeners</td>
+                      <td class="symbolName">removeAll</td>
                       <td>
                         
-                          <a href="symbols/millermedeiros.EventDispatcher.html#removeAllEventListeners">millermedeiros.EventDispatcher#removeAllEventListeners</a>
-                        
-                          <a href="symbols/millermedeiros.EventDispatcher.html#removeAllEventListeners">millermedeiros.EventDispatcher#removeAllEventListeners</a>
-                        
-                      </td>
-                    </tr>
-                  
-                    <tr class="symbolEntry">
-                      <td class="symbolName">removeEventListener</td>
-                      <td>
-                        
-                          <a href="symbols/millermedeiros.EventDispatcher.html#removeEventListener">millermedeiros.EventDispatcher#removeEventListener</a>
-                        
-                          <a href="symbols/millermedeiros.EventDispatcher.html#removeEventListener">millermedeiros.EventDispatcher#removeEventListener</a>
+                          <a href="symbols/signals.Signal.html#removeAll">signals.Signal#removeAll</a>
                         
                       </td>
                     </tr>
@@ -502,10 +552,28 @@
                     </tr>
                   
                     <tr class="symbolEntry">
-                      <td class="symbolName">STOP</td>
+                      <td class="symbolName">Signal</td>
                       <td>
                         
-                          <a href="symbols/HasherEvent.html#.STOP">HasherEvent.STOP</a>
+                          <a href="symbols/signals.Signal.html">signals.Signal</a>
+                        
+                      </td>
+                    </tr>
+                  
+                    <tr class="symbolEntry">
+                      <td class="symbolName">SignalBinding</td>
+                      <td>
+                        
+                          <a href="symbols/signals.SignalBinding.html">signals.SignalBinding</a>
+                        
+                      </td>
+                    </tr>
+                  
+                    <tr class="symbolEntry">
+                      <td class="symbolName">signals</td>
+                      <td>
+                        
+                          <a href="symbols/signals.html">signals</a>
                         
                       </td>
                     </tr>
@@ -515,6 +583,15 @@
                       <td>
                         
                           <a href="symbols/Hasher.html#.stop">Hasher.stop</a>
+                        
+                      </td>
+                    </tr>
+                  
+                    <tr class="symbolEntry">
+                      <td class="symbolName">stopped</td>
+                      <td>
+                        
+                          <a href="symbols/Hasher.html#.stopped">Hasher.stopped</a>
                         
                       </td>
                     </tr>
@@ -543,7 +620,9 @@
                         
                           <a href="symbols/Hasher.html#.toString">Hasher.toString</a>
                         
-                          <a href="symbols/HasherEvent.html#toString">HasherEvent#toString</a>
+                          <a href="symbols/signals.Signal.html#toString">signals.Signal#toString</a>
+                        
+                          <a href="symbols/signals.SignalBinding.html#toString">signals.SignalBinding#toString</a>
                         
                       </td>
                     </tr>
@@ -554,6 +633,8 @@
                         
                           <a href="symbols/Hasher.html#.VERSION">Hasher.VERSION</a>
                         
+                          <a href="symbols/signals.html#.VERSION">signals.VERSION</a>
+                        
                       </td>
                     </tr>
                   
@@ -563,7 +644,7 @@
 		</div>
 		<div class="fineprint" style="clear:both;text-align:center">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blankt">JsDoc Toolkit</a> 2.4.0 on Fri Nov 05 2010 22:44:03 GMT-0400 (EDT)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blankt">JsDoc Toolkit</a> 2.4.0 on Sun Jan 02 2011 22:28:00 GMT-0500 (EST)
 			 | template based on Steffen Siering <a href="http://github.com/urso/jsdoc-simple">jsdoc-simple</a>.
 		</div>
 	</body>

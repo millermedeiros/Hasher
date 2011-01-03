@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - millermedeiros.EventDispatcher</title>
+		<title>JsDoc Reference - signals.SignalBinding</title>
 
         <link rel="stylesheet" href="../static/default.css" type="text/css" media="screen" charset="utf-8" />
 	</head>
@@ -38,15 +38,17 @@
 	
 	<li><a href="../symbols/Hasher.html">Hasher</a></li>
 	
-	<li><a href="../symbols/HasherEvent.html">HasherEvent</a></li>
-	
 	<li><a href="../symbols/millermedeiros.html">millermedeiros</a></li>
 	
 	<li><a href="../symbols/millermedeiros.event.html">millermedeiros.event</a></li>
 	
-	<li><a href="../symbols/millermedeiros.EventDispatcher.html">millermedeiros.EventDispatcher</a></li>
-	
 	<li><a href="../symbols/millermedeiros.queryUtils.html">millermedeiros.queryUtils</a></li>
+	
+	<li><a href="../symbols/signals.html">signals</a></li>
+	
+	<li><a href="../symbols/signals.Signal.html">signals.Signal</a></li>
+	
+	<li><a href="../symbols/signals.SignalBinding.html">signals.SignalBinding</a></li>
 	
 </ul>
 
@@ -60,7 +62,7 @@
              </h3>
              <ul>
                 <li  class="fixedFont">
-                  <a href="../symbols/millermedeiros.EventDispatcher.html">EventDispatcher</a>
+                  <a href="../symbols/signals.SignalBinding.html">SignalBinding</a>
                 </li>
              </ul>
            
@@ -68,6 +70,15 @@
 
            <!-- properties list -->
            
+           
+             <h3>Fields</h3>
+             <ul>
+               
+                 <li class="fixedFont">
+                   <a href="../symbols/signals.SignalBinding.html#context">context</a>
+                 </li>
+               
+             </ul>
            
            <!-- end properties list -->
 
@@ -78,35 +89,39 @@
              <ul>
                
                    <li class="fixedFont">
-                        <a href="../symbols/millermedeiros.EventDispatcher.html#addEventListener">addEventListener</a>
+                        <a href="../symbols/signals.SignalBinding.html#detach">detach</a>
                     </li>
                
                    <li class="fixedFont">
-                        <a href="../symbols/millermedeiros.EventDispatcher.html#disableEvent">disableEvent</a>
+                        <a href="../symbols/signals.SignalBinding.html#disable">disable</a>
                     </li>
                
                    <li class="fixedFont">
-                        <a href="../symbols/millermedeiros.EventDispatcher.html#dispatchEvent">dispatchEvent</a>
+                        <a href="../symbols/signals.SignalBinding.html#dispose">dispose</a>
                     </li>
                
                    <li class="fixedFont">
-                        <a href="../symbols/millermedeiros.EventDispatcher.html#enableEvent">enableEvent</a>
+                        <a href="../symbols/signals.SignalBinding.html#enable">enable</a>
                     </li>
                
                    <li class="fixedFont">
-                        <a href="../symbols/millermedeiros.EventDispatcher.html#hasEventListener">hasEventListener</a>
+                        <a href="../symbols/signals.SignalBinding.html#execute">execute</a>
                     </li>
                
                    <li class="fixedFont">
-                        <a href="../symbols/millermedeiros.EventDispatcher.html#isEventEnabled">isEventEnabled</a>
+                        <a href="../symbols/signals.SignalBinding.html#getListener">getListener</a>
                     </li>
                
                    <li class="fixedFont">
-                        <a href="../symbols/millermedeiros.EventDispatcher.html#removeAllEventListeners">removeAllEventListeners</a>
+                        <a href="../symbols/signals.SignalBinding.html#isEnabled">isEnabled</a>
                     </li>
                
                    <li class="fixedFont">
-                        <a href="../symbols/millermedeiros.EventDispatcher.html#removeEventListener">removeEventListener</a>
+                        <a href="../symbols/signals.SignalBinding.html#isOnce">isOnce</a>
+                    </li>
+               
+                   <li class="fixedFont">
+                        <a href="../symbols/signals.SignalBinding.html#toString">toString</a>
                     </li>
                
              </ul>
@@ -122,20 +137,18 @@
 		<div id="content">
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
-				Class millermedeiros.EventDispatcher
+				Class signals.SignalBinding
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
 			<p class="description">
-				<br />Version
-					1.0 (2010/11/05)Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>.<br />
 				
 				
 			
 				
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/C__Miller_Personal_millermedeiros_Hasher_dist_js_Hasher-0.9.9.js.html">Hasher-0.9.9.js</a>.
+					<br /><i>Defined in: </i> <a href="../symbols/src/_Users_millermedeiros_Documents_Projects__open_source_Hasher_dist_js_Hasher.js.html">Hasher.js</a>.
 				
 			</p>
 
@@ -147,17 +160,48 @@
 				</div>
 				
 				<div class="fixedFont">
-						<b>millermedeiros.EventDispatcher</b>()
+						<b>signals.SignalBinding</b>(listener, isOnce, listenerContext, signal)
 				</div>
 				
 				<div class="description">
-					<p>EventDispatcher Object, used to allow Custom Objects to dispatch events.</p>
-					<br /><i>Author: </i>Miller Medeiros <http://www.millermedeiros.com/>.
+					<p>Object that represents a binding between a Signal and a listener function.
+<br />- <strong>Constructor shouldn't be called by regular user, used internally.</strong>
+<br />- inspired by Joa Ebert AS3 SignalBinding and Robert Penner's Slot classes.</p>
+					<br /><i>Author: </i>Miller Medeiros.
 				</div>
 				
 				
 				
 				
+					
+						<dl class="detailList">
+						<dt class="heading">Parameters:</dt>
+						
+							<dt>
+								<span class="light fixedFont">{Function}</span>  <b>listener</b>
+								
+							</dt>
+								<dd>Handler function bound to the signal.</dd>
+						
+							<dt>
+								<span class="light fixedFont">{boolean}</span>  <b>isOnce</b>
+								
+							</dt>
+								<dd>If binding should be executed just once.</dd>
+						
+							<dt>
+								<span class="light fixedFont">{?Object}</span>  <b>listenerContext</b>
+								
+							</dt>
+								<dd>Context on which listener will be executed (object that should represent the `this` variable inside listener function).</dd>
+						
+							<dt>
+								<span class="light fixedFont">{<a href="../symbols/signals.Signal.html">signals.Signal</a>}</span>  <b>signal</b>
+								
+							</dt>
+								<dd>Reference to Signal object that listener is currently bound to.</dd>
+						
+						</dl>
 					
 					
 					
@@ -171,6 +215,37 @@
 
 <!-- ============================== field details ========================== -->		
 			
+              <div class="details">
+				<div class="sectionTitle">
+					Field Detail
+				</div>
+				
+                  <div class="member">
+					<a name="context"> </a>
+					<div class="fixedFont">
+                      <div class="modifiers">
+                      </div>
+					
+					<span class="light">{Object}</span>
+					<b>context</b>
+					
+					</div>
+					<div class="description">
+						<p>Context on which listener will be executed (object that should represent the <code>this</code> variable inside listener function).</p>
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+                  </div>
+				
+              </div>
+			
 
 <!-- ============================== method details ========================= -->		
 			
@@ -180,16 +255,51 @@
 				</div>
 				
                   <div class="member">
-					<a name="addEventListener"> </a>
+					<a name="detach"> </a>
+					<div class="fixedFont">
+                      <div class="modifiers">
+                      </div>
+					<span class="light">{Function}</span>
+					<b>detach</b>()
+					
+					</div>
+					<div class="description">
+						<p>Detach binding from signal.
+- alias to: mySignal.remove(myBinding.getListener());</p>
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{Function}</span> Handler function bound to the signal.</dd>
+							
+							</dl>
+						
+						
+						
+
+                  </div>
+				
+                  <div class="member">
+					<a name="disable"> </a>
 					<div class="fixedFont">
                       <div class="modifiers">
                       </div>
 					
-					<b>addEventListener</b>(eType, fn)
+					<b>disable</b>()
 					
 					</div>
 					<div class="description">
-						<p>Add Event Listener</p>
+						<p>Disable SignalBinding, block listener execution. Listener will only be executed after calling <code>enable()</code>.</p>
 						
 						
 					</div>
@@ -197,22 +307,40 @@
 					
 					
 						
+						
+						
+						
+						
+						
+						
 							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
+							<dt class="heading">See:</dt>
 							
-								<dt>
-									<span class="light fixedFont">{string}</span> <b>eType</b>
-									
-								</dt>
-								<dd>Event Type.</dd>
-							
-								<dt>
-									<span class="light fixedFont">{Function}</span> <b>fn</b>
-									
-								</dt>
-								<dd>Event Handler.</dd>
+								<dd>signals.SignalBinding.enable()</dd>
 							
 							</dl>
+						
+
+                  </div>
+				
+                  <div class="member">
+					<a name="dispose"> </a>
+					<div class="fixedFont">
+                      <div class="modifiers">
+                      </div>
+					
+					<b>dispose</b>()
+					
+					</div>
+					<div class="description">
+						<p>Remove binding from signal and destroy any reference to external Objects (destroy SignalBinding object).
+<br /> - calling methods on the binding instance after calling dispose will throw errors.</p>
+						
+						
+					</div>
+					
+					
+					
 						
 						
 						
@@ -224,16 +352,16 @@
                   </div>
 				
                   <div class="member">
-					<a name="disableEvent"> </a>
+					<a name="enable"> </a>
 					<div class="fixedFont">
                       <div class="modifiers">
                       </div>
 					
-					<b>disableEvent</b>(evtTypes)
+					<b>enable</b>()
 					
 					</div>
 					<div class="description">
-						<p>Disable Event dispatching by type</p>
+						<p>Enable SignalBinding. Enable listener execution.</p>
 						
 						
 					</div>
@@ -241,38 +369,35 @@
 					
 					
 						
+						
+						
+						
+						
+						
+						
 							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
+							<dt class="heading">See:</dt>
 							
-								<dt>
-									<span class="light fixedFont">{...string}</span> <b>evtTypes</b>
-									
-								</dt>
-								<dd>Event types that should be disabled (events types that shouldn't be dispatched)</dd>
+								<dd>signals.SignalBinding.disable()</dd>
 							
 							</dl>
-						
-						
-						
-						
-						
-						
 						
 
                   </div>
 				
                   <div class="member">
-					<a name="dispatchEvent"> </a>
+					<a name="execute"> </a>
 					<div class="fixedFont">
                       <div class="modifiers">
                       </div>
-					<span class="light">{boolean}</span>
-					<b>dispatchEvent</b>(evt)
+					<span class="light">{*}</span>
+					<b>execute</b>(paramsArr)
 					
 					</div>
 					<div class="description">
-						<p>Dispatch Event
-- Call all Handlers Listening to the Event.</p>
+						<p>Call listener passing arbitrary parameters.</p>
+
+<p>If binding was added using `Signal.addOnce()` it will be automatically removed from signal dispatch queue, this method is used internally for the signal dispatch.</p>
 						
 						
 					</div>
@@ -284,10 +409,10 @@
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{(Object|string)}</span> <b>evt</b>
-									
+									<span class="light fixedFont">{Array}</span> <b>paramsArr</b>
+									<i>Optional</i>
 								</dt>
-								<dd>Custom Event Object (property `type` is required) or String with Event type.</dd>
+								<dd>Array of parameters that should be passed to the listener</dd>
 							
 							</dl>
 						
@@ -298,7 +423,7 @@
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{boolean}</span> If Event was successfully dispatched.</dd>
+								<dd><span class="light fixedFont">{*}</span> Value returned by the listener.</dd>
 							
 							</dl>
 						
@@ -308,71 +433,22 @@
                   </div>
 				
                   <div class="member">
-					<a name="enableEvent"> </a>
+					<a name="getListener"> </a>
 					<div class="fixedFont">
                       <div class="modifiers">
                       </div>
-					
-					<b>enableEvent</b>(evtTypes)
-					
-					</div>
-					<div class="description">
-						<p>Enable Event dispatching by type</p>
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{...string}</span> <b>evtTypes</b>
-									
-								</dt>
-								<dd>Event types that should be enabled (events types that should be dispatched)</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-                  </div>
-				
-                  <div class="member">
-					<a name="hasEventListener"> </a>
-					<div class="fixedFont">
-                      <div class="modifiers">
-                      </div>
-					<span class="light">{boolean}</span>
-					<b>hasEventListener</b>(eType)
+					<span class="light">{Function}</span>
+					<b>getListener</b>()
 					
 					</div>
 					<div class="description">
-						<p>Checks if the EventDispatcher has any listeners registered for a specific type of event.</p>
+						
 						
 						
 					</div>
 					
 					
 					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{string}</span> <b>eType</b>
-									
-								</dt>
-								<dd>Event Type.</dd>
-							
-							</dl>
 						
 						
 						
@@ -381,7 +457,7 @@
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{boolean}</span> </dd>
+								<dd><span class="light fixedFont">{Function}</span> Handler function bound to the signal.</dd>
 							
 							</dl>
 						
@@ -391,33 +467,22 @@
                   </div>
 				
                   <div class="member">
-					<a name="isEventEnabled"> </a>
+					<a name="isEnabled"> </a>
 					<div class="fixedFont">
                       <div class="modifiers">
                       </div>
 					<span class="light">{boolean}</span>
-					<b>isEventEnabled</b>(evtType)
+					<b>isEnabled</b>()
 					
 					</div>
 					<div class="description">
-						<p>Check if Event type is enabled</p>
+						
 						
 						
 					</div>
 					
 					
 					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{string}</span> <b>evtType</b>
-									
-								</dt>
-								<dd>Event type.</dd>
-							
-							</dl>
 						
 						
 						
@@ -426,7 +491,7 @@
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{boolean}</span> If Event will be dispatched.</dd>
+								<dd><span class="light fixedFont">{boolean}</span> If SignalBinding is currently paused and won't execute listener during dispatch.</dd>
 							
 							</dl>
 						
@@ -436,16 +501,16 @@
                   </div>
 				
                   <div class="member">
-					<a name="removeAllEventListeners"> </a>
+					<a name="isOnce"> </a>
 					<div class="fixedFont">
                       <div class="modifiers">
                       </div>
-					
-					<b>removeAllEventListeners</b>(eType)
+					<span class="light">{boolean}</span>
+					<b>isOnce</b>()
 					
 					</div>
 					<div class="description">
-						<p>Removes all Listeners from the EventDispatcher object.</p>
+						
 						
 						
 					</div>
@@ -453,20 +518,16 @@
 					
 					
 						
+						
+						
+						
+						
 							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
+							<dt class="heading">Returns:</dt>
 							
-								<dt>
-									<span class="light fixedFont">{(string|boolean)}</span> <b>eType</b>
-									
-								</dt>
-								<dd>Event type or `true` if want to remove listeners of all event types.</dd>
+								<dd><span class="light fixedFont">{boolean}</span> If SignalBinding will only be executed once.</dd>
 							
 							</dl>
-						
-						
-						
-						
 						
 						
 						
@@ -474,16 +535,16 @@
                   </div>
 				
                   <div class="member">
-					<a name="removeEventListener"> </a>
+					<a name="toString"> </a>
 					<div class="fixedFont">
                       <div class="modifiers">
                       </div>
-					
-					<b>removeEventListener</b>(eType, fn)
+					<span class="light">{string}</span>
+					<b>toString</b>()
 					
 					</div>
 					<div class="description">
-						<p>Remove Event Listener</p>
+						
 						
 						
 					</div>
@@ -491,26 +552,16 @@
 					
 					
 						
+						
+						
+						
+						
 							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
+							<dt class="heading">Returns:</dt>
 							
-								<dt>
-									<span class="light fixedFont">{string}</span> <b>eType</b>
-									
-								</dt>
-								<dd>Event Type.</dd>
-							
-								<dt>
-									<span class="light fixedFont">{Function}</span> <b>fn</b>
-									
-								</dt>
-								<dd>Event Handler.</dd>
+								<dd><span class="light fixedFont">{string}</span> String representation of the object.</dd>
 							
 							</dl>
-						
-						
-						
-						
 						
 						
 						
@@ -529,7 +580,7 @@
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both;text-align:center">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blankt">JsDoc Toolkit</a> 2.4.0 on Fri Nov 05 2010 22:44:03 GMT-0400 (EDT)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blankt">JsDoc Toolkit</a> 2.4.0 on Sun Jan 02 2011 22:28:00 GMT-0500 (EST)
 			 | template based on Steffen Siering <a href="http://github.com/urso/jsdoc-simple">jsdoc-simple</a>.
 		</div>
 	</body>

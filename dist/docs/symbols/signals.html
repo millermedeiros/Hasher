@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - HasherEvent</title>
+		<title>JsDoc Reference - signals</title>
 
         <link rel="stylesheet" href="../static/default.css" type="text/css" media="screen" charset="utf-8" />
 	</head>
@@ -38,15 +38,17 @@
 	
 	<li><a href="../symbols/Hasher.html">Hasher</a></li>
 	
-	<li><a href="../symbols/HasherEvent.html">HasherEvent</a></li>
-	
 	<li><a href="../symbols/millermedeiros.html">millermedeiros</a></li>
 	
 	<li><a href="../symbols/millermedeiros.event.html">millermedeiros.event</a></li>
 	
-	<li><a href="../symbols/millermedeiros.EventDispatcher.html">millermedeiros.EventDispatcher</a></li>
-	
 	<li><a href="../symbols/millermedeiros.queryUtils.html">millermedeiros.queryUtils</a></li>
+	
+	<li><a href="../symbols/signals.html">signals</a></li>
+	
+	<li><a href="../symbols/signals.Signal.html">signals.Signal</a></li>
+	
+	<li><a href="../symbols/signals.SignalBinding.html">signals.SignalBinding</a></li>
 	
 </ul>
 
@@ -56,11 +58,11 @@
            <!-- constructor list -->
            
              <h3>
-                 Class 
+                 Namespace 
              </h3>
              <ul>
                 <li  class="fixedFont">
-                  <a href="../symbols/HasherEvent.html">HasherEvent</a>
+                  <a href="../symbols/signals.html">signals</a>
                 </li>
              </ul>
            
@@ -69,19 +71,11 @@
            <!-- properties list -->
            
            
-             <h3>Fields</h3>
+             <h3>Variables</h3>
              <ul>
                
                  <li class="fixedFont">
-                   <a href="../symbols/HasherEvent.html#.CHANGE">CHANGE</a>
-                 </li>
-               
-                 <li class="fixedFont">
-                   <a href="../symbols/HasherEvent.html#.INIT">INIT</a>
-                 </li>
-               
-                 <li class="fixedFont">
-                   <a href="../symbols/HasherEvent.html#.STOP">STOP</a>
+                   <a href="../symbols/signals.html#.VERSION">VERSION</a>
                  </li>
                
              </ul>
@@ -91,11 +85,11 @@
            <!-- function summary -->
            
            
-             <h3>Methods</h3>
+             <h3>Functions</h3>
              <ul>
                
                    <li class="fixedFont">
-                        <a href="../symbols/HasherEvent.html#toString">toString</a>
+                        <a href="../symbols/signals.html#.isDef">isDef</a>
                     </li>
                
              </ul>
@@ -111,7 +105,7 @@
 		<div id="content">
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
-				Class HasherEvent
+				Namespace signals
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
@@ -119,10 +113,10 @@
 				
 				
 			
+				Signals Namespace - Custom event/messaging system based on AS3 Signals
 				
 				
-				
-					<br /><i>Defined in: </i> <a href="../symbols/src/C__Miller_Personal_millermedeiros_Hasher_dist_js_Hasher-0.9.9.js.html">Hasher-0.9.9.js</a>.
+					<br /><i>Defined in: </i> <a href="../symbols/src/_Users_millermedeiros_Documents_Projects__open_source_Hasher_dist_js_Hasher.js.html">Hasher.js</a>.
 				
 			</p>
 
@@ -130,46 +124,21 @@
 			
 			<div class="details"><a name="constructor"> </a>
 				<div class="sectionTitle">
-					Class Detail
+					Namespace Detail
 				</div>
 				
 				<div class="fixedFont">
-						<b>HasherEvent</b>(eType, oldHash, newHash)
+						<b>signals</b>
 				</div>
 				
 				<div class="description">
-					<p>HasherEvent Object.</p>
-
-<p>According to the HTML5 spec `hashchange` event should have `oldURL` and `newURL` properties, since the only portion of the URL that changes is the hash I decided to use `oldHash` and `newHash` instead. (http://www.whatwg.org/specs/web-apps/current-work/multipage/history.html#event-hashchange)</p>
+					
 					
 				</div>
 				
 				
 				
 				
-					
-						<dl class="detailList">
-						<dt class="heading">Parameters:</dt>
-						
-							<dt>
-								<span class="light fixedFont">{string}</span>  <b>eType</b>
-								
-							</dt>
-								<dd>Hasher Event type.</dd>
-						
-							<dt>
-								<span class="light fixedFont">{(string|null)}</span>  <b>oldHash</b>
-								
-							</dt>
-								<dd>Previous Hash.</dd>
-						
-							<dt>
-								<span class="light fixedFont">{(string|null)}</span>  <b>newHash</b>
-								
-							</dt>
-								<dd>Current Hash.</dd>
-						
-						</dl>
 					
 					
 					
@@ -189,65 +158,17 @@
 				</div>
 				
                   <div class="member">
-					<a name=".CHANGE"> </a>
+					<a name=".VERSION"> </a>
 					<div class="fixedFont">
-                      <div class="modifiers">&lt;static&gt; &lt;constant&gt; 
+                      <div class="modifiers">&lt;static&gt; 
                       </div>
 					
 					<span class="light">{string}</span>
-					<span class="light">HasherEvent.</span><b>CHANGE</b>
+					<span class="light">signals.</span><b>VERSION</b>
 					
 					</div>
 					<div class="description">
-						<p>Defines the value of the type property of an change event object.</p>
-						
-						
-					</div>
-					
-					
-
-						
-						
-						
-						
-                  </div>
-				
-                  <div class="member">
-					<a name=".INIT"> </a>
-					<div class="fixedFont">
-                      <div class="modifiers">&lt;static&gt; &lt;constant&gt; 
-                      </div>
-					
-					<span class="light">{string}</span>
-					<span class="light">HasherEvent.</span><b>INIT</b>
-					
-					</div>
-					<div class="description">
-						<p>Defines the value of the type property of an init event object.</p>
-						
-						
-					</div>
-					
-					
-
-						
-						
-						
-						
-                  </div>
-				
-                  <div class="member">
-					<a name=".STOP"> </a>
-					<div class="fixedFont">
-                      <div class="modifiers">&lt;static&gt; &lt;constant&gt; 
-                      </div>
-					
-					<span class="light">{string}</span>
-					<span class="light">HasherEvent.</span><b>STOP</b>
-					
-					</div>
-					<div class="description">
-						<p>Defines the value of the type property of an stop event object.</p>
+						<p>Signals Version Number</p>
 						
 						
 					</div>
@@ -271,22 +192,33 @@
 				</div>
 				
                   <div class="member">
-					<a name="toString"> </a>
+					<a name=".isDef"> </a>
 					<div class="fixedFont">
-                      <div class="modifiers">
+                      <div class="modifiers">&lt;static&gt; 
                       </div>
-					<span class="light">{string}</span>
-					<b>toString</b>()
+					<span class="light">{boolean}</span>
+					<span class="light">signals.</span><b>isDef</b>(param)
 					
 					</div>
 					<div class="description">
-						<p>Returns string representation of the HasherEvent</p>
+						
 						
 						
 					</div>
 					
 					
 					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{*}</span> <b>param</b>
+									
+								</dt>
+								<dd>Parameter to check.</dd>
+							
+							</dl>
 						
 						
 						
@@ -295,7 +227,7 @@
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{string}</span> A string representation of the object.</dd>
+								<dd><span class="light fixedFont">{boolean}</span> `true` if parameter is different than `undefined`.</dd>
 							
 							</dl>
 						
@@ -316,7 +248,7 @@
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both;text-align:center">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blankt">JsDoc Toolkit</a> 2.4.0 on Fri Nov 05 2010 22:44:02 GMT-0400 (EDT)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blankt">JsDoc Toolkit</a> 2.4.0 on Sun Jan 02 2011 22:28:00 GMT-0500 (EST)
 			 | template based on Steffen Siering <a href="http://github.com/urso/jsdoc-simple">jsdoc-simple</a>.
 		</div>
 	</body>

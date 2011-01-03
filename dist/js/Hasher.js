@@ -1,8 +1,8 @@
 /*!
  * Hasher <http://github.com/millermedeiros/Hasher>
- * Includes: millermedeiros.EventDispatcher (1.0), millermedeiros.queryUtils (0.8.2), millermedeiros.event-listenerFacade (0.3)
+ * Includes: js-signals (::js-signals_version::), millermedeiros.queryUtils (0.8.2), millermedeiros.event-listenerFacade (0.3)
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.9.9 (2010/11/05)
+ * @version 0.9.9 ::BUILD_DATE::
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 (function(window, document){
@@ -18,161 +18,6 @@
  * @name millermedeiros
  */
 var millermedeiros = window.millermedeiros = {};
-/**
- * EventDispatcher Object, used to allow Custom Objects to dispatch events.
- * @constructor
- * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 1.0 (2010/11/05)
- * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
- */
-millermedeiros.EventDispatcher = function(){
-	/** 
-	 * Event Handlers
-	 * @type Object.<string, Array.<Function>>
-	 */
-	this._handlers = {};
-	
-	/**
-	 * Disabled Event Types (events types that shouldn't be dispatched)
-	 * @type Array.<string>
-	 */
-	this._disabled = [];
-};
-
-millermedeiros.EventDispatcher.prototype = {
-	
-	/**
-	 * Add Event Listener
-	 * @param {string} eType	Event Type.
-	 * @param {Function} fn	Event Handler.
-	 */
-	addEventListener : function(eType, fn){
-		if(typeof this._handlers[eType] === 'undefined'){
-			this._handlers[eType] = [];
-		}
-		this._handlers[eType].push(fn);
-	},
-	
-	/**
-	 * Remove Event Listener
-	 * @param {string} eType	Event Type.
-	 * @param {Function} fn	Event Handler.
-	 */
-	removeEventListener : function(eType, fn){
-		if(! this.hasEventListener(eType)){
-			return;
-		}
-		var	typeHandlers = this._handlers[eType], //stored for performance
-			n = typeHandlers.length;
-		if(n == 1){
-			delete this._handlers[eType];
-		}else{
-			while(n--){ //faster than for
-				if(typeHandlers[n] == fn){
-					typeHandlers.splice(n, 1);
-					break;
-				}
-			}
-		}
-	},
-	
-	/**
-	 * Removes all Listeners from the EventDispatcher object.
-	 * @param {(string|boolean)} eType	Event type or `true` if want to remove listeners of all event types.
-	 */
-	removeAllEventListeners : function(eType){
-		if(typeof eType === 'string' && this.hasEventListener(eType)){
-			delete this._handlers[eType];
-		}else if(eType){
-			this._handlers = {};
-		}
-	},
-	
-	/**
-	 * Checks if the EventDispatcher has any listeners registered for a specific type of event. 
-	 * @param {string} eType	Event Type.
-	 * @return {boolean}
-	 */
-	hasEventListener : function(eType){
-		return (typeof this._handlers[eType] !== 'undefined');
-	},
-
-	/**
-	 * Dispatch Event
-	 * - Call all Handlers Listening to the Event.
-	 * @param {(Object|string)} evt	Custom Event Object (property `type` is required) or String with Event type.
-	 * @return {boolean} If Event was successfully dispatched.
-	 */
-	dispatchEvent : function(evt){
-		evt = (typeof evt === 'string')? {type: evt} : evt; //create Object if not an Object to always call handlers with same type of argument.
-		if(this.hasEventListener(evt.type) && this.isEventEnabled(evt.type)){
-			var typeHandlers = this._handlers[evt.type], //stored for performance
-				curHandler,
-				i,
-				n = typeHandlers.length;
-			evt.target = evt.target || this; //ensure Event.target exists
-			for(i=0; i<n; i++){
-				curHandler = typeHandlers[i];
-				curHandler(evt);
-			}
-			return true;
-		}
-		return false;
-	},
-	
-	/**
-	 * Check if Event type is enabled
-	 * @param {string} evtType	Event type.	
-	 * @return {boolean} If Event will be dispatched.
-	 */
-	isEventEnabled : function(evtType){
-		var n = this._disabled.length;
-		while(n--){
-			if(this._disabled[n] === evtType){
-				return false;
-			}
-		}
-		return true;
-	},
-	
-	/**
-	 * Disable Event dispatching by type
-	 * @param {...string} evtTypes	Event types that should be disabled (events types that shouldn't be dispatched)
-	 */
-	disableEvent : function(evtTypes){
-		var types = Array.prototype.slice.call(arguments, 0),
-			n = types.length,
-			curType;
-		while(n--){
-			curType = types[n];
-			if(this.isEventEnabled(curType)){ //avoid adding multiple times
-				this._disabled.push(curType);
-			}
-		}
-	},
-	
-	/**
-	 * Enable Event dispatching by type
-	 * @param {...string} evtTypes	Event types that should be enabled (events types that should be dispatched)
-	 */
-	enableEvent : function(evtTypes){
-		var types = Array.prototype.slice.call(arguments, 0),
-			n = types.length,
-			m,
-			curType;
-		while(n--){
-			curType = types[n];
-			m = this._disabled.length;
-			while(m--){ //Array.prototype.indexOf isn't available on all browsers
-				if(this._disabled[m] === curType){
-					this._disabled.splice(m, 1);
-					break; //avoid looping more than necessary
-				}
-			}
-		}
-	}
-	
-};
 (function(window, millermedeiros){
 	
 	var location = window.location; //local storage for better minification
@@ -315,88 +160,384 @@ millermedeiros.event.removeListener = function(elm, eType, fn){
 	}
 };
 }(window, window.document));
-/*
- * Hasher Event
- * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.3 (2010/11/01)
- * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
+/*!!
+ * JS Signals <https://github.com/millermedeiros/js-signals>
+ * Released under the MIT license (http://www.opensource.org/licenses/mit-license.php)
+ * @author Miller Medeiros <http://millermedeiros.com>
+ * @version 0.5
+ * @build 100 12/03/2010 05:27 PM
  */
-(function(window){
-	
-	//--------------------------------------------------------------------------------------
-	// Constructor
-	//--------------------------------------------------------------------------------------
+(function(){
 	
 	/**
-	 * HasherEvent Object.
-	 * <p>According to the HTML5 spec `hashchange` event should have `oldURL` and `newURL` properties, since the only portion of the URL that changes is the hash I decided to use `oldHash` and `newHash` instead. (http://www.whatwg.org/specs/web-apps/current-work/multipage/history.html#event-hashchange)</p>
-	 * @param {string} eType	Hasher Event type.
-	 * @param {(string|null)} oldHash	Previous Hash.
-	 * @param {(string|null)} newHash	Current Hash.
+	 * @namespace Signals Namespace - Custom event/messaging system based on AS3 Signals
+	 * @name signals
+	 */
+	var signals = window.signals = {};
+	
+	/**
+	 * Signals Version Number
+	 * @type string
+	 * @const
+	 */
+	signals.VERSION = '0.5';
+	
+	/**
+	 * @param {*} param	Parameter to check.
+	 * @return {boolean} `true` if parameter is different than `undefined`.
+	 */
+	signals.isDef = function(param){
+		return typeof param !== 'undefined';
+	};
+
+	/**
+	 * Signal - custom event broadcaster
+	 * <br />- inspired by Robert Penner's AS3 Signals.
+	 * @author Miller Medeiros
 	 * @constructor
-	 * @name HasherEvent
 	 */
-	var HasherEvent = window.HasherEvent = function(eType, oldHash, newHash){
+	signals.Signal = function(){
 		/**
-		 * Event Type
-		 * @type string
+		 * @type Array.<signals.SignalBinding>
+		 * @private
 		 */
-		this.type = eType;
-		/**
-		 * Previous Hash value
-		 * @type (string|null)
-		 */
-		this.oldHash = oldHash;
-		/**
-		 * Current Hash value
-		 * @type (string|null)
-		 */
-		this.newHash = newHash;
+		this._bindings = [];
 	};
 	
-	//--------------------------------------------------------------------------------------
-	// Methods
-	//--------------------------------------------------------------------------------------
 	
-	/**
-	 * Returns string representation of the HasherEvent
-	 * @return {string} A string representation of the object.
-	 */
-	HasherEvent.prototype.toString = function(){
-		return '[HasherEvent type="'+ this.type +'" oldHash="'+ this.oldHash +'" newHash="'+ this.newHash +'"]';
+	signals.Signal.prototype = {
+		
+		/**
+		 * @type boolean
+		 * @private
+		 */
+		_shouldPropagate : true,
+		
+		/**
+		 * @type boolean
+		 * @private
+		 */
+		_isEnabled : true,
+		
+		/**
+		 * @param {Function} listener
+		 * @param {boolean} isOnce
+		 * @param {Object} [scope]
+		 * @return {signals.SignalBinding}
+		 * @private
+		 */
+		_registerListener : function(listener, isOnce, scope){
+			
+			if(!signals.isDef(listener)) throw new Error('listener is a required param of add() and addOnce().');
+			
+			var prevIndex = this._indexOfListener(listener),
+				binding;
+			
+			if(prevIndex !== -1){ //avoid creating a new Binding for same listener if already added to list
+				binding = this._bindings[prevIndex];
+				if(binding.isOnce() !== isOnce){
+					throw new Error('You cannot add'+ (isOnce? '' : 'Once') +'() then add'+ (!isOnce? '' : 'Once') +'() the same listener without removing the relationship first.');
+				}
+			} else {
+				binding = new signals.SignalBinding(listener, isOnce, scope, this);
+				this._addBinding(binding);
+			}
+			
+			return binding;
+		},
+		
+		/**
+		 * @param {signals.SignalBinding} binding
+		 * @private
+		 */
+		_addBinding : function(binding){
+			this._bindings.push(binding);
+		},
+		
+		/**
+		 * @param {Function} listener
+		 * @return {int}
+		 * @private
+		 */
+		_indexOfListener : function(listener){
+			var n = this._bindings.length;
+			while(n--){
+				if(this._bindings[n]._listener === listener) return n;
+			}
+			return -1;
+		},
+		
+		/**
+		 * Add a listener to the signal.
+		 * @param {Function} listener	Signal handler function.
+		 * @param {Object} [scope]	Context on which listener will be executed (object that should represent the `this` variable inside listener function).
+		 * @return {signals.SignalBinding} An Object representing the binding between the Signal and listener.
+		 */
+		add : function(listener, scope){
+			return this._registerListener(listener, false, scope);
+		},
+		
+		/**
+		 * Add listener to the signal that should be removed after first execution (will be executed only once).
+		 * @param {Function} listener	Signal handler function.
+		 * @param {Object} [scope]	Context on which listener will be executed (object that should represent the `this` variable inside listener function).
+		 * @return {signals.SignalBinding} An Object representing the binding between the Signal and listener.
+		 */
+		addOnce : function(listener, scope){
+			return this._registerListener(listener, true, scope);
+		},
+		
+		/**
+		 * @private
+		 */
+		_removeByIndex : function(i){
+			this._bindings[i]._destroy(); //no reason to a SignalBinding exist if it isn't attached to a signal
+			this._bindings.splice(i, 1);
+		},
+		
+		/**
+		 * Remove a single listener from the dispatch queue.
+		 * @param {Function} listener	Handler function that should be removed.
+		 * @return {Function} Listener handler function.
+		 */
+		remove : function(listener){
+			if(!signals.isDef(listener)) throw new Error('listener is a required param of remove().');
+			
+			var i = this._indexOfListener(listener);
+			if(i !== -1) this._removeByIndex(i);
+			return listener;
+		},
+		
+		/**
+		 * Remove all listeners from the Signal.
+		 */
+		removeAll : function(){
+			var n = this._bindings.length;
+			while(n--){
+				this._removeByIndex(n);
+			}
+		},
+		
+		/**
+		 * @return {uint} Number of listeners attached to the Signal.
+		 */
+		getNumListeners : function(){
+			return this._bindings.length;
+		},
+		
+		/**
+		 * Disable Signal, will block dispatch to listeners until `enable()` is called.
+		 * @see signals.Signal.prototype.enable
+		 */
+		disable : function(){
+			this._isEnabled = false;
+		},
+		
+		/**
+		 * Enable broadcast to listeners.
+		 * @see signals.Signal.prototype.disable
+		 */
+		enable : function(){
+			this._isEnabled = true;
+		}, 
+		
+		/**
+		 * @return {boolean} If Signal is currently enabled and will broadcast message to listeners.
+		 */
+		isEnabled : function(){
+			return this._isEnabled;
+		},
+		
+		/**
+		 * Stop propagation of the event, blocking the dispatch to next listeners on the queue.
+		 * - should be called only during signal dispatch, calling it before/after dispatch won't affect signal broadcast. 
+		 */
+		halt : function(){
+			this._shouldPropagate = false;
+		},
+		
+		/**
+		 * Dispatch/Broadcast Signal to all listeners added to the queue. 
+		 * @param {...*} [params]	Parameters that should be passed to each handler.
+		 */
+		dispatch : function(params){
+			if(! this._isEnabled) return;
+			
+			var paramsArr = Array.prototype.slice.call(arguments),
+				bindings = this._bindings.slice(), //clone array in case add/remove items during dispatch
+				i = 0,
+				cur;
+			
+			this._shouldPropagate = true; //in case `halt` was called before dispatch or during the previous dispatch.
+						
+			while(cur = bindings[i++]){
+				if(cur.execute(paramsArr) === false || !this._shouldPropagate) break; //execute all callbacks until end of the list or until a callback returns `false` or stops propagation
+			}
+		},
+		
+		/**
+		 * Remove binding from signal and destroy any reference to external Objects (destroy Signal object).
+		 * <br /> - calling methods on the signal instance after calling dispose will throw errors.
+		 */
+		dispose : function(){
+			this.removeAll();
+			delete this._bindings;
+		},
+		
+		/**
+		 * @return {string} String representation of the object.
+		 */
+		toString : function(){
+			return '[Signal isEnabled: '+ this._isEnabled +' numListeners: '+ this.getNumListeners() +']';
+		}
+		
 	};
 	
-	//--------------------------------------------------------------------------------------
-	// Constants
-	//--------------------------------------------------------------------------------------
-	
 	/**
-	 * Defines the value of the type property of an change event object.
-	 * @type string
-	 * @constant
+	 * Object that represents a binding between a Signal and a listener function.
+	 * <br />- <strong>Constructor shouldn't be called by regular user, used internally.</strong>
+	 * <br />- inspired by Joa Ebert AS3 SignalBinding and Robert Penner's Slot classes.
+	 * @author Miller Medeiros
+	 * @constructor
+	 * @param {Function} listener	Handler function bound to the signal.
+	 * @param {boolean} isOnce	If binding should be executed just once.
+	 * @param {?Object} listenerContext	Context on which listener will be executed (object that should represent the `this` variable inside listener function).
+	 * @param {signals.Signal} signal	Reference to Signal object that listener is currently bound to.
 	 */
-	HasherEvent.CHANGE = 'change';
+	signals.SignalBinding = function(listener, isOnce, listenerContext, signal){
+		
+		/**
+		 * Handler function bound to the signal.
+		 * @type Function
+		 * @private
+		 */
+		this._listener = listener;
+		
+		/**
+		 * If binding should be executed just once.
+		 * @type boolean
+		 * @private
+		 */
+		this._isOnce = isOnce;
+		
+		/**
+		 * Context on which listener will be executed (object that should represent the `this` variable inside listener function).
+		 * @type Object
+		 */
+		this.context = listenerContext;
+		
+		/**
+		 * Reference to Signal object that listener is currently bound to.
+		 * @type signals.Signal
+		 * @private
+		 */
+		this._signal = signal;
+	};
 	
-	 /**
-	 * Defines the value of the type property of an init event object.
-	 * @type string
-	 * @constant
-	 */
-	HasherEvent.INIT = 'init';
 	
-	/**
-	 * Defines the value of the type property of an stop event object.
-	 * @type string
-	 * @constant
-	 */
-	HasherEvent.STOP = 'stop';
-	
-}(window));
+	signals.SignalBinding.prototype = {
+		
+		/**
+		 * @type boolean
+		 * @private
+		 */
+		_isEnabled : true,
+		
+		/**
+		 * Call listener passing arbitrary parameters.
+		 * <p>If binding was added using `Signal.addOnce()` it will be automatically removed from signal dispatch queue, this method is used internally for the signal dispatch.</p> 
+		 * @param {Array} [paramsArr]	Array of parameters that should be passed to the listener
+		 * @return {*} Value returned by the listener.
+		 */
+		execute : function(paramsArr){
+			var r;
+			if(this._isEnabled){
+				r = this._listener.apply(this.context, paramsArr);
+				if(this._isOnce) this.detach();
+			}
+			return r; //avoid warnings on some editors
+		},
+		
+		/**
+		 * Detach binding from signal.
+		 * - alias to: mySignal.remove(myBinding.getListener());
+		 * @return {Function} Handler function bound to the signal.
+		 */
+		detach : function(){
+			return this._signal.remove(this._listener);
+		},
+		
+		/**
+		 * @return {Function} Handler function bound to the signal.
+		 */
+		getListener : function(){
+			return this._listener;
+		},
+		
+		/**
+		 * Remove binding from signal and destroy any reference to external Objects (destroy SignalBinding object).
+		 * <br /> - calling methods on the binding instance after calling dispose will throw errors.
+		 */
+		dispose : function(){
+			this.detach();
+			this._destroy();
+		},
+		
+		/**
+		 * Delete all instance properties
+		 * @private
+		 */
+		_destroy : function(){
+			delete this._signal;
+			delete this._isOnce;
+			delete this._listener;
+			delete this.context;
+		},
+		
+		/**
+		 * Disable SignalBinding, block listener execution. Listener will only be executed after calling `enable()`.  
+		 * @see signals.SignalBinding.enable()
+		 */
+		disable : function(){
+			this._isEnabled = false;
+		},
+		
+		/**
+		 * Enable SignalBinding. Enable listener execution.
+		 * @see signals.SignalBinding.disable()
+		 */
+		enable : function(){
+			this._isEnabled = true;
+		},
+		
+		/**
+		 * @return {boolean} If SignalBinding is currently paused and won't execute listener during dispatch.
+		 */
+		isEnabled : function(){
+			return this._isEnabled;
+		},
+		
+		/**
+		 * @return {boolean} If SignalBinding will only be executed once.
+		 */
+		isOnce : function(){
+			return this._isOnce;
+		},
+		
+		/**
+		 * @return {string} String representation of the object.
+		 */
+		toString : function(){
+			return '[SignalBinding isOnce: '+ this._isOnce +', isEnabled: '+ this._isEnabled +']';
+		}
+		
+	};
+}());
 /*
  * Hasher
  * - History Manager for rich-media applications.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.9.9 (2010/11/01)
+ * @version 0.9.9
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 (function(window, document){
@@ -421,8 +562,8 @@ millermedeiros.event.removeListener = function(elm, eType, fn){
 		/** @private {millermedeiros} */
 		millermedeiros = window.millermedeiros,
 		
-		/** @private {millermedeiros.EventDispatcher} @extends millermedeiros.EventDispatcher */
-		Hasher = new millermedeiros.EventDispatcher(),
+		/** @private */
+		Hasher = {},
 		
 		/** @private {millermedeiros.queryUtils} Utilities for query string manipulation */
 		_queryUtils = millermedeiros.queryUtils,
@@ -430,6 +571,8 @@ millermedeiros.event.removeListener = function(elm, eType, fn){
 		/** @private {millermedeiros.event} Browser native events facade */
 		_eventFacade = millermedeiros.event,
 		
+		/** @private {signals.Signal} */
+		Signal = signals.Signal,
 		
 		//--- local vars ---//
 		
@@ -506,7 +649,7 @@ millermedeiros.event.removeListener = function(elm, eType, fn){
 	}
 	
 	/**
-	 * Stores new hash value and dispatch `HasherEvent.CHANGE` if Hasher is "active".
+	 * Stores new hash value and dispatch change event if Hasher is "active".
 	 * @param {string} newHash	New Hash Value.
 	 * @private
 	 */
@@ -518,7 +661,7 @@ millermedeiros.event.removeListener = function(elm, eType, fn){
 			if(_isLegacyIE){
 				_updateFrame(newHash);
 			}
-			Hasher.dispatchEvent(new HasherEvent(HasherEvent.CHANGE, _trimHash(oldHash), _trimHash(newHash)));
+			Hasher.changed.dispatch(_trimHash(newHash), _trimHash(oldHash));
 		}
 	}
 	
@@ -546,7 +689,7 @@ millermedeiros.event.removeListener = function(elm, eType, fn){
 	}
 	
 	/**
-	 * Checks if hash/history state has changed and dispatch HasherEvent.
+	 * Checks if hash/history state has changed
 	 * @private
 	 */
 	function _checkHistory(){
@@ -579,7 +722,6 @@ millermedeiros.event.removeListener = function(elm, eType, fn){
 	/**
 	 * Hasher
 	 * @namespace History Manager for rich-media applications.
-	 * @extends millermedeiros.EventDispatcher
 	 * @name Hasher
 	 */
 	window.Hasher = Hasher; //register Hasher to the global scope
@@ -623,6 +765,24 @@ millermedeiros.event.removeListener = function(elm, eType, fn){
 	Hasher.separator = '/';
 	
 	/**
+	 * Signal dispatched when hash value changes
+	 * @type signals.Signal
+	 */
+	Hasher.changed = new Signal();
+	
+	/**
+   * Signal dispatched when hasher is stopped
+   * @type signals.Signal
+   */
+  Hasher.stopped = new Signal();
+  
+	/**
+   * Signal dispatched when hasher is initialized
+   * @type signals.Signal
+   */
+  Hasher.initialized = new Signal();
+
+	/**
 	 * Start listening/dispatching changes in the hash/history.
 	 * - Hasher won't dispatch CHANGE events by manually typing a new value or pressing the back/forward buttons before calling this method.
 	 */
@@ -650,7 +810,7 @@ millermedeiros.event.removeListener = function(elm, eType, fn){
 		}
 		
 		_isActive = true;
-		this.dispatchEvent(new HasherEvent(HasherEvent.INIT, _trimHash(oldHash), _trimHash(_hash)));
+		this.initialized.dispatch(_trimHash(_hash), _trimHash(oldHash));
 	};
 	
 	/**
@@ -671,7 +831,7 @@ millermedeiros.event.removeListener = function(elm, eType, fn){
 		}
 		
 		_isActive = false;
-		this.dispatchEvent(new HasherEvent(HasherEvent.STOP, _trimHash(_hash), _trimHash(_hash))); //since it didn't changed oldHash and newHash should be the same. [?]
+		this.stopped.dispatch(_trimHash(_hash), _trimHash(_hash)); //since it didn't changed oldHash and newHash should be the same. [?]
 	};
 	
 	/**
@@ -797,11 +957,10 @@ millermedeiros.event.removeListener = function(elm, eType, fn){
 		history.go(delta);
 	};
 	
-	
 	/**
 	 * Replaces spaces with hyphens, split camel case text, remove non-word chars and remove accents.
 	 * - based on Miller Medeiros JS Library -> millermedeiros.stringUtils.hyphenate
-	 * @example Hasher.hyphenate('Lorem Ipsum  ?#$%^&*  spëçíãlChârs') -> 'Lorem-Ipsum-special-chars'
+	 * @example Hasher.hyphenate('Lorem Ipsum  ?#$%^&*  spï¿½ï¿½ï¿½ï¿½lChï¿½rs') -> 'Lorem-Ipsum-special-chars'
 	 * @param {string} str	String to be formated.
 	 * @return {string}	Formated String
 	 */
@@ -817,7 +976,7 @@ millermedeiros.event.removeListener = function(elm, eType, fn){
 	/**
 	 * Replaces all accented chars with regular ones
 	 * - copied from Miller Medeiros JS Library -> millermedeiros.stringUtils.replaceAccents
-	 * @example Hasher.removeAccents('Lorem Ipsum  ?#$%^&*  spëçíãlChârs') -> 'Lorem Ipsum  ?#$%^&*  specialChars'
+	 * @example Hasher.removeAccents('Lorem Ipsum  ?#$%^&*  spï¿½ï¿½ï¿½ï¿½lChï¿½rs') -> 'Lorem Ipsum  ?#$%^&*  specialChars'
 	 * @param {string} str	String to be formated.
 	 * @return {string}	Formated String
 	 */
@@ -858,7 +1017,9 @@ millermedeiros.event.removeListener = function(elm, eType, fn){
 	 * - IMPORTANT: Hasher won't work after calling this method, Hasher Object will be deleted.
 	 */
 	Hasher.dispose = function(){
-		Hasher.removeAllEventListeners(true);
+		Hasher.initialized.removeAll();
+		Hasher.stopped.removeAll();
+		Hasher.changed.removeAll();
 		Hasher.stop();
 		_hash = _checkInterval = _isActive = _frame = _UA  = _isIE = _isLegacyIE = _isHashChangeSupported = _isLocal = _queryUtils = _eventFacade = Hasher = window.Hasher = null;
 		//can't use `delete window.hasher;` because on IE it throws errors, `window` isn't actually an object, delete can only be used on Object properties.

@@ -2,7 +2,7 @@
  * Hasher
  * - History Manager for rich-media applications.
  * @author Miller Medeiros <http://www.millermedeiros.com/>
- * @version 0.9.9 (2010/11/01)
+ * @version ::VERSION_NUMBER::
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 (function(window, document){
@@ -27,8 +27,8 @@
 		/** @private {millermedeiros} */
 		millermedeiros = window.millermedeiros,
 		
-		/** @private {millermedeiros.EventDispatcher} @extends millermedeiros.EventDispatcher */
-		Hasher = new millermedeiros.EventDispatcher(),
+		/** @private */
+		Hasher = {},
 		
 		/** @private {millermedeiros.queryUtils} Utilities for query string manipulation */
 		_queryUtils = millermedeiros.queryUtils,
@@ -36,6 +36,8 @@
 		/** @private {millermedeiros.event} Browser native events facade */
 		_eventFacade = millermedeiros.event,
 		
+		/** @private {signals.Signal} */
+		Signal = signals.Signal,
 		
 		//--- local vars ---//
 		
@@ -112,7 +114,7 @@
 	}
 	
 	/**
-	 * Stores new hash value and dispatch `HasherEvent.CHANGE` if Hasher is "active".
+	 * Stores new hash value and dispatch change event if Hasher is "active".
 	 * @param {string} newHash	New Hash Value.
 	 * @private
 	 */
@@ -124,7 +126,7 @@
 			if(_isLegacyIE){
 				_updateFrame(newHash);
 			}
-			Hasher.dispatchEvent(new HasherEvent(HasherEvent.CHANGE, _trimHash(oldHash), _trimHash(newHash)));
+			Hasher.changed.dispatch(_trimHash(newHash), _trimHash(oldHash));
 		}
 	}
 	
@@ -152,7 +154,7 @@
 	}
 	
 	/**
-	 * Checks if hash/history state has changed and dispatch HasherEvent.
+	 * Checks if hash/history state has changed
 	 * @private
 	 */
 	function _checkHistory(){
@@ -185,7 +187,6 @@
 	/**
 	 * Hasher
 	 * @namespace History Manager for rich-media applications.
-	 * @extends millermedeiros.EventDispatcher
 	 * @name Hasher
 	 */
 	window.Hasher = Hasher; //register Hasher to the global scope
@@ -229,6 +230,24 @@
 	Hasher.separator = '/';
 	
 	/**
+	 * Signal dispatched when hash value changes
+	 * @type signals.Signal
+	 */
+	Hasher.changed = new Signal();
+	
+	/**
+   * Signal dispatched when hasher is stopped
+   * @type signals.Signal
+   */
+  Hasher.stopped = new Signal();
+  
+	/**
+   * Signal dispatched when hasher is initialized
+   * @type signals.Signal
+   */
+  Hasher.initialized = new Signal();
+
+	/**
 	 * Start listening/dispatching changes in the hash/history.
 	 * - Hasher won't dispatch CHANGE events by manually typing a new value or pressing the back/forward buttons before calling this method.
 	 */
@@ -256,7 +275,7 @@
 		}
 		
 		_isActive = true;
-		this.dispatchEvent(new HasherEvent(HasherEvent.INIT, _trimHash(oldHash), _trimHash(_hash)));
+		this.initialized.dispatch(_trimHash(_hash), _trimHash(oldHash));
 	};
 	
 	/**
@@ -277,7 +296,7 @@
 		}
 		
 		_isActive = false;
-		this.dispatchEvent(new HasherEvent(HasherEvent.STOP, _trimHash(_hash), _trimHash(_hash))); //since it didn't changed oldHash and newHash should be the same. [?]
+		this.stopped.dispatch(_trimHash(_hash), _trimHash(_hash)); //since it didn't changed oldHash and newHash should be the same. [?]
 	};
 	
 	/**
@@ -403,11 +422,10 @@
 		history.go(delta);
 	};
 	
-	
 	/**
 	 * Replaces spaces with hyphens, split camel case text, remove non-word chars and remove accents.
 	 * - based on Miller Medeiros JS Library -> millermedeiros.stringUtils.hyphenate
-	 * @example Hasher.hyphenate('Lorem Ipsum  ?#$%^&*  spëçíãlChârs') -> 'Lorem-Ipsum-special-chars'
+	 * @example Hasher.hyphenate('Lorem Ipsum  ?#$%^&*  spï¿½ï¿½ï¿½ï¿½lChï¿½rs') -> 'Lorem-Ipsum-special-chars'
 	 * @param {string} str	String to be formated.
 	 * @return {string}	Formated String
 	 */
@@ -423,7 +441,7 @@
 	/**
 	 * Replaces all accented chars with regular ones
 	 * - copied from Miller Medeiros JS Library -> millermedeiros.stringUtils.replaceAccents
-	 * @example Hasher.removeAccents('Lorem Ipsum  ?#$%^&*  spëçíãlChârs') -> 'Lorem Ipsum  ?#$%^&*  specialChars'
+	 * @example Hasher.removeAccents('Lorem Ipsum  ?#$%^&*  spï¿½ï¿½ï¿½ï¿½lChï¿½rs') -> 'Lorem Ipsum  ?#$%^&*  specialChars'
 	 * @param {string} str	String to be formated.
 	 * @return {string}	Formated String
 	 */
@@ -464,7 +482,9 @@
 	 * - IMPORTANT: Hasher won't work after calling this method, Hasher Object will be deleted.
 	 */
 	Hasher.dispose = function(){
-		Hasher.removeAllEventListeners(true);
+		Hasher.initialized.removeAll();
+		Hasher.stopped.removeAll();
+		Hasher.changed.removeAll();
 		Hasher.stop();
 		_hash = _checkInterval = _isActive = _frame = _UA  = _isIE = _isLegacyIE = _isHashChangeSupported = _isLocal = _queryUtils = _eventFacade = Hasher = window.Hasher = null;
 		//can't use `delete window.hasher;` because on IE it throws errors, `window` isn't actually an object, delete can only be used on Object properties.
