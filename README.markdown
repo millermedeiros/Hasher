@@ -27,7 +27,7 @@ It works as an abstraction of browsers native methods plus some extra helper met
  - Follow best practices/standards.
  - Fully unit tested.
 
-## Depedencies ##
+## Dependencies ##
 
  - **This library requires [JS-Signals](http://millermedeiros.github.com/js-signals/) to work.**
 
@@ -40,7 +40,7 @@ Include [JS-Signals](http://millermedeiros.github.com/js-signals/) and **hasher*
     <script type="text/javascript" src="js-signals.js"></script>
     <script type="text/javascript" src="hasher.js"></script>
 
-**IMPORTANT:** `js-signals.js` should be included before `hasher.js`. 
+IMPORTANT: `js-signals.js` should be included before `hasher.js`. 
 
 ### JavaScript ###
 
