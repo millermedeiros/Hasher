@@ -3,7 +3,10 @@
 	<head>
 		<link rel="stylesheet" href="./qunit/qunit.css" type="text/css" media="screen" />
 		<script type="text/javascript" src="./qunit/qunit.js"></script>
-		<script type="text/javascript" src="../../../dist/js/Hasher.js"></script>
+		<script type="text/javascript" src="../../lib/js-signals/js-signals.js"></script>
+		<script type="text/javascript" src="../../../dist/js/hasher.js"></script>
+		<script type="text/javascript" src="../../../dist/js/hasher.query.plugin.js"></script>
+		<script type="text/javascript" src="../../../dist/js/hasher.stringUtils.plugin.js"></script>
 		<title>Untitled</title>
 	</head>
 	<body>
@@ -41,23 +44,23 @@
 			/* ==== init hasher test ==== */
 			
 			test("init hasher", function(){
-				stop(200);
+				stop(500);
 				expect(4);
 				
-				ok(! Hasher.initialized.getNumListeners(), "No INIT Listener");
+				ok(! hasher.initialized.getNumListeners(), "No INIT Listener");
 				
-				Hasher.initialized.add(function(){				
-					ok(true, "HasherEvent.INIT dispatched");
+				hasher.initialized.add(function(){				
+					ok(true, "INIT dispatched");
 					
-					Hasher.initialized.remove(arguments.callee);
-					ok(! Hasher.initialized.getNumListeners(), "Removed INIT Listener");
+					hasher.initialized.remove(arguments.callee);
+					ok(! hasher.initialized.getNumListeners(), "Removed INIT Listener");
 					
 					start();
 				});
 				
-				ok(Hasher.initialized.getNumListeners(), "Added INIT Listener");
+				ok(hasher.initialized.getNumListeners(), "Added INIT Listener");
 				
-				Hasher.init();
+				hasher.init();
 			});
 			/* == */
 			
@@ -83,70 +86,70 @@
 					ok(true, 'Called Handler #3');
 				}
 				
-				Hasher.initialized.removeAll();
-				Hasher.stopped.removeAll();
-				Hasher.changed.removeAll();
+				hasher.initialized.removeAll();
+				hasher.stopped.removeAll();
+				hasher.changed.removeAll();
 				
-				ok(!Hasher.changed.getNumListeners(), "No CHANGE Listener");
+				ok(!hasher.changed.getNumListeners(), "No CHANGED Listener");
 				
-				Hasher.changed.add(handler1);
-				Hasher.changed.add(handler2);
-				Hasher.changed.add(handler3);
+				hasher.changed.add(handler1);
+				hasher.changed.add(handler2);
+				hasher.changed.add(handler3);
 				
-				ok(Hasher.changed.getNumListeners(), "Has CHANGE Listener");
+				ok(hasher.changed.getNumListeners(), "Has CHANGED Listener");
 				
-				Hasher.setHash('Lorem');
-				equals(Hasher.getHash(), 'Lorem');
+				hasher.setHash('Lorem');
+				equals(hasher.getHash(), 'Lorem');
 				
-				Hasher.setHash('Lorem/Ipsum');
-				equals(Hasher.getHash(), 'Lorem/Ipsum');
+				hasher.setHash('Lorem/Ipsum');
+				equals(hasher.getHash(), 'Lorem/Ipsum');
 				
-				Hasher.setHash('Lorem/Dolor&Amet/?foo=bar&ipsum=dolor&n=123&nan=abc123');
-				equals(Hasher.getHash(), 'Lorem/Dolor&Amet/?foo=bar&ipsum=dolor&n=123&nan=abc123');
-				equals(Hasher.getHashQuery(), 'foo=bar&ipsum=dolor&n=123&nan=abc123');
-				same(Hasher.getHashQueryAsObject(), {
+				hasher.setHash('Lorem/Dolor&Amet/?foo=bar&ipsum=dolor&n=123&nan=abc123');
+				equals(hasher.getHash(), 'Lorem/Dolor&Amet/?foo=bar&ipsum=dolor&n=123&nan=abc123');
+				equals(hasher.getHashQuery(), 'foo=bar&ipsum=dolor&n=123&nan=abc123');
+				same(hasher.getHashQueryAsObject(), {
 					foo: 'bar',
 					ipsum: 'dolor',
 					n: 123,
 					nan: 'abc123'
 				});
-				equals(Hasher.getHashQueryParam('n'), 123);
-				equals(Hasher.getHashQueryParam('nan'), 'abc123');
+				equals(hasher.getHashQueryParam('n'), 123);
+				equals(hasher.getHashQueryParam('nan'), 'abc123');
 				
-				Hasher.setHash('?foo=bar&ipsum=dolor');
-				equals(Hasher.getHash(), '?foo=bar&ipsum=dolor');
-				equals(Hasher.getHashQuery(), 'foo=bar&ipsum=dolor');
-				same(Hasher.getHashQueryAsObject(), {
+				hasher.setHash('?foo=bar&ipsum=dolor');
+				equals(hasher.getHash(), '?foo=bar&ipsum=dolor');
+				equals(hasher.getHashQuery(), 'foo=bar&ipsum=dolor');
+				same(hasher.getHashQueryAsObject(), {
 					foo: 'bar',
 					ipsum: 'dolor'
 				});
-				equals(Hasher.getHashQueryParam('foo'), 'bar');
+				equals(hasher.getHashQueryParam('foo'), 'bar');
 				
-				ok(! Hasher.initialized.getNumListeners(), "No INIT Listener");
-				Hasher.initialized.add(function(e){
+				ok(! hasher.initialized.getNumListeners(), "No INIT Listener");
+				hasher.initialized.add(function(e){
 					ok(false, "INIT event dispatched by accident"); //shouldn't run
 				});
-				ok(Hasher.initialized.getNumListeners(), "Has INIT Listener");
+				ok(hasher.initialized.getNumListeners(), "Has INIT Listener");
 				
 				
-				ok(! Hasher.stopped.getNumListeners(), "No STOP Listener");
-				Hasher.stopped.add(function(e){
+				ok(! hasher.stopped.getNumListeners(), "No STOP Listener");
+				hasher.stopped.add(function(e){
 					ok(false, "STOP event dispatched by accident"); //shouldn't run
 				});
-				ok(Hasher.stopped.getNumListeners(), "Has STOP Listener");
+				ok(hasher.stopped.getNumListeners(), "Has STOP Listener");
 				
 				
-				Hasher.changed.removeAll();
-				ok(! Hasher.changed.getNumListeners(), "No CHANGE Listener");
+				hasher.changed.removeAll();
+				ok(! hasher.changed.getNumListeners(), "No CHANGED Listener");
 				
 				
-				Hasher.initialized.removeAll();
-				Hasher.stopped.removeAll();
-				Hasher.changed.removeAll();
-				ok(! Hasher.initialized.getNumListeners(), "No INIT Listener");
-				ok(! Hasher.stopped.getNumListeners(), "No STOP Listener");
+				hasher.initialized.removeAll();
+				hasher.stopped.removeAll();
+				hasher.changed.removeAll();
+				ok(! hasher.initialized.getNumListeners(), "No INIT Listener");
+				ok(! hasher.stopped.getNumListeners(), "No STOP Listener");
 				
-				Hasher.setHash(''); //resets hash value
+				hasher.setHash(''); //resets hash value
 				
 				
 				start();
@@ -190,39 +193,39 @@
 					stop(500);
 					expect(11);
 					
-					Hasher.initialized.removeAll();
-				Hasher.stopped.removeAll();
-				Hasher.changed.removeAll();
+					hasher.initialized.removeAll();
+				hasher.stopped.removeAll();
+				hasher.changed.removeAll();
 					
-					ok(! Hasher.changed.getNumListeners(), "No CHANGE Listener");
+					ok(! hasher.changed.getNumListeners(), "No CHANGED Listener");
 					
-					Hasher.changed.add(function($newHash, $oldHash){
-						ok(true, "HasherEvent.CHANGE dispatched");
+					hasher.changed.add(function($newHash, $oldHash){
+						ok(true, "CHANGED dispatched");
 
-						ok(($oldHash !== Hasher.getHash()), "Hash value really changed.");
+						ok(($oldHash !== hasher.getHash()), "Hash value really changed.");
 						
-						Hasher.changed.remove(arguments.callee);
-						ok( ! Hasher.changed.getNumListeners(), "Removed CHANGE Listener");
+						hasher.changed.remove(arguments.callee);
+						ok( ! hasher.changed.getNumListeners(), "Removed CHANGED Listener");
 						
-						equals($oldHash, oldHash, "HasherEvent.oldHash");
-						equals(Hasher.getHash(), $newHash, "HasherEvent.newHash == Hasher.getHash()");
+						equals($oldHash, oldHash, "oldHash");
+						equals(hasher.getHash(), $newHash, "newHash == hasher.getHash()");
 						
 						start();
 					});
 					
-					ok(Hasher.changed.getNumListeners(), "Attached CHANGE Listener");
+					ok(hasher.changed.getNumListeners(), "Attached CHANGED Listener");
 					
-					Hasher.setHash(hash);
-					equals(Hasher.getHash(), hash, "Hasher.setHash() & Hasher.getHash()");
+					hasher.setHash(hash);
+					equals(hasher.getHash(), hash, "hasher.setHash() & hasher.getHash()");
 					
 					var hashArray = hash.split('/');
 					
-					same(Hasher.getHashAsArray(), hashArray, "Hasher.getHashAsArray()");
+					same(hasher.getHashAsArray(), hashArray, "hasher.getHashAsArray()");
 					
-					same(Hasher.getHashQuery(), hashQuery, "Hasher.getHashQuery()");
+					same(hasher.getHashQuery(), hashQuery, "hasher.getHashQuery()");
 					
-					Hasher.setTitle(title);
-					equal(Hasher.getTitle(), document.title, "Hasher.setTitle() & Hasher.getTitle()");
+					hasher.setTitle(title);
+					equal(hasher.getTitle(), document.title, "hasher.setTitle() & hasher.getTitle()");
 				};
 				
 				test(testName, testFn);
@@ -250,36 +253,36 @@
 				var title = testsHashs[n][1];
 				
 				var testFn = function(){
-					stop(200);
+					stop(500);
 					expect(7);
 					
-					Hasher.initialized.removeAll();
-				Hasher.stopped.removeAll();
-				Hasher.changed.removeAll();
+					hasher.initialized.removeAll();
+				hasher.stopped.removeAll();
+				hasher.changed.removeAll();
 					
-					ok(!Hasher.changed.getNumListeners(), "No CHANGE Listener");
+					ok(!hasher.changed.getNumListeners(), "No CHANGED Listener");
 					
-					Hasher.changed.add(function($newHash, $oldHash){
+					hasher.changed.add(function($newHash, $oldHash){
 					
-						ok(true, "HasherEvent.CHANGE dispatched");
+						ok(true, "CHANGED dispatched");
 						
-						Hasher.changed.remove(arguments.callee);
-						ok(!Hasher.changed.getNumListeners(), "Removed CHANGE Listener");
+						hasher.changed.remove(arguments.callee);
+						ok(!hasher.changed.getNumListeners(), "Removed CHANGED Listener");
 						
-						equals(Hasher.getHash(), $newHash, "HasherEvent.newHash == Hasher.getHash()");
-						equals(Hasher.getHash(), hash, "Hasher.getHash()");
+						equals(hasher.getHash(), $newHash, "newHash == hasher.getHash()");
+						equals(hasher.getHash(), hash, "hasher.getHash()");
 						
 						var hashArray = hash.split('/');
 						
-						same(Hasher.getHashAsArray(), hashArray, "Hasher.getHashAsArray()");
+						same(hasher.getHashAsArray(), hashArray, "hasher.getHashAsArray()");
 						
 						start();
 						
 					});
 					
-					ok(Hasher.changed.getNumListeners(), "Attached CHANGE Listener");
+					ok(hasher.changed.getNumListeners(), "Attached CHANGED Listener");
 					
-					Hasher.back();
+					hasher.back();
 				};
 				
 				test(testName, testFn);
@@ -304,36 +307,36 @@
 				var title = testsHashs[n][1];
 				
 				var testFn = function(){
-					stop(200);
+					stop(500);
 					expect(7);
 					
-					Hasher.initialized.removeAll();
-				Hasher.stopped.removeAll();
-				Hasher.changed.removeAll();
+					hasher.initialized.removeAll();
+				hasher.stopped.removeAll();
+				hasher.changed.removeAll();
 					
-					ok(!Hasher.changed.getNumListeners(), "No CHANGE Listener");
+					ok(!hasher.changed.getNumListeners(), "No CHANGED Listener");
 					
-					Hasher.changed.add(function($newHash, $oldHash){
+					hasher.changed.add(function($newHash, $oldHash){
 					
-						ok(true, "HasherEvent.CHANGE dispatched");
+						ok(true, "CHANGED dispatched");
 						
-						Hasher.changed.remove(arguments.callee);
-						ok(!Hasher.changed.getNumListeners(), "Removed CHANGE Listener");
+						hasher.changed.remove(arguments.callee);
+						ok(!hasher.changed.getNumListeners(), "Removed CHANGED Listener");
 						
-						equals(Hasher.getHash(), $newHash, "HasherEvent.newHash == Hasher.getHash()");
-						equals(Hasher.getHash(), hash, "Hasher.getHash()");
+						equals(hasher.getHash(), $newHash, "newHash == hasher.getHash()");
+						equals(hasher.getHash(), hash, "hasher.getHash()");
 						
 						var hashArray = hash.split('/');
 						
-						same(Hasher.getHashAsArray(), hashArray, "Hasher.getHashAsArray()");
+						same(hasher.getHashAsArray(), hashArray, "hasher.getHashAsArray()");
 						
 						start();
 						
 					});
 					
-					ok(Hasher.changed.getNumListeners(), "Attached CHANGE Listener");
+					ok(hasher.changed.getNumListeners(), "Attached CHANGED Listener");
 					
-					Hasher.forward();
+					hasher.forward();
 				};
 				
 				test(testName, testFn);
@@ -346,49 +349,49 @@
 			module('init and stop');
 			
 			var stopTest = function(){
-				stop(200);
+				stop(500);
 				expect(5);
 				
-				ok(Hasher.isActive(), "Is active");
-				ok(! Hasher.stopped.getNumListeners(), "No STOP Listener");
+				ok(hasher.isActive(), "Is active");
+				ok(! hasher.stopped.getNumListeners(), "No STOP Listener");
 				
-				Hasher.stopped.add(function(evt){
+				hasher.stopped.add(function(evt){
 					
-					ok(true, "HasherEvent.STOP dispatched");
+					ok(true, "STOP dispatched");
 					
-					Hasher.stopped.remove(arguments.callee);
+					hasher.stopped.remove(arguments.callee);
 					
-					ok(! Hasher.stopped.getNumListeners(), "Removed STOP Listener");
+					ok(! hasher.stopped.getNumListeners(), "Removed STOP Listener");
 					
 					start();
 				});
 				
-				ok(Hasher.stopped.getNumListeners(), "Attached STOP Listener");
-				Hasher.stop();
+				ok(hasher.stopped.getNumListeners(), "Attached STOP Listener");
+				hasher.stop();
 			};
 			
 			var stopFailTest = function(){
-				stop(200);
+				stop(500);
 				expect(5);
 				
-				ok(! Hasher.isActive(), "Is not active");
-				ok(! Hasher.stopped.getNumListeners(), "No STOP Listener");
+				ok(! hasher.isActive(), "Is not active");
+				ok(! hasher.stopped.getNumListeners(), "No STOP Listener");
 				
 				var handler = function(evt){
-					ok(false, "HasherEvent.STOP dispatched"); //shouldn't happen
-					Hasher.stopped.removeAll();
+					ok(false, "STOP dispatched"); //shouldn't happen
+					hasher.stopped.removeAll();
 					start();
 				};
-				Hasher.stopped.add(handler);
+				hasher.stopped.add(handler);
 				
-				ok(Hasher.stopped.getNumListeners(), "Attached STOP Listener");
-				Hasher.stop();
-				Hasher.stop();
+				ok(hasher.stopped.getNumListeners(), "Attached STOP Listener");
+				hasher.stop();
+				hasher.stop();
 				
 				var delayedStart = function(){
 					ok(true, 'Didn\'t dispatched STOP event.');
-					Hasher.stopped.removeAll();
-					ok(! Hasher.stopped.getNumListeners(), "Removed STOP Listener");
+					hasher.stopped.removeAll();
+					ok(! hasher.stopped.getNumListeners(), "Removed STOP Listener");
 					start();
 				};
 				
@@ -396,50 +399,50 @@
 			};
 			
 			var initTest = function(){
-				stop(200);
+				stop(500);
 				expect(6);
 				
-				ok(! Hasher.isActive(), "Is not active");
-				ok(! Hasher.initialized.getNumListeners(), "No INIT Listener");
+				ok(! hasher.isActive(), "Is not active");
+				ok(! hasher.initialized.getNumListeners(), "No INIT Listener");
 				
-				Hasher.initialized.add(function(evt){
-					ok(Hasher.isActive(), "Is active");
-					ok(true, "HasherEvent.INIT dispatched");
+				hasher.initialized.add(function(evt){
+					ok(hasher.isActive(), "Is active");
+					ok(true, "INIT dispatched");
 					
-					Hasher.initialized.remove(arguments.callee);
+					hasher.initialized.remove(arguments.callee);
 					
-					ok(! Hasher.initialized.getNumListeners(), "Removed INIT Listener");
+					ok(! hasher.initialized.getNumListeners(), "Removed INIT Listener");
 					
 					start();
 				});
 				
-				ok(Hasher.initialized.getNumListeners(), "Attached INIT Listener");
-				Hasher.init();
+				ok(hasher.initialized.getNumListeners(), "Attached INIT Listener");
+				hasher.init();
 			};
 			
 			var initFailTest = function(){
-				stop(200);
+				stop(500);
 				expect(6);
 				
-				ok(Hasher.isActive(), "Is active");
-				ok(! Hasher.initialized.getNumListeners(), "No INIT Listener");
+				ok(hasher.isActive(), "Is active");
+				ok(! hasher.initialized.getNumListeners(), "No INIT Listener");
 				
 				var handler = function(evt){
-					ok(false, "HasherEvent.INIT dispatched"); //shouldn't happen
-					Hasher.initialized.removeAll();
+					ok(false, "INIT dispatched"); //shouldn't happen
+					hasher.initialized.removeAll();
 					start();
 				};
-				Hasher.initialized.add(handler);
+				hasher.initialized.add(handler);
 				
-				ok(Hasher.initialized.getNumListeners(), "Attached INIT Listener");
-				Hasher.init();
-				Hasher.init();
+				ok(hasher.initialized.getNumListeners(), "Attached INIT Listener");
+				hasher.init();
+				hasher.init();
 				
 				var delayedStart = function(){
 					ok(true, 'Didn\'t dispatched INIT event.');
-					ok(Hasher.isActive(), "Is active");
-					Hasher.initialized.removeAll();
-					ok(! Hasher.initialized.getNumListeners(), "Removed INIT Listener");
+					ok(hasher.isActive(), "Is active");
+					hasher.initialized.removeAll();
+					ok(! hasher.initialized.getNumListeners(), "Removed INIT Listener");
 					start();
 				};
 				
@@ -464,30 +467,30 @@
 			
 			
 			var disableInitTest = function(){
-				stop(200);
+				stop(500);
 				expect(6);
 				
-				ok(! Hasher.isActive(), "Is not active");
-				ok(! Hasher.initialized.getNumListeners(), "No INIT Listener");
+				ok(! hasher.isActive(), "Is not active");
+				ok(! hasher.initialized.getNumListeners(), "No INIT Listener");
 				
 				var handler = function(evt){
-					ok(false, "HasherEvent.INIT dispatched"); //shouldn't happen
-					Hasher.initialized.removeAll();
+					ok(false, "INIT dispatched"); //shouldn't happen
+					hasher.initialized.removeAll();
 					start();
 				};
-				Hasher.initialized.add(handler);
+				hasher.initialized.add(handler);
 				
-				ok(Hasher.initialized.getNumListeners(), "Attached INIT Listener");
+				ok(hasher.initialized.getNumListeners(), "Attached INIT Listener");
 				
-				Hasher.initialized.disable();
+				hasher.initialized.disable();
 				
-				Hasher.init();
+				hasher.init();
 				
 				var delayedStart = function(){
 					ok(true, 'Didn\'t dispatched INIT event.');
-					ok(Hasher.isActive(), "Is active");
-					Hasher.initialized.removeAll();
-					ok(! Hasher.initialized.getNumListeners(), "Removed INIT Listener");
+					ok(hasher.isActive(), "Is active");
+					hasher.initialized.removeAll();
+					ok(! hasher.initialized.getNumListeners(), "Removed INIT Listener");
 					start();
 				};
 				
@@ -497,33 +500,33 @@
 			
 			
 			var disableChangeTest = function(){
-				stop(200);
+				stop(500);
 				expect(6);
 				
-				ok(Hasher.isActive(), "Is active");
-				ok(! Hasher.changed.getNumListeners(), "No CHANGE Listener");
+				ok(hasher.isActive(), "Is active");
+				ok(! hasher.changed.getNumListeners(), "No CHANGED Listener");
 				
 				var handler = function(evt){
-					ok(false, "HasherEvent.CHANGE dispatched"); //shouldn't happen
-					Hasher.changed.removeAll();
+					ok(false, "CHANGED dispatched"); //shouldn't happen
+					hasher.changed.removeAll();
 					start();
 				};
-				Hasher.changed.add(handler);
+				hasher.changed.add(handler);
 				
-				ok(Hasher.changed.getNumListeners(), "Attached CHANGE Listener");
+				ok(hasher.changed.getNumListeners(), "Attached CHANGED Listener");
 				
-				Hasher.changed.disable();
+				hasher.changed.disable();
 				
-				Hasher.setHash('01');
-				Hasher.setHash('02');
-				Hasher.back();
-				Hasher.forward();
+				hasher.setHash('01');
+				hasher.setHash('02');
+				hasher.back();
+				hasher.forward();
 				
 				var delayedStart = function(){
-					ok(true, 'Didn\'t dispatched CHANGE event.');
-					ok(Hasher.isActive(), "Is active");
-					Hasher.changed.removeAll();
-					ok(! Hasher.changed.getNumListeners(), "Removed CHANGE Listener");
+					ok(true, 'Didn\'t dispatched CHANGED event.');
+					ok(hasher.isActive(), "Is active");
+					hasher.changed.removeAll();
+					ok(! hasher.changed.getNumListeners(), "Removed CHANGED Listener");
 					start();
 				};
 				
@@ -533,30 +536,30 @@
 			
 			
 			var disableStopTest = function(){
-				stop(200);
+				stop(500);
 				expect(6);
 				
-				ok(Hasher.isActive(), "Is active");
-				ok(! Hasher.stopped.getNumListeners(), "No STOP Listener");
+				ok(hasher.isActive(), "Is active");
+				ok(! hasher.stopped.getNumListeners(), "No STOP Listener");
 				
 				var handler = function(evt){
-					ok(false, "HasherEvent.STOP dispatched"); //shouldn't happen
-					Hasher.stopped.removeAll();
+					ok(false, "STOP dispatched"); //shouldn't happen
+					hasher.stopped.removeAll();
 					start();
 				};
-				Hasher.stopped.add(handler);
+				hasher.stopped.add(handler);
 				
-				ok(Hasher.stopped.getNumListeners(), "Attached STOP Listener");
+				ok(hasher.stopped.getNumListeners(), "Attached STOP Listener");
 				
-				Hasher.stopped.disable();
+				hasher.stopped.disable();
 				
-				Hasher.stop();
+				hasher.stop();
 				
 				var delayedStart = function(){
 					ok(true, 'Didn\'t dispatched STOP event.');
-					ok(! Hasher.isActive(), "Is not active");
-					Hasher.stopped.removeAll();
-					ok(! Hasher.stopped.getNumListeners(), "Removed INIT Listener");
+					ok(! hasher.isActive(), "Is not active");
+					hasher.stopped.removeAll();
+					ok(! hasher.stopped.getNumListeners(), "Removed INIT Listener");
 					start();
 				};
 				
@@ -565,7 +568,7 @@
 			};
 			
 			test('disable INIT', disableInitTest);
-			test('disable CHANGE', disableChangeTest);
+			test('disable CHANGED', disableChangeTest);
 			test('disable STOP', disableStopTest);
 			
 			/* === */
@@ -575,38 +578,38 @@
 			module('extras');
 			
 			var accentsTest = function(){
-				stop(200);
+				stop(500);
 				expect(3);
 				
 				var str_arr  = [
-					['ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½', 'AAAAAAAECEEEEIIIIDNOOOOOOUUUUYPBaaaaaaaeceeeeiiiiDnoooooouuuuypy'],
-					['Special chars ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ for the win!', 'Special chars AAAAAAAECEEEEIIIIDNOOOOOOUUUUYPBaaaaaaaeceeeeiiiiDnoooooouuuuypy for the win!'],
-					['Spï¿½cï¿½al chï¿½rs fï¿½r the wï¿½n!', 'Special chArs fOr the win!']
+					['ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ', 'AAAAAAAECEEEEIIIIDNOOOOOOUUUUYPBaaaaaaaeceeeeiiiiDnoooooouuuuypy'],
+					['Special chars ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ for the win!', 'Special chars AAAAAAAECEEEEIIIIDNOOOOOOUUUUYPBaaaaaaaeceeeeiiiiDnoooooouuuuypy for the win!'],
+					['Spéçïãl chÂrs fÖr the wîn!', 'Special chArs fOr the win!']
 				];
 				
-				same(Hasher.removeAccents(str_arr[0][0]), str_arr[0][1]);
-				same(Hasher.removeAccents(str_arr[1][0]), str_arr[1][1]);
-				same(Hasher.removeAccents(str_arr[2][0]), str_arr[2][1]);
+				same(hasher.removeAccents(str_arr[0][0]), str_arr[0][1]);
+				same(hasher.removeAccents(str_arr[1][0]), str_arr[1][1]);
+				same(hasher.removeAccents(str_arr[2][0]), str_arr[2][1]);
 				
 				start();
 			};
 			
 			var hyphenateTest = function(){
-				stop(200);
+				stop(500);
 				expect(3);
 				
 				var str_arr  = [
-					['ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½', 'AAAAAAAECEEEEIIIIDNOOOOOOUUUUYPBaaaaaaaeceeeeiiiiDnoooooouuuuypy'],
-					['Special chars ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ for the win!', 'Special-chars-AAAAAAAECEEEEIIIIDNOOOOOOUUUUYPBaaaaaaaeceeeeiiiiDnoooooouuuuypy-for-the-win'],
-					['Spï¿½cï¿½al chï¿½rs fï¿½r the wï¿½n!', 'Special-chArs-fOr-the-win'],
+					['ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ', 'AAAAAAAECEEEEIIIIDNOOOOOOUUUUYPBaaaaaaaeceeeeiiiiDnoooooouuuuypy'],
+					['Special chars ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ for the win!', 'Special-chars-AAAAAAAECEEEEIIIIDNOOOOOOUUUUYPBaaaaaaaeceeeeiiiiDnoooooouuuuypy-for-the-win'],
+					['Spéçïãl chÂrs fÖr the wîn!', 'Special-chArs-fOr-the-win'],
 					['camelCaseText', 'camel-case-text'],
 					['camelCaseText with     mixed  spacing', 'camel-case-text-with-mixed-spacing'],
-					['camelCaseText with     mixed  spacing & Spï¿½cï¿½al chï¿½rs', 'camel-case-text-with-mixed-spacing-Special-chArs']
+					['camelCaseText with     mixed  spacing & Spéçïãl chÂrs', 'camel-case-text-with-mixed-spacing-Special-chArs']
 				];
 				
-				same(Hasher.hyphenate(str_arr[0][0]), str_arr[0][1]);
-				same(Hasher.hyphenate(str_arr[1][0]), str_arr[1][1]);
-				same(Hasher.hyphenate(str_arr[2][0]), str_arr[2][1]);
+				same(hasher.hyphenate(str_arr[0][0]), str_arr[0][1]);
+				same(hasher.hyphenate(str_arr[1][0]), str_arr[1][1]);
+				same(hasher.hyphenate(str_arr[2][0]), str_arr[2][1]);
 				
 				start();
 			};
@@ -621,17 +624,17 @@
 			module('dispose');
 			
 			var disposeTest = function(){
-				stop(200);
+				stop(500);
 				expect(5);
 				
-				ok((Hasher), "Hasher exists");
+				ok((hasher), "hasher exists");
 				
-				Hasher.dispose();
+				hasher.dispose();
 				
-				ok((! Hasher), "! Hasher");
-				ok(('Hasher' in window), "Hasher in window");
-				ok((Hasher === null), "Hasher === null");
-				ok(!(typeof Hasher === 'undefined'), "!(typeof Hasher === 'undefined')");
+				ok((! hasher), "! hasher");
+				ok(('hasher' in window), "hasher in window");
+				ok((hasher === null), "hasher === null");
+				ok(!(typeof hasher === 'undefined'), "!(typeof hasher === 'undefined')");
 				
 				start();
 			};

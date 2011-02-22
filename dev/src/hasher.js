@@ -3,7 +3,7 @@
 /*!!
  * Hasher <http://github.com/millermedeiros/hasher>
  * @author Miller Medeiros <http://millermedeiros.com>
- * @version 0.9.91 (2011/02/22 12:31 PM)
+ * @version ::VERSION_NUMBER:: (::BUILD_DATE::)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 
@@ -219,7 +219,7 @@ var hasher = (function(window, document){
 		 * @type string
 		 * @constant
 		 */
-		VERSION : '0.9.91',
+		VERSION : '::VERSION_NUMBER::',
 		
 		/**
 		 * String that should always be added to the end of Hash value.
