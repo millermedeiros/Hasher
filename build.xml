@@ -23,25 +23,31 @@
 		<mkdir dir="${dist.dir}"/>
 		<mkdir dir="${docs.dir}"/>
 	</target>
-
-	<target name="concat" depends="-mkdirs" description="Concatenate Files and outputs uncompressed version of Hasher.">
+	
+	<target name="-purgeDocs">
+		<delete dir="${docs.dir}" />
+	</target>
+	
+	<target name="-purgeJS">
+		<delete dir="${dist.dir}" />
+	</target>
+	
+	<target name="concat" depends="-purgeJS, -mkdirs" description="Concatenate Files and outputs uncompressed version of Hasher.">
 		<echo message="Building ${dist.name}" />
+		<tstamp>
+			<format property="build.date" pattern="yyyy/MM/dd hh:mm aa" unit="hour"/>
+    	</tstamp>
+    	<!--
 		<concat destfile="${dist.dir}/${dist.name}" fixlastline="yes" eol="unix">
-            <fileset file="${src.dir}/copyright.inc" />
-            <fileset file="${lib.dir}/millermedeiros/intro.js" />
-            <fileset file="${lib.dir}/millermedeiros/main.js" />
-            <fileset file="${lib.dir}/millermedeiros/EventDispatcher.js" />
-            <fileset file="${lib.dir}/millermedeiros/queryUtils.js" />
-            <fileset file="${lib.dir}/millermedeiros/event-listenerFacade.js" />
-            <fileset file="${lib.dir}/millermedeiros/outro.js" />
-            <fileset file="${src.dir}/HasherEvent.js" />
-            <fileset file="${src.dir}/Hasher.js" />
-        </concat>
-		<replace file="${dist.dir}/${dist.name}" token="::version::" value="${version.number} ${version.date}"/>
+            <fileset file="${src.dir}/hasher.js" />
+            <fileset file="${src.dir}/hasher.query.plugin.js" />
+    	</concat>
+    	-->
+    	<copy todir="${dist.dir}">
+    		<fileset dir="${src.dir}" />
+    	</copy>
 		<replace file="${dist.dir}/${dist.name}" token="::VERSION_NUMBER::" value="${version.number}"/>
-		<replace file="${dist.dir}/${dist.name}" token="::evtDispatcher_version::" value="${evtDispatcher.version}"/>
-		<replace file="${dist.dir}/${dist.name}" token="::queryUtils_version::" value="${queryUtils.version}"/>
-		<replace file="${dist.dir}/${dist.name}" token="::listenerFacade_version::" value="${listenerFacade.version}"/>
+		<replace file="${dist.dir}/${dist.name}" token="::BUILD_DATE::" value="${build.date}"/>
 		<echo message="${dist.name} built" />
 	</target>
 	
@@ -49,7 +55,7 @@
 		<echo message="Building ${dist.min.name}" />
 		<apply executable="java" parallel="false" verbose="true" dest="${dist.dir}">
 		    <fileset dir="${dist.dir}">
-		        <include name="${dist.name}" />
+		        <include name="*.js" />
 		    </fileset>
 		    <arg line="-jar" />
 		    <arg path="${yuicompressor.jar}" />
@@ -57,12 +63,12 @@
 		    <arg value="ANSI" />
 		    <arg value="-o" />
 		    <targetfile />
-		    <mapper type="glob" from="${dist.name}" to="${dist.min.name}" />
+		    <mapper type="glob" from="*.js" to="*.min.js" />
 		</apply>
 		<echo message="${dist.min.name} built." />
 	</target>
 	
-	<target name="generateDoc" description="Build Hasher and generates documentation.">
+	<target name="generateDocs" depends="-purgeDocs" description="Build Hasher and generates documentation.">
 		<echo message="Generating documentation" />
  		<apply executable="java" parallel="false" verbose="true">
 			<fileset dir="${dist.dir}">
@@ -76,7 +82,7 @@
 		</apply>
 		<echo message="Documentation generated" />
 	</target>
-	
+
 	<target name="lint" description="Validate source code using JSLint.">
 		<jslint haltOnFailure="false" options="browser, onevar, undef, bitwise, newcap, immed">
 			<formatter type="plain" />
@@ -84,12 +90,12 @@
 			<fileset dir="${dist.dir}" includes="*.js" excludes="*.min.js" />
 		</jslint>
 	</target>
-	
+
 	<target name="compile" depends="concat, lint, minify">
 		<echo message="Compiled." />
 	</target>
 	
-	<target name="all" depends="purge, -mkdirs, compile, generateDoc">
+	<target name="all" depends="purge, -mkdirs, compile, generateDocs">
 		<echo message="Build Complete." />
 	</target>
 	
