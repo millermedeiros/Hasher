@@ -4,6 +4,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>Hasher simple test</title>
+		<script type="text/javascript" src="../../lib/js-signals/js-signals.js"></script>
 		<script type="text/javascript" src="../../../dist/js/Hasher.js"></script>
 		<style type="text/css">
 			#logger{
@@ -14,20 +15,20 @@
     <body>
         <div id="wrapper">
 			<ul>
-				<li><a href="#" onclick="Hasher.setHash('blah'); return false;">blah</a></li>
-				<li><a href="#" onclick="Hasher.setHash('lorem ipsum'); return false;">lorem ipsum</a></li>
-				<li><a href="#" onclick="Hasher.setHash('dolor'); return false;">dolor</a></li>
-				<li><a href="#" onclick="Hasher.setHash('dolor sit amet'); return false;">dolor sit amet</a></li>
-				<li><a href="#" onclick="Hasher.setHash('Spêçïãl/Chårs FTW'); return false;">Sp&ecirc;&ccedil;&iuml;&atilde;l/Ch&aring;rs FTW</a></li>
+				<li><a href="#" onclick="hasher.setHash('blah'); return false;">blah</a></li>
+				<li><a href="#" onclick="hasher.setHash('lorem ipsum'); return false;">lorem ipsum</a></li>
+				<li><a href="#" onclick="hasher.setHash('dolor'); return false;">dolor</a></li>
+				<li><a href="#" onclick="hasher.setHash('dolor sit amet'); return false;">dolor sit amet</a></li>
+				<li><a href="#" onclick="hasher.setHash('Spêçïãl/Chårs FTW'); return false;">Sp&ecirc;&ccedil;&iuml;&atilde;l/Ch&aring;rs FTW</a></li>
 			</ul>
 			<ul>
-				<li><a href="javascript:Hasher.back();">Hasher.back()</a></li>
-				<li><a href="javascript:Hasher.forward();">Hasher.forward()</a></li>
-				<li><a href="javascript:Hasher.init();">Hasher.init()</a></li>
-				<li><a href="javascript:Hasher.stop();">Hasher.stop()</a></li>
-				<li><a href="javascript:Hasher.changed.disable();">Hasher.changed.disable()</a></li>
-				<li><a href="javascript:Hasher.changed.enable();">Hasher.changed.enable()</a></li>
-				<li><a href="javascript:log(Hasher.changed.isEnabled());">Hasher.changed.isEnabled()</a></li>
+				<li><a href="javascript:hasher.back();">hasher.back()</a></li>
+				<li><a href="javascript:hasher.forward();">hasher.forward()</a></li>
+				<li><a href="javascript:hasher.init();">hasher.init()</a></li>
+				<li><a href="javascript:hasher.stop();">hasher.stop()</a></li>
+				<li><a href="javascript:hasher.changed.disable();">hasher.changed.disable()</a></li>
+				<li><a href="javascript:hasher.changed.enable();">hasher.changed.enable()</a></li>
+				<li><a href="javascript:log(hasher.changed.isEnabled());">hasher.changed.isEnabled()</a></li>
 			</ul>
 			<ul>
 				<li><a href="javascript:clearLog();">clear log</a></li>
@@ -49,7 +50,7 @@
 			}
 			
 			function onChange(a, b){
-				log('onChange: '+ Hasher.getHash() +' - ['+ Hasher.getHashAsArray() +']');
+				log('onChange: '+ hasher.getHash() +' - ['+ hasher.getHashAsArray() +']');
 			}
 			
 			function onChange2(a, b){
@@ -60,19 +61,19 @@
 				log('onChange3');
 			}
 			
-			Hasher.changed.add(onChange);
+			hasher.changed.add(onChange);
 			
-			Hasher.initialized.add(function(e){
+			hasher.initialized.add(function(e){
 			    log('initialized', e);
 			});
 			
-			Hasher.init();
+			hasher.init();
 			
 			//used to test multiple listeners to the same event
-			Hasher.changed.add(onChange2);
-			Hasher.changed.add(onChange3);
+			hasher.changed.add(onChange2);
+			hasher.changed.add(onChange3);
 			
-			Hasher.stopped.add(function(e){
+			hasher.stopped.add(function(e){
 				log('stopped', e);
 			});
 		</script>
