@@ -1,3 +1,4 @@
 .tmp*
 .project
 .settings
+.idea
