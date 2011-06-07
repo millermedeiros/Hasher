@@ -1,4 +1,4 @@
-/*global signals:true, window:true*/
+/*global signals:false, window:false*/
 
 /*!!
  * Hasher <http://github.com/millermedeiros/hasher>
@@ -224,13 +224,13 @@ var hasher = (function(window, document){
 		/**
 		 * String that should always be added to the end of Hash value.
 		 * <ul>
-		 * <li>default value: '/';</li>
+		 * <li>default value: '';</li>
 		 * <li>will be automatically removed from `hasher.getHash()`</li>
 		 * <li>avoid conflicts with elements that contain ID equal to hash value;</li>
 		 * </ul>
 		 * @type string
 		 */
-		appendHash : '/',
+		appendHash : '',
 		
 		/**
 		 * String that should always be added to the beginning of Hash value.
