@@ -3,7 +3,7 @@
 /*!!
  * Hasher <http://github.com/millermedeiros/hasher>
  * @author Miller Medeiros <http://millermedeiros.com>
- * @version 0.9.92 (2011/06/07 03:01 PM)
+ * @version 0.9.92+ (2011/06/18 05:49 PM)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 
@@ -12,7 +12,7 @@
  * @namespace History Manager for rich-media applications.
  * @name hasher
  */
-var hasher = (function(window, document){
+var hasher = (function(window){
 	
 	//--------------------------------------------------------------------------------------
 	// Private Vars
@@ -20,20 +20,14 @@ var hasher = (function(window, document){
 	
 	var 
 		
-		// local storage for brevity, performance improvement and better compression -------
+		// local storage for brevity and better compression --------------------------------
 		//==================================================================================
 		
-		/** @private */
 		hasher,
-		
-		/** @private {Location} */
+        document = window.document,
 		location = window.location,
-		
-		/** @private {History} */
 		history = window.history,
-		
-		/** @private {signals.Signal} */
-		Signal = signals.Signal,
+        Signal = signals.Signal,
 		
 		
 		// local vars ----------------------------------------------------------------------
@@ -55,11 +49,8 @@ var hasher = (function(window, document){
 		// sniffing/feature detection -------------------------------------------------------
 		//===================================================================================
 		
-		/** @private {string} User Agent */
-		_UA = navigator.userAgent,
-		
 		/** @private {boolean} if is IE */
-		_isIE = /MSIE/.test(_UA) && (!window.opera),
+		_isIE = (!+"\v1"), //hack based on this: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html
 		
 		/** @private {boolean} If browser supports the `hashchange` event - FF3.6+, IE8+, Chrome 5+, Safari 5+ */
 		_isHashChangeSupported = ('onhashchange' in window),
@@ -219,7 +210,7 @@ var hasher = (function(window, document){
 		 * @type string
 		 * @constant
 		 */
-		VERSION : '0.9.92',
+		VERSION : '0.9.92+',
 		
 		/**
 		 * String that should always be added to the end of Hash value.
@@ -442,4 +433,4 @@ var hasher = (function(window, document){
 	
 	return hasher;
 	
-}(window, window.document));
+}(window || this));
