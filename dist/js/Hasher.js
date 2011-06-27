@@ -3,7 +3,7 @@
 /*!!
  * Hasher <http://github.com/millermedeiros/hasher>
  * @author Miller Medeiros <http://millermedeiros.com>
- * @version 0.9.92+ (2011/06/18 05:52 PM)
+ * @version 0.9.92+ (2011/06/27 02:35 PM)
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 
@@ -161,7 +161,7 @@ var hasher = (function(window){
      */
     function _checkHistoryLegacyIE(){
         var windowHash = _getWindowHash(),
-            frameHash = _trimHash(_getFrameHash());
+            frameHash = _getFrameHash();
         if(frameHash != _hash && frameHash != windowHash){ //detect changes made pressing browser history buttons. Workaround since history.back() and history.forward() doesn't update hash value on IE6/7 but updates content of the iframe.
             hasher.setHash(frameHash);
         }else if(windowHash != _hash){ //detect if hash changed (manually or using setHash)
