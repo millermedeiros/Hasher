@@ -1,3 +1,12 @@
+/*!!
+ * Hasher <http://github.com/millermedeiros/hasher>
+ * @author Miller Medeiros
+ * @version 0.9.93+ (2011/08/03 07:26 PM)
+ * Released under the MIT License
+ */
+
+define('hasher', ['signals'], function(signals){
+
 //::LICENSE:://
 
 /*jshint white:false*/
@@ -138,7 +147,7 @@ var hasher = (function(window){
          * @type string
          * @constant
          */
-        VERSION : '::VERSION_NUMBER::',
+        VERSION : '0.9.93+',
         
         /**
          * String that should always be added to the end of Hash value.
@@ -317,3 +326,7 @@ var hasher = (function(window){
     return hasher;
 
 }(window));
+
+
+    return hasher;
+});

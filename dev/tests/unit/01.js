@@ -28,7 +28,9 @@ var TIMEOUT_BACK_FORWARD = 200;
 location.hash = ''; //resets location.hash
 
 
-/* ==== init hasher test ==== */
+/* ==== init and stop ==== */
+
+module('init and stop');
 
 test("init hasher", function(){
     stop(2000);
@@ -50,8 +52,126 @@ test("init hasher", function(){
     hasher.init();
 });
 
-/* == */
+var stopTest = function(){
+    stop(2000);
+    expect(5);
+   
+    hasher.init(); // should be active to be able to stop
 
+    ok(hasher.isActive(), "Is active");
+    ok(! hasher.stopped.getNumListeners(), "No STOP Listener");
+    
+    hasher.stopped.add(function(evt){
+        
+        ok(true, "STOP dispatched");
+        
+        hasher.stopped.remove(arguments.callee);
+        
+        ok(! hasher.stopped.getNumListeners(), "Removed STOP Listener");
+        
+        start();
+    });
+    
+    ok(hasher.stopped.getNumListeners(), "Attached STOP Listener");
+    hasher.stop();
+};
+
+var stopFailTest = function(){
+    stop(2000);
+    expect(5);
+
+    hasher.stop(); //shouldn't be active
+    
+    ok(! hasher.isActive(), "Is not active");
+    ok(! hasher.stopped.getNumListeners(), "No STOP Listener");
+    
+    var handler = function(evt){
+        ok(false, "STOP dispatched"); //shouldn't happen
+        hasher.stopped.removeAll();
+        start();
+    };
+    hasher.stopped.add(handler);
+    
+    ok(hasher.stopped.getNumListeners(), "Attached STOP Listener");
+    hasher.stop();
+    hasher.stop();
+    
+    var delayedStart = function(){
+        ok(true, 'Didn\'t dispatched STOP event.');
+        hasher.stopped.removeAll();
+        ok(! hasher.stopped.getNumListeners(), "Removed STOP Listener");
+        start();
+    };
+    
+    setTimeout(delayedStart, 100);
+};
+
+var initTest = function(){
+    stop(2000);
+    expect(6);
+    
+    hasher.stop(); //shouldn't be active
+
+    ok(! hasher.isActive(), "Is not active");
+    ok(! hasher.initialized.getNumListeners(), "No INIT Listener");
+    
+    hasher.initialized.add(function(evt){
+        ok(hasher.isActive(), "Is active");
+        ok(true, "INIT dispatched");
+        
+        hasher.initialized.remove(arguments.callee);
+        
+        ok(! hasher.initialized.getNumListeners(), "Removed INIT Listener");
+        
+        start();
+    });
+    
+    ok(hasher.initialized.getNumListeners(), "Attached INIT Listener");
+    hasher.init();
+};
+
+var initFailTest = function(){
+    stop(2000);
+    expect(6);
+    
+    hasher.init(); //should be active
+
+    ok(hasher.isActive(), "Is active");
+    ok(! hasher.initialized.getNumListeners(), "No INIT Listener");
+    
+    var handler = function(evt){
+        ok(false, "INIT dispatched"); //shouldn't happen
+        hasher.initialized.removeAll();
+        start();
+    };
+    hasher.initialized.add(handler);
+    
+    ok(hasher.initialized.getNumListeners(), "Attached INIT Listener");
+    hasher.init();
+    hasher.init();
+    
+    var delayedStart = function(){
+        ok(true, 'Didn\'t dispatched INIT event.');
+        ok(hasher.isActive(), "Is active");
+        hasher.initialized.removeAll();
+        ok(! hasher.initialized.getNumListeners(), "Removed INIT Listener");
+        start();
+    };
+    
+    setTimeout(delayedStart, 100);
+};
+
+test('stop #1', stopTest);
+test('stop fail #1', stopFailTest);
+test('stop fail #2', stopFailTest);
+test('init #1', initTest);
+test('init fail #1', initFailTest);
+test('init fail #2', initFailTest);
+test('stop #2', stopTest);
+test('init #2', initTest);
+test('stop #3', stopTest);
+
+/* == */
 /* ==== prep code ==== */
 
 var testsHashs = [
@@ -81,10 +201,8 @@ function doChangeTest(i){
     test(testName, function(){
         stop(2000);
         expect(9);
-        
-        hasher.initialized.removeAll();
-        hasher.stopped.removeAll();
-        hasher.changed.removeAll();
+       
+        hasher.init();
         
         ok(! hasher.changed.getNumListeners(), "No CHANGED Listener");
         
@@ -93,7 +211,7 @@ function doChangeTest(i){
 
             ok(($oldHash !== hasher.getHash()), "Hash value really changed.");
             
-            hasher.changed.removeAll();
+            hasher.changed.remove(arguments.callee);
             ok( ! hasher.changed.getNumListeners(), "Removed CHANGED Listener");
             
             equals($oldHash, oldHash, "oldHash");
@@ -102,7 +220,7 @@ function doChangeTest(i){
             start();
         });
         
-        ok(hasher.changed.getNumListeners(), "Attached CHANGED Listener");
+        ok(hasher.changed.getNumListeners() === 1, "Attached CHANGED Listener");
         
         hasher.setHash(hash);
         equals(hasher.getHash(), hash, "hasher.setHash() & hasher.getHash()");
@@ -234,134 +352,10 @@ for(i=1; i < testsHashs.length; i++){
 
 /* == */
 
-/* ==== init and stop ==== */
-			
-module('init and stop');
-
-var stopTest = function(){
-    stop(2000);
-    expect(5);
-   
-    hasher.init(); // should be active to be able to stop
-
-    ok(hasher.isActive(), "Is active");
-    ok(! hasher.stopped.getNumListeners(), "No STOP Listener");
-    
-    hasher.stopped.add(function(evt){
-        
-        ok(true, "STOP dispatched");
-        
-        hasher.stopped.remove(arguments.callee);
-        
-        ok(! hasher.stopped.getNumListeners(), "Removed STOP Listener");
-        
-        start();
-    });
-    
-    ok(hasher.stopped.getNumListeners(), "Attached STOP Listener");
-    hasher.stop();
-};
-
-var stopFailTest = function(){
-    stop(2000);
-    expect(5);
-
-    hasher.stop(); //shouldn't be active
-    
-    ok(! hasher.isActive(), "Is not active");
-    ok(! hasher.stopped.getNumListeners(), "No STOP Listener");
-    
-    var handler = function(evt){
-        ok(false, "STOP dispatched"); //shouldn't happen
-        hasher.stopped.removeAll();
-        start();
-    };
-    hasher.stopped.add(handler);
-    
-    ok(hasher.stopped.getNumListeners(), "Attached STOP Listener");
-    hasher.stop();
-    hasher.stop();
-    
-    var delayedStart = function(){
-        ok(true, 'Didn\'t dispatched STOP event.');
-        hasher.stopped.removeAll();
-        ok(! hasher.stopped.getNumListeners(), "Removed STOP Listener");
-        start();
-    };
-    
-    setTimeout(delayedStart, 100);
-};
-
-var initTest = function(){
-    stop(2000);
-    expect(6);
-    
-    hasher.stop(); //shouldn't be active
-
-    ok(! hasher.isActive(), "Is not active");
-    ok(! hasher.initialized.getNumListeners(), "No INIT Listener");
-    
-    hasher.initialized.add(function(evt){
-        ok(hasher.isActive(), "Is active");
-        ok(true, "INIT dispatched");
-        
-        hasher.initialized.remove(arguments.callee);
-        
-        ok(! hasher.initialized.getNumListeners(), "Removed INIT Listener");
-        
-        start();
-    });
-    
-    ok(hasher.initialized.getNumListeners(), "Attached INIT Listener");
-    hasher.init();
-};
-
-var initFailTest = function(){
-    stop(2000);
-    expect(6);
-    
-    hasher.init(); //should be active
-
-    ok(hasher.isActive(), "Is active");
-    ok(! hasher.initialized.getNumListeners(), "No INIT Listener");
-    
-    var handler = function(evt){
-        ok(false, "INIT dispatched"); //shouldn't happen
-        hasher.initialized.removeAll();
-        start();
-    };
-    hasher.initialized.add(handler);
-    
-    ok(hasher.initialized.getNumListeners(), "Attached INIT Listener");
-    hasher.init();
-    hasher.init();
-    
-    var delayedStart = function(){
-        ok(true, 'Didn\'t dispatched INIT event.');
-        ok(hasher.isActive(), "Is active");
-        hasher.initialized.removeAll();
-        ok(! hasher.initialized.getNumListeners(), "Removed INIT Listener");
-        start();
-    };
-    
-    setTimeout(delayedStart, 100);
-};
-
-test('stop #1', stopTest);
-test('stop fail #1', stopFailTest);
-test('stop fail #2', stopFailTest);
-test('init #1', initTest);
-test('init fail #1', initFailTest);
-test('init fail #2', initFailTest);
-test('stop #2', stopTest);
-test('init #2', initTest);
-test('stop #3', stopTest);
-
-/* == */
-
 
 /* ==== multiple listeners & changes ==== */
 
+module();
 
 test('multiple listeners & changes', function (){
     
@@ -384,6 +378,8 @@ test('multiple listeners & changes', function (){
     hasher.stopped.removeAll();
     hasher.changed.removeAll();
     
+    hasher.init();
+
     ok(!hasher.changed.getNumListeners(), "No CHANGED Listener");
     
     hasher.changed.add(handler1);
@@ -433,6 +429,26 @@ test('multiple listeners & changes', function (){
     
     start();
     
+});
+
+/* == */
+
+/* ==== dispose ==== */
+
+module();
+
+test('dispose', function(){
+    stop(500);
+    expect(3);
+
+    ok((hasher), "hasher exists");
+
+    hasher.dispose();
+
+    ok((! hasher), "! hasher");
+    ok((hasher == null), "hasher == null");
+
+    start();
 });
 
 /* == */

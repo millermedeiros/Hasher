@@ -8,10 +8,6 @@
 	
     <property file="dev/build/build.properties"/>
 	
-	<!-- custom tasks -->
-	
-	<taskdef name="jslint" classname="com.googlecode.jslint4java.ant.JSLintTask" classpath="${jslint.jar}" />
-	
 	<!-- targets -->
 	
 	<target name="purge" description="Delete destination directories.">
@@ -37,17 +33,26 @@
 		<tstamp>
 			<format property="build.date" pattern="yyyy/MM/dd hh:mm aa" unit="hour"/>
     	</tstamp>
-    	<!--
-		<concat destfile="${dist.dir}/${dist.name}" fixlastline="yes" eol="unix">
-            <fileset file="${src.dir}/hasher.js" />
-            <fileset file="${src.dir}/hasher.query.plugin.js" />
-    	</concat>
-    	-->
+
+        <loadfile property="hasher.js" srcFile="${src.dir}/hasher.js"/>
+        <loadfile property="license.txt" srcFile="${src.dir}/license.txt"/>
+
     	<copy todir="${dist.dir}">
-    		<fileset dir="${src.dir}" />
-    	</copy>
-		<replace file="${dist.dir}/${dist.name}" token="::VERSION_NUMBER::" value="${version.number}"/>
-		<replace file="${dist.dir}/${dist.name}" token="::BUILD_DATE::" value="${build.date}"/>
+    		<fileset dir="${src.dir}" excludes="wrapper_amd.js" />
+        </copy>
+
+        <copy file="${src.dir}/wrapper_amd.js" tofile="${dist.dir}/${dist.amd.name}" />
+
+        <replace>
+            <fileset dir="${dist.dir}" includes="${dist.name} ${dist.amd.name}" />
+            <replacefilter token="//::LICENSE:://" value="${license.txt}" />
+            <replacefilter token="//::HASHER:://" value="${hasher.js}" />
+            <!-- version number, build number/date should come after other replaces -->
+            <replacefilter token="::VERSION_NUMBER::" value="${version.number}"/>
+            <replacefilter token="::BUILD_DATE::" value="${build.date}"/>
+            <replacefilter token="::BUILD_NUMBER::" value="${build.number}" />
+        </replace>
+
 		<echo message="${dist.name} built" />
 	</target>
 	
@@ -83,15 +88,7 @@
 		<echo message="Documentation generated" />
 	</target>
 
-	<target name="lint" description="Validate source code using JSLint.">
-		<jslint haltOnFailure="false" options="browser, onevar, undef, bitwise, newcap, immed">
-			<formatter type="plain" />
-			<predef>window</predef>
-			<fileset dir="${dist.dir}" includes="*.js" excludes="*.min.js" />
-		</jslint>
-	</target>
-
-	<target name="compile" depends="concat, lint, minify">
+	<target name="compile" depends="concat, minify">
 		<echo message="Compiled." />
 	</target>
 	

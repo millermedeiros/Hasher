@@ -101,15 +101,7 @@
              <ul>
                
                    <li class="fixedFont">
-                        <a href="../symbols/hasher.html#.back">back</a>
-                    </li>
-               
-                   <li class="fixedFont">
                         <a href="../symbols/hasher.html#.dispose">dispose</a>
-                    </li>
-               
-                   <li class="fixedFont">
-                        <a href="../symbols/hasher.html#.forward">forward</a>
                     </li>
                
                    <li class="fixedFont">
@@ -125,15 +117,7 @@
                     </li>
                
                    <li class="fixedFont">
-                        <a href="../symbols/hasher.html#.getTitle">getTitle</a>
-                    </li>
-               
-                   <li class="fixedFont">
                         <a href="../symbols/hasher.html#.getURL">getURL</a>
-                    </li>
-               
-                   <li class="fixedFont">
-                        <a href="../symbols/hasher.html#.go">go</a>
                     </li>
                
                    <li class="fixedFont">
@@ -146,10 +130,6 @@
                
                    <li class="fixedFont">
                         <a href="../symbols/hasher.html#.setHash">setHash</a>
-                    </li>
-               
-                   <li class="fixedFont">
-                        <a href="../symbols/hasher.html#.setTitle">setTitle</a>
                     </li>
                
                    <li class="fixedFont">
@@ -266,7 +246,8 @@
 					
 					</div>
 					<div class="description">
-						<p>Signal dispatched when hash value changes</p>
+						<p>Signal dispatched when hash value changes.
+- pass current hash as 1st parameter to listeners and previous hash value as 2nd parameter.</p>
 						
 						
 					</div>
@@ -290,7 +271,8 @@
 					
 					</div>
 					<div class="description">
-						<p>Signal dispatched when hasher is initialized</p>
+						<p>Signal dispatched when hasher is initialized.
+- pass current hash as first parameter to listeners.</p>
 						
 						
 					</div>
@@ -372,7 +354,8 @@
 					
 					</div>
 					<div class="description">
-						<p>Signal dispatched when hasher is stopped</p>
+						<p>Signal dispatched when hasher is stopped.
+-  pass current hash as first parameter to listeners</p>
 						
 						
 					</div>
@@ -420,33 +403,6 @@
 				</div>
 				
                   <div class="member">
-					<a name=".back"> </a>
-					<div class="fixedFont">
-                      <div class="modifiers">&lt;static&gt; 
-                      </div>
-					
-					<span class="light">hasher.</span><b>back</b>()
-					
-					</div>
-					<div class="description">
-						<p>Navigate to previous page in history</p>
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-						
-						
-
-                  </div>
-				
-                  <div class="member">
 					<a name=".dispose"> </a>
 					<div class="fixedFont">
                       <div class="modifiers">&lt;static&gt; 
@@ -475,33 +431,6 @@
                   </div>
 				
                   <div class="member">
-					<a name=".forward"> </a>
-					<div class="fixedFont">
-                      <div class="modifiers">&lt;static&gt; 
-                      </div>
-					
-					<span class="light">hasher.</span><b>forward</b>()
-					
-					</div>
-					<div class="description">
-						<p>Navigate to next page in history</p>
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-						
-						
-
-                  </div>
-				
-                  <div class="member">
 					<a name=".getBaseURL"> </a>
 					<div class="fixedFont">
                       <div class="modifiers">&lt;static&gt; 
@@ -511,7 +440,7 @@
 					
 					</div>
 					<div class="description">
-						<p>Retrieve URL without query string and hash.</p>
+						
 						
 						
 					</div>
@@ -526,7 +455,7 @@
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{string}</span> Base URL.</dd>
+								<dd><span class="light fixedFont">{string}</span> Retrieve URL without query string and hash.</dd>
 							
 							</dl>
 						
@@ -545,7 +474,7 @@
 					
 					</div>
 					<div class="description">
-						<p>Return hash value as String.</p>
+						
 						
 						
 					</div>
@@ -560,7 +489,7 @@
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{string}</span> Hash value without '#'.</dd>
+								<dd><span class="light fixedFont">{string}</span> Hash value without '#', `hasher.appendHash` and `hasher.prependHash`.</dd>
 							
 							</dl>
 						
@@ -579,7 +508,7 @@
 					
 					</div>
 					<div class="description">
-						<p>Return hash value as Array.</p>
+						
 						
 						
 					</div>
@@ -594,41 +523,7 @@
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{Array.<string>}</span> Hash splitted into an Array.</dd>
-							
-							</dl>
-						
-						
-						
-
-                  </div>
-				
-                  <div class="member">
-					<a name=".getTitle"> </a>
-					<div class="fixedFont">
-                      <div class="modifiers">&lt;static&gt; 
-                      </div>
-					<span class="light">{string}</span>
-					<span class="light">hasher.</span><b>getTitle</b>()
-					
-					</div>
-					<div class="description">
-						<p>Get page title</p>
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd><span class="light fixedFont">{string}</span> Page Title</dd>
+								<dd><span class="light fixedFont">{Array.<string>}</span> Hash value split into an Array.</dd>
 							
 							</dl>
 						
@@ -647,7 +542,7 @@
 					
 					</div>
 					<div class="description">
-						<p>Retrieve full URL.</p>
+						
 						
 						
 					</div>
@@ -672,45 +567,6 @@
                   </div>
 				
                   <div class="member">
-					<a name=".go"> </a>
-					<div class="fixedFont">
-                      <div class="modifiers">&lt;static&gt; 
-                      </div>
-					
-					<span class="light">hasher.</span><b>go</b>(delta)
-					
-					</div>
-					<div class="description">
-						<p>Loads a page from the session history, identified by its relative location to the current page.
-- for example <code>-1</code> loads previous page, <code>1</code> loads next page.</p>
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{Number}</span> <b>delta</b>
-									
-								</dt>
-								<dd>Relative location to the current page.</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-                  </div>
-				
-                  <div class="member">
 					<a name=".init"> </a>
 					<div class="fixedFont">
                       <div class="modifiers">&lt;static&gt; 
@@ -720,8 +576,11 @@
 					
 					</div>
 					<div class="description">
-						<p>Start listening/dispatching changes in the hash/history.
-- hasher won't dispatch CHANGE events by manually typing a new value or pressing the back/forward buttons before calling this method.</p>
+						<p>Start listening/dispatching changes in the hash/history.</p>
+
+<ul>
+  <li>hasher won't dispatch CHANGE events by manually typing a new value or pressing the back/forward buttons before calling this method.</li>
+</ul>
 						
 						
 					</div>
@@ -748,7 +607,7 @@
 					
 					</div>
 					<div class="description">
-						<p>Retrieve if hasher is listening to changes on the browser history and/or hash value.</p>
+						
 						
 						
 					</div>
@@ -782,7 +641,7 @@
 					
 					</div>
 					<div class="description">
-						<p>Set Hash value.</p>
+						<p>Set Hash value, generating a new history record.</p>
 						
 						
 					</div>
@@ -811,44 +670,6 @@
                   </div>
 				
                   <div class="member">
-					<a name=".setTitle"> </a>
-					<div class="fixedFont">
-                      <div class="modifiers">&lt;static&gt; 
-                      </div>
-					
-					<span class="light">hasher.</span><b>setTitle</b>(value)
-					
-					</div>
-					<div class="description">
-						<p>Set page title</p>
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{string}</span> <b>value</b>
-									
-								</dt>
-								<dd>Page Title</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-                  </div>
-				
-                  <div class="member">
 					<a name=".stop"> </a>
 					<div class="fixedFont">
                       <div class="modifiers">&lt;static&gt; 
@@ -858,9 +679,12 @@
 					
 					</div>
 					<div class="description">
-						<p>Stop listening/dispatching changes in the hash/history.
-- hasher won't dispatch CHANGE events by manually typing a new value or pressing the back/forward buttons after calling this method, unless you call hasher.init() again.
-- hasher will still dispatch changes made programatically by calling hasher.setHash();</p>
+						<p>Stop listening/dispatching changes in the hash/history.</p>
+
+<ul>
+  <li>hasher won't dispatch CHANGE events by manually typing a new value or pressing the back/forward buttons after calling this method, unless you call hasher.init() again.</li>
+  <li>hasher will still dispatch changes made programatically by calling hasher.setHash();</li>
+</ul>
 						
 						
 					</div>
@@ -887,7 +711,7 @@
 					
 					</div>
 					<div class="description">
-						<p>Returns string representation of the hasher object.</p>
+						
 						
 						
 					</div>
@@ -923,7 +747,7 @@
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both;text-align:center">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blankt">JsDoc Toolkit</a> 2.4.0 on Sat Jun 18 2011 17:53:06 GMT-0300 (BRT)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blankt">JsDoc Toolkit</a> 2.4.0 on Wed Aug 03 2011 18:05:21 GMT-0300 (BRT)
 			 | template based on Steffen Siering <a href="http://github.com/urso/jsdoc-simple">jsdoc-simple</a>.
 		</div>
 	</body>
