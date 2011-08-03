@@ -1,3 +1,4 @@
+/*jshint white:false*/
 /*global signals:false, window:false*/
 
 /*!!
@@ -13,188 +14,123 @@
  * @name hasher
  */
 var hasher = (function(window){
-    
+
     //--------------------------------------------------------------------------------------
     // Private Vars
     //--------------------------------------------------------------------------------------
-    
+
     var 
-        
+
+        POOL_INTERVAL = 25,
+
+
         // local storage for brevity and better compression --------------------------------
         //==================================================================================
-        
+
         hasher,
         document = window.document,
         location = window.location,
         history = window.history,
         Signal = signals.Signal,
-        
-        
+
+
         // local vars ----------------------------------------------------------------------
         //==================================================================================
-        
-        /** @private {string} previous/current hash value */
-        _hash, 
-        
-        /** @private {number} stores setInterval reference (used to check if hash changed on non-standard browsers) */
+
+        _hash,
         _checkInterval,
-        
-        /** @private {boolean} If hasher is active and should listen to changes on the window location hash */
         _isActive,
-        
-        /** @private {Element} iframe used for IE <= 7 */
-        _frame,
-        
-        
+        _frame, //iframe used for legacy IE (6-7)
+        _checkHistory,
+
+
         // sniffing/feature detection -------------------------------------------------------
         //===================================================================================
-        
-        /** @private {boolean} if is IE */
+
         _isIE = (!+"\v1"), //hack based on this: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html
-        
-        /** @private {boolean} If browser supports the `hashchange` event - FF3.6+, IE8+, Chrome 5+, Safari 5+ */
-        _isHashChangeSupported = ('onhashchange' in window),
-        
-        /** @private {boolean} if is IE <= 7 */
+        _isHashChangeSupported = ('onhashchange' in window), // FF3.6+, IE8+, Chrome 5+, Safari 5+
         _isLegacyIE = _isIE && !_isHashChangeSupported, //check if is IE6-7 since hash change is only supported on IE8+ and changing hash value on IE6-7 doesn't generate history record.
-        
-        /** @private {boolean} If it is a local file */
         _isLocal = (location.protocol === 'file:');
-    
-    
+
+
     //--------------------------------------------------------------------------------------
     // Private Methods
     //--------------------------------------------------------------------------------------
-    
-    /**
-     * Remove `hasher.prependHash` and `hasher.appendHash` from hashValue
-     * @param {(string|null)} [hash]    Hash value
-     * @return {string}
-     * @private
-     */
+
     function _trimHash(hash){
         hash = hash || '';
         var regexp = new RegExp('^\\'+ hasher.prependHash +'|\\'+ hasher.appendHash +'$', 'g'); //match appendHash and prependHash
         return hash.replace(regexp, '');
     }
     
-    /**
-     * Get hash value stored inside iframe
-     * - used for IE <= 7. [HACK] 
-     * @return {string} Hash value without '#'.
-     * @private
-     */
-    function _getFrameHash(){
-        return (_frame)? _frame.contentWindow.frameHash : null;
-    }
-    
-    /**
-     * Update iframe content, generating a history record and saving current hash/title on IE <= 7. [HACK]
-     * - based on Really Simple History, SWFAddress and YUI.history solutions.
-     * @param {(string|null)} hashValue Hash value without '#'.
-     * @private
-     */
-    function _updateFrame(hashValue){
-        if(_frame && hashValue != _getFrameHash()){
-            var frameDoc = _frame.contentWindow.document;
-            frameDoc.open();
-            frameDoc.write('<html><head><title>' + hasher.getTitle() + '</title><script type="text/javascript">var frameHash="' + hashValue + '";</script></head><body>&nbsp;</body></html>'); //stores current hash inside iframe.
-            frameDoc.close();
-        }
-    }
-    
-    /**
-     * Stores new hash value and dispatch change event if hasher is "active".
-     * @param {string} newHash  New Hash Value.
-     * @private
-     */
-    function _registerChange(newHash){
-        newHash = decodeURIComponent(newHash); //fix IE8 while offline
-        if(_hash != newHash){
-            var oldHash = _hash;
-            _hash = newHash; //should come before event dispatch to make sure user can get proper value inside event handler
-            if(_isLegacyIE){
-                _updateFrame(newHash);
-            }
-            hasher.changed.dispatch(_trimHash(newHash), _trimHash(oldHash));
-        }
-    }
-    
-    /**
-     * Creates iframe used to record history state on IE <= 7. [HACK]
-     * @private
-     */
-    function _createFrame(){
-        _frame = document.createElement('iframe');
-        _frame.src = 'about:blank';
-        _frame.style.display = 'none';
-        document.body.appendChild(_frame);
-    }
-    
-    /**
-     * Get hash value from current URL
-     * @return {string} Hash value without '#'.
-     * @private
-     */
     function _getWindowHash(){
         //parsed full URL instead of getting location.hash because Firefox decode hash value (and all the other browsers don't)
         //also because of IE8 bug with hash query in local file [issue #6]
         var result = /#(.*)$/.exec( hasher.getURL() );
         return (result && result[1])? decodeURIComponent(result[1]) : '';
     }
+
+    function _getFrameHash(){
+        return (_frame)? _frame.contentWindow.frameHash : null;
+    }
     
-    /**
-     * Checks if hash/history state has changed
-     * @private
-     */
-    function _checkHistory(){
-        var curHash = _getWindowHash();
-        if(curHash != _hash){
-            _registerChange(curHash);
+    function _createFrame(){
+        _frame = document.createElement('iframe');
+        _frame.src = 'about:blank';
+        _frame.style.display = 'none';
+        document.body.appendChild(_frame);
+    }
+
+    function _updateFrame(){
+        if(_frame && _hash !== _getFrameHash()){
+            var frameDoc = _frame.contentWindow.document;
+            frameDoc.open();
+            //update iframe content to force new history record.
+            //based on Really Simple History, SWFAddress and YUI.history.
+            frameDoc.write('<html><head><title>' + document.title + '</title><script type="text/javascript">var frameHash="' + _hash + '";</script></head><body>&nbsp;</body></html>');
+            frameDoc.close();
         }
     }
     
-    /**
-     * Check if browser history state has changed on IE <= 7. [HACK]
-     * - used since IE 6,7 doesn't generates new history record on hashchange.
-     * @private
-     */
-    function _checkHistoryLegacyIE(){
-        var windowHash = _getWindowHash(),
-            frameHash = _getFrameHash();
-        if(frameHash != _hash && frameHash != windowHash){ //detect changes made pressing browser history buttons. Workaround since history.back() and history.forward() doesn't update hash value on IE6/7 but updates content of the iframe.
-            hasher.setHash(frameHash);
-        }else if(windowHash != _hash){ //detect if hash changed (manually or using setHash)
-            _registerChange(windowHash);
+    function _registerChange(newHash){
+        newHash = decodeURIComponent(newHash); //fix IE8 while offline
+        if(_hash !== newHash){
+            var oldHash = _hash;
+            _hash = newHash; //should come before event dispatch to make sure user can get proper value inside event handler
+            if(_isLegacyIE) _updateFrame();
+            hasher.changed.dispatch(_trimHash(newHash), _trimHash(oldHash));
         }
     }
+
+    _checkHistory = (_isLegacyIE)? 
+        function(){
+            var windowHash = _getWindowHash(),
+                frameHash = _getFrameHash();
+            if(frameHash !== _hash && frameHash !== windowHash){ //detect changes made pressing browser history buttons. Workaround since history.back() and history.forward() doesn't update hash value on IE6/7 but updates content of the iframe.
+                hasher.setHash(_trimHash(frameHash)); //needs to trim hash since value stored already have prependHash + appendHash
+            } else if (windowHash !== _hash){ //detect if hash changed (manually or using setHash)
+                _registerChange(windowHash);
+            }
+        } : 
+        function(){
+            var curHash = _getWindowHash();
+            if(curHash !== _hash){
+                _registerChange(curHash);
+            }
+        };
     
-    /**
-    * Adds DOM Event Listener
-    * @param {Element} elm Element.
-    * @param {string} eType Event type.
-    * @param {Function} fn Listener function.
-    * @private
-    */
     function _addListener(elm, eType, fn){
         if(elm.addEventListener){
             elm.addEventListener(eType, fn, false);
-        }else if(elm.attachEvent){
+        } else if (elm.attachEvent){
             elm.attachEvent('on' + eType, fn);
         }
     }
     
-    /**
-    * Removes DOM Event Listener
-    * @param {Element} elm Element.
-    * @param {string} eType Event type.
-    * @param {Function} fn Listener function.
-    * @private
-    */
     function _removeListener(elm, eType, fn){
         if(elm.removeEventListener){
             elm.removeEventListener(eType, fn, false);
-        }else if(elm.detachEvent){
+        } else if (elm.detachEvent){
             elm.detachEvent('on' + eType, fn);
         }
     }
@@ -244,63 +180,64 @@ var hasher = (function(window){
         separator : '/',
         
         /**
-         * Signal dispatched when hash value changes
+         * Signal dispatched when hash value changes.
+         * - pass current hash as 1st parameter to listeners and previous hash value as 2nd parameter.
          * @type signals.Signal
          */
         changed : new Signal(),
         
         /**
-         * Signal dispatched when hasher is stopped
+         * Signal dispatched when hasher is stopped.
+         * -  pass current hash as first parameter to listeners
          * @type signals.Signal
          */
         stopped : new Signal(),
       
         /**
-         * Signal dispatched when hasher is initialized
+         * Signal dispatched when hasher is initialized.
+         * - pass current hash as first parameter to listeners.
          * @type signals.Signal
          */
         initialized : new Signal(),
     
         /**
          * Start listening/dispatching changes in the hash/history.
-         * - hasher won't dispatch CHANGE events by manually typing a new value or pressing the back/forward buttons before calling this method.
+         * <ul>
+         *   <li>hasher won't dispatch CHANGE events by manually typing a new value or pressing the back/forward buttons before calling this method.</li>
+         * </ul>
          */
         init : function(){
-            if(_isActive){
-                return;
-            }
+            if(_isActive) return;
             
-            var oldHash = _hash;
             _hash = _getWindowHash();
             
-            //thought about branching/overloading hasher.init() to avoid checking multiple times but don't think worth doing it since it probably won't be called multiple times. [?] 
+            //thought about branching/overloading hasher.init() to avoid checking multiple times but
+            //don't think worth doing it since it probably won't be called multiple times.
             if(_isHashChangeSupported){
                 _addListener(window, 'hashchange', _checkHistory);
-            }else { 
+            }else {
                 if(_isLegacyIE){
-                    if(!_frame){
+                    if(! _frame){
                         _createFrame();
-                        _updateFrame(_hash);
                     }
-                    _checkInterval = setInterval(_checkHistoryLegacyIE, 25);
-                }else{
-                    _checkInterval = setInterval(_checkHistory, 25);
+                    _updateFrame();
                 }
+                _checkInterval = setInterval(_checkHistory, POOL_INTERVAL);
             }
             
             _isActive = true;
-            this.initialized.dispatch(_trimHash(_hash), _trimHash(oldHash));
+            hasher.initialized.dispatch(_trimHash(_hash));
         },
         
         /**
          * Stop listening/dispatching changes in the hash/history.
-         * - hasher won't dispatch CHANGE events by manually typing a new value or pressing the back/forward buttons after calling this method, unless you call hasher.init() again.
-         * - hasher will still dispatch changes made programatically by calling hasher.setHash();
+         * <ul>
+         *   <li>hasher won't dispatch CHANGE events by manually typing a new value or pressing the back/forward buttons after calling this method, unless you call hasher.init() again.</li>
+         *   <li>hasher will still dispatch changes made programatically by calling hasher.setHash();</li>
+         * </ul>
          */
         stop : function(){
-            if(!_isActive){
-                return;
-            }
+            if(! _isActive) return;
             
             if(_isHashChangeSupported){
                 _removeListener(window, 'hashchange', _checkHistory);
@@ -310,11 +247,10 @@ var hasher = (function(window){
             }
             
             _isActive = false;
-            this.stopped.dispatch(_trimHash(_hash), _trimHash(_hash)); //since it didn't changed oldHash and newHash should be the same. [?]
+            hasher.stopped.dispatch(_trimHash(_hash));
         },
         
         /**
-         * Retrieve if hasher is listening to changes on the browser history and/or hash value.
          * @return {boolean}    If hasher is listening to changes on the browser history and/or hash value.
          */
         isActive : function(){
@@ -322,7 +258,6 @@ var hasher = (function(window){
         },
         
         /**
-         * Retrieve full URL.
          * @return {string} Full URL.
          */
         getURL : function(){
@@ -330,11 +265,10 @@ var hasher = (function(window){
         },
         
         /**
-         * Retrieve URL without query string and hash.
-         * @return {string} Base URL.
+         * @return {string} Retrieve URL without query string and hash.
          */
         getBaseURL : function(){
-            return this.getURL().replace(/(\?.*)|(\#.*)/, ''); //removes everything after '?' and/or '#'
+            return hasher.getURL().replace(/(\?.*)|(\#.*)/, ''); //removes everything after '?' and/or '#'
         },
         
         /**
@@ -342,19 +276,17 @@ var hasher = (function(window){
          * @param {string} value    Hash value without '#'.
          */
         setHash : function(value){
-            value = (value)? this.prependHash + value.replace(/^\#/, '') + this.appendHash : value; //removes '#' from the beginning of string and append/prepend default values.
-            if(value != _hash){
+            value = (value)? hasher.prependHash + value.replace(/^\#/, '') + hasher.appendHash : value; //removes '#' from the beginning of string and append/prepend default values.
+            if(value !== _hash){
                 _registerChange(value); //avoid breaking the application if for some reason `location.hash` don't change
-                if(_isIE && _isLocal){
-                    value = value.replace(/\?/, '%3F'); //fix IE8 local file bug [issue #6]
-                }
+                if(_isIE && _isLocal) value = value.replace(/\?/, '%3F'); //fix IE8 local file bug [issue #6]
                 location.hash = '#'+ encodeURI(value); //used encodeURI instead of encodeURIComponent to preserve '?', '/', '#'. Fixes Safari bug [issue #8]
             }
         },
         
         /**
-         * Return hash value as String.
-         * @return {string} Hash value without '#'.
+         * @return {string} Hash value without '#' and `hasher.appendHash` and
+         * `hasher.prependHash`.
          */
         getHash : function(){
             //didn't used actual value of the `location.hash` to avoid breaking the application in case `location.hash` isn't available and also because value should always be synched.
@@ -363,49 +295,10 @@ var hasher = (function(window){
         
         /**
          * Return hash value as Array.  
-         * @return {Array.<string>} Hash splitted into an Array.  
+         * @return {Array.<string>} Hash split into an Array.  
          */
         getHashAsArray : function(){
-            return this.getHash().split(this.separator);
-        },
-        
-        /**
-         * Set page title
-         * @param {string} value    Page Title
-         */
-        setTitle : function(value){
-            document.title = value;
-        },
-        
-        /**
-         * Get page title
-         * @return {string} Page Title
-         */
-        getTitle : function(){
-            return document.title;
-        },
-        
-        /**
-         * Navigate to previous page in history
-         */
-        back : function(){
-            history.back();
-        },
-        
-        /**
-         * Navigate to next page in history
-         */
-        forward : function(){
-            history.forward();
-        },
-        
-        /**
-         * Loads a page from the session history, identified by its relative location to the current page.
-         * - for example `-1` loads previous page, `1` loads next page.
-         * @param {Number} delta    Relative location to the current page.
-         */
-        go : function(delta){
-            history.go(delta);
+            return hasher.getHash().split(hasher.separator);
         },
         
         /**
@@ -413,12 +306,11 @@ var hasher = (function(window){
          * - IMPORTANT: hasher won't work after calling this method, hasher Object will be deleted.
          */
         dispose : function(){
-            hasher.initialized.removeAll();
-            hasher.stopped.removeAll();
-            hasher.changed.removeAll();
             hasher.stop();
+            hasher.initialized.dispose();
+            hasher.stopped.dipose();
+            hasher.changed.dispose();
             _frame = hasher = window.hasher = null;
-            //can't use `delete window.hasher;` because on IE it throws errors, `window` isn't actually an object, delete can only be used on Object properties.
         },
         
         /**
@@ -426,7 +318,7 @@ var hasher = (function(window){
          * @return {string} A string representation of the object.
          */
         toString : function(){
-            return '[hasher version="'+ this.VERSION +'" hash="'+ this.getHash() +'"]';
+            return '[hasher version="'+ hasher.VERSION +'" hash="'+ hasher.getHash() +'"]';
         }
     
     };
