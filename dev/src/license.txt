@@ -1,6 +1,0 @@
-/*!!
- * Hasher <http://github.com/millermedeiros/hasher>
- * @author Miller Medeiros
- * @version ::VERSION_NUMBER:: (::BUILD_DATE::)
- * Released under the MIT License
- */
