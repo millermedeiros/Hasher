@@ -101,6 +101,46 @@ provides a sane way of handling events and some really useful advanced features.
 
 
 
+## Why should I use it? ##
+
+Besides the fact of making history state work across multiple browsers it also
+normalizes and fixes many bugs, here are a few of the advantges:
+
+ * Normalizes the hash value across browsers (firefox decode hash value and 
+   all the other browsers don't).
+ * Fix IE8 bug if `location.hash` contains a "?" character and file is being
+   accessed locally it would break the history stack. [iss #6]
+ * Fix Safari 4-5 bug while setting `location.hash` to a value that contain
+   non-printable ASCII chars (non-latin, accents, etc..). [iss #8]
+ * Degrade gracefully if for some reason `location.hash` isn't available, will
+   dispatch the `changed` signal at each `hasher.setHash()` and application 
+   can still work, it just won't generate a new history record.
+ * Doesn't rely on callbacks so you can add as many listeners as you want and
+   since it uses [JS-Signals](http://millermedeiros.github.com/js-signals/) 
+   for the event system it also provides many advanced featured that wouldn't 
+   be available through a simple callback system, like disabling the dispatch
+   of an event (so you can change the hash value without affecting your app
+   state), removing all the listeners at once, dispose objects, etc...
+ * Option to start/stop pooling/listening for changes on the hash whenever you
+   want giving more control over how you app is supposed to work.
+ * Available as an AMD module which can be easily integrated into other
+   projects without polluting the global scope or affecting you aplication
+   structure.
+ * Isn't a plugin for a large JS library/framework (so you can use it with
+   *any* library).
+ * Can be easily integrated into a Router like 
+   [crossroads.js](http://millermedeiros.github.com/crossroads.js/).
+ * Sometimes regular URLs doesn't make any sense, specially when you *can't*
+   provide a fallback to all of them or when you just want to save the state of
+   the application and that change wouldn't make sense on a full page reload
+   (scrolling through the same page, interactive slideshow, etc..), also some 
+   content may not need to be indexed by search engines (although you can use 
+   *hashbangs* to make [Ajax content crawlable](http://code.google.com/web/ajaxcrawling/docs/getting-started.html)...).
+   **Each scenario requires a different approach, be pragmatic.**
+ * Clean API.
+
+
+
 ## Documentation ##
 
 Documentation can be found inside the `dist/docs` folder or at [http://millermedeiros.github.com/Hasher/docs/](http://millermedeiros.github.com/Hasher/test/unit.html).
@@ -109,7 +149,7 @@ Documentation can be found inside the `dist/docs` folder or at [http://millermed
 
 ## Unit Tests ##
 
-Hasher is usually tested on IE (6,7,8,9), FF (3.6, 4.0, 5.0+ - mac/pc),
+Hasher is *usually* tested on IE (6,7,8,9), FF (3.6, 4.0, 5.0+ - mac/pc),
 Chrome (latest stable - mac/pc), Safari Mac (4.3, 5.0) and Opera (latest - mac/pc).
 
 You can also run the test by yourself at [http://millermedeiros.github.com/Hasher/test/unit.html](http://millermedeiros.github.com/Hasher/test/unit.html)
@@ -146,6 +186,7 @@ Files inside `dist/js` folder.
  * hasher.js : Uncompressed source code with comments.
  * hasher.amd.js : Uncompressed source code wrapped as an [asynchronous module](http://wiki.commonjs.org/wiki/Modules/AsynchronousDefinition) to be used together with [RequireJS](http://requirejs.org/) or any other AMD loader.
  * hasher.min.js : Compressed code.
+ * hasher.amd.min.js : Compressed code wrapped as an AMD module.
 
 Documentation is inside the `dist/docs` folder.
 
@@ -164,7 +205,6 @@ This will delete all JS files inside the `dist` folder, merge/update/compress so
 This will delete all files inside *dist* folder, run `ant compile` and generate documentation files.
 
 **IMPORTANT:** `dist` folder always contain the latest version, regular users should **not** need to run build task.
-
 
 
 
