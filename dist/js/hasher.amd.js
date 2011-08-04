@@ -1,7 +1,7 @@
 /*!!
  * Hasher <http://github.com/millermedeiros/hasher>
  * @author Miller Medeiros
- * @version 0.9.93+ (2011/08/03 07:26 PM)
+ * @version 0.9.93+ (2011/08/03 09:56 PM)
  * Released under the MIT License
  */
 
@@ -274,16 +274,21 @@ var hasher = (function(window){
         
         /**
          * Set Hash value, generating a new history record.
-         * @param {string} value    Hash value without '#'.
+         * @param {...string} path    Hash value without '#'. Hasher will join
+         * path segments using `hasher.separator` and prepend/append hash value
+         * with `hasher.appendHash` and `hasher.prependHash`
+         * @example hasher.setHash('lorem', 'ipsum', 'dolor') -> '#/lorem/ipsum/dolor'
          */
-        setHash : function(value){
-            value = (value)? hasher.prependHash + value.replace(/^\#/, '') + hasher.appendHash : value; //removes '#' from the beginning of string and append/prepend default values.
-            if(value !== _hash){
-                _registerChange(value); //avoid breaking the application if for some reason `location.hash` don't change
+        setHash : function(path){
+            var paths = Array.prototype.slice.call(arguments);
+            path = paths.join(hasher.separator);
+            path = path? hasher.prependHash + path.replace(/^\#/, '') + hasher.appendHash : path;
+            if(path !== _hash){
+                _registerChange(path); //avoid breaking the application if for some reason `location.hash` don't change
                 if(_isIE && _isLocal){
-                    value = value.replace(/\?/, '%3F'); //fix IE8 local file bug [issue #6]
+                    path = path.replace(/\?/, '%3F'); //fix IE8 local file bug [issue #6]
                 }
-                location.hash = '#'+ encodeURI(value); //used encodeURI instead of encodeURIComponent to preserve '?', '/', '#'. Fixes Safari bug [issue #8]
+                location.hash = '#'+ encodeURI(path); //used encodeURI instead of encodeURIComponent to preserve '?', '/', '#'. Fixes Safari bug [issue #8]
             }
         },
         

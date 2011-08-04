@@ -431,6 +431,86 @@ test('multiple listeners & changes', function (){
     
 });
 
+
+test('set hash as rest param', function(){
+    stop(500);
+    
+    hasher.init();
+
+    var oldHash = hasher.getHash();
+    var hash = 'lorem/ipsum/dolor/sit-amet';
+        
+    ok(! hasher.changed.getNumListeners(), "No CHANGED Listener");
+    
+    hasher.changed.add(function($newHash, $oldHash){
+        ok(true, "CHANGED dispatched");
+
+        ok(($oldHash !== hasher.getHash()), "Hash value really changed.");
+        
+        hasher.changed.remove(arguments.callee);
+        ok( ! hasher.changed.getNumListeners(), "Removed CHANGED Listener");
+        
+        equals($oldHash, oldHash, "oldHash");
+        equals(hasher.getHash(), $newHash, "newHash == hasher.getHash()");
+        
+        start();
+    });
+    
+    ok(hasher.changed.getNumListeners() === 1, "Attached CHANGED Listener");
+    
+    hasher.setHash('lorem', 'ipsum', 'dolor', 'sit-amet');
+    equals(hasher.getHash(), hash, "hasher.setHash() & hasher.getHash()");
+    
+    var hashArray = hash.split('/');
+    
+    same(hasher.getHashAsArray(), hashArray, "hasher.getHashAsArray()");
+});
+
+test('prepend/append/separator', function(){
+    stop(500);
+    
+    hasher.init();
+
+    hasher.separator = '_';
+    hasher.prependHash = '=';
+    hasher.appendHash = '=';
+
+    var oldHash = hasher.getHash();
+    var hash = 'lorem_ipsum_dolor_sit-amet';
+        
+    ok(! hasher.changed.getNumListeners(), "No CHANGED Listener");
+    
+    hasher.changed.add(function($newHash, $oldHash){
+        ok(true, "CHANGED dispatched");
+
+        ok(($oldHash !== hasher.getHash()), "Hash value really changed.");
+        
+        hasher.changed.remove(arguments.callee);
+        ok( ! hasher.changed.getNumListeners(), "Removed CHANGED Listener");
+        
+        equals($oldHash, oldHash, "oldHash");
+        equals(hasher.getHash(), $newHash, "newHash == hasher.getHash()");
+        
+        start();
+    });
+    
+    ok(hasher.changed.getNumListeners() === 1, "Attached CHANGED Listener");
+    
+    hasher.setHash('lorem', 'ipsum', 'dolor', 'sit-amet');
+    equals(hasher.getHash(), hash, "hasher.setHash() & hasher.getHash()");
+    equals(window.location.hash, '#'+ hasher.prependHash + hash + hasher.appendHash, "append & prepend really works");
+    
+    var hashArray = hash.split('_');
+    
+    same(hasher.getHashAsArray(), hashArray, "hasher.getHashAsArray()");
+
+    //reset defaults
+    hasher.separator = '/';
+    hasher.prependHash = '/';
+    hasher.appendHash = '';
+});
+
+
 /* == */
 
 /* ==== dispose ==== */
