@@ -37,10 +37,7 @@
         <loadfile property="hasher.js" srcFile="${src.dir}/hasher.js"/>
         <loadfile property="license.txt" srcFile="${src.dir}/license.txt"/>
 
-    	<copy todir="${dist.dir}">
-    		<fileset dir="${src.dir}" excludes="wrapper_amd.js" />
-        </copy>
-
+        <copy file="${src.dir}/hasher.js" tofile="${dist.dir}/${dist.name}" />
         <copy file="${src.dir}/wrapper_amd.js" tofile="${dist.dir}/${dist.amd.name}" />
 
         <replace>

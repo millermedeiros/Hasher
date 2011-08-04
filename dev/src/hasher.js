@@ -33,7 +33,9 @@ var hasher = (function(window){
         _isActive,
         _frame, //iframe used for legacy IE (6-7)
         _checkHistory,
-        _hashRegexp = /#(.*)$/,
+        _hashValRegexp = /#(.*)$/,
+        _baseUrlRegexp = /(\?.*)|(\#.*)/,
+        _hashRegexp = /^\#/,
 
         // sniffing/feature detection -------------------------------------------------------
 
@@ -48,7 +50,7 @@ var hasher = (function(window){
     //--------------------------------------------------------------------------------------
 
     function _trimHash(hash){
-        hash = hash || '';
+        if(! hash) return '';
         var regexp = new RegExp('^\\'+ hasher.prependHash +'|\\'+ hasher.appendHash +'$', 'g');
         return hash.replace(regexp, '');
     }
@@ -56,7 +58,7 @@ var hasher = (function(window){
     function _getWindowHash(){
         //parsed full URL instead of getting location.hash because Firefox decode hash value (and all the other browsers don't)
         //also because of IE8 bug with hash query in local file [issue #6]
-        var result = _hashRegexp.exec( hasher.getURL() );
+        var result = _hashValRegexp.exec( hasher.getURL() );
         return (result && result[1])? decodeURIComponent(result[1]) : '';
     }
 
@@ -260,7 +262,7 @@ var hasher = (function(window){
          * @return {string} Retrieve URL without query string and hash.
          */
         getBaseURL : function(){
-            return hasher.getURL().replace(/(\?.*)|(\#.*)/, ''); //removes everything after '?' and/or '#'
+            return hasher.getURL().replace(_baseUrlRegexp, ''); //removes everything after '?' and/or '#'
         },
         
         /**
@@ -273,7 +275,7 @@ var hasher = (function(window){
         setHash : function(path){
             var paths = Array.prototype.slice.call(arguments);
             path = paths.join(hasher.separator);
-            path = path? hasher.prependHash + path.replace(/^\#/, '') + hasher.appendHash : path;
+            path = path? hasher.prependHash + path.replace(_hashRegexp, '') + hasher.appendHash : path;
             if(path !== _hash){
                 _registerChange(path); //avoid breaking the application if for some reason `location.hash` don't change
                 if(_isIE && _isLocal){
