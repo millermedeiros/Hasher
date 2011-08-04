@@ -22,7 +22,7 @@ It works as an abstraction of browsers native methods plus some extra helper met
  - Work on the main browsers (IE6+, newest versions of Firefox, Safari, Opera and Chrome).
  - Clean source code, making it easy to debug/customize/maintain.
  - Follow best practices/standards.
- - Fully unit tested.
+ - Fully unit tested. ([tests](http://millermedeiros.github.com/Hasher/test/unit.html))
  - Don't break application if for some reason `location.hash` can't be updated.
    (it should still dispatch `changed` signal at each `hasher.setHash()`)
 
@@ -103,7 +103,16 @@ provides a sane way of handling events and some really useful advanced features.
 
 ## Documentation ##
 
-Documentation is inside the `dist/docs` folder.
+Documentation can be found inside the `dist/docs` folder or at [http://millermedeiros.github.com/Hasher/docs/](http://millermedeiros.github.com/Hasher/test/unit.html).
+
+
+
+## Unit Tests ##
+
+Hasher is usually tested on IE (6,7,8,9), FF (3.6, 4.0, 5.0+ - mac/pc),
+Chrome (latest stable - mac/pc), Safari Mac (4.3, 5.0) and Opera (latest - mac/pc).
+
+You can also run the test by yourself at [http://millermedeiros.github.com/Hasher/test/unit.html](http://millermedeiros.github.com/Hasher/test/unit.html)
 
 
 
