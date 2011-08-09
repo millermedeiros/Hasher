@@ -56,15 +56,49 @@ Include [JS-Signals](http://millermedeiros.github.com/js-signals/) and **hasher*
   function handleChanges(newHash, oldHash){
     console.log(newHash);
   }
- 
+
   hasher.changed.add(handleChanges); //add hash change listener
+  hasher.initialized.add(handleChanges); //add initialized listener (to grab initial value in case it is already set)
   hasher.init(); //initialize hasher (start listening for history changes)
+
   hasher.setHash('foo'); //change hash value (generates new history record)
 ```
 
 
+## Advanced Usage ##
 
-## Routes: Using Hasher together with Crossroads.js ##
+
+### Hash Bang! ###
+
+Google have a proposal for [making Ajax content crawlable](http://code.google.com/web/ajaxcrawling/docs/getting-started.html) by specifying that a certain *hash value* also have an static snapshot. Those *hash values* should start with an exclamation mark `!`:
+
+```js
+hasher.prependHash = '!'; //default value is "/"
+hasher.setHash('foo'); //will update location.hash to "#!foo" -> htttp://example.com/#!foo
+```
+
+PS: Only use the hashbang if you are generating static snapshots for the hash.
+
+
+### Setting hash value without dispatching changed signal ##
+
+One of the greatest benefits of Hasher over other solutions is that it uses JS-Signals for the event dispatch, which provides [many advanced features](https://github.com/millermedeiros/js-signals/wiki/Examples). This can be useful when you are setting the hash value and your `changed` handler doesn't need to be called (e.g. updating hash value during scroll). Use it with care.
+
+```js
+function setHashSilently(hash){
+  hasher.changed.active = false; //disable changed signal
+  hasher.setHash(hash); //set hash without dispatching changed signal
+  hasher.changed.active = true; //re-enable signal
+}
+
+hasher.init(); //start listening for changes
+hasher.changed.add(console.log); //log all changes
+hasher.setHash('foo');
+setHashSilently('lorem/ipsum'); //set hash value without dispatching changed event (will generate history record anyway)
+hasher.setHash('bar');
+```
+
+### Routes: Using Hasher together with Crossroads.js ###
 
 Hasher is only focused on providing a reliable and clear API for setting hash values and 
 listening to hash state change event. If you need an advanced *routing* system
@@ -83,6 +117,7 @@ hasher.initialized.add(crossroads.parse, crossroads); //parse initial hash value
 hasher.changed.add(crossroads.parse, crossroads); //parse hash changes
 hasher.init(); //start listening for history change
 ```
+
 
 
 ## How does it work? ##
