@@ -110,7 +110,7 @@ were designed to work together easily:
 crossroads.addRoute('home');
 crossroads.addRoute('lorem');
 crossroads.addRoute('lorem/ipsum');
-crossroads.routed.add(console.log); //log all routes
+crossroads.routed.add(console.log, console); //log all routes
 
 //setup hasher
 hasher.initialized.add(crossroads.parse, crossroads); //parse initial hash value
