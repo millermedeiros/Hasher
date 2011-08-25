@@ -92,7 +92,7 @@ function setHashSilently(hash){
 }
 
 hasher.init(); //start listening for changes
-hasher.changed.add(console.log); //log all changes
+hasher.changed.add(console.log, console); //log all changes
 hasher.setHash('foo');
 setHashSilently('lorem/ipsum'); //set hash value without dispatching changed event (will generate history record anyway)
 hasher.setHash('bar');
