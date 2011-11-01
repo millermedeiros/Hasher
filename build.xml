@@ -88,7 +88,7 @@
         <echo message="Compiled." />
     </target>
 
-    <target name="all" depends="purge, -mkdirs, compile, generateDocs">
+    <target name="deploy" depends="purge, -mkdirs, compile, generateDocs">
         <echo message="Build Complete." />
     </target>
 

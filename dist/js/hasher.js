@@ -1,7 +1,7 @@
 /*!!
  * Hasher <http://github.com/millermedeiros/hasher>
  * @author Miller Medeiros
- * @version 1.0.0+ (2011/11/01 05:58 PM)
+ * @version 1.0.0+ (2011/11/01 07:11 PM)
  * Released under the MIT License
  */
 
@@ -92,13 +92,17 @@ var hasher = (function(window){
         }
     }
 
-    function _registerChange(newHash){
+    function _registerChange(newHash, isReplace){
         newHash = decodeURIComponent(newHash); //fix IE8 while offline
         if(_hash !== newHash){
             var oldHash = _hash;
             _hash = newHash; //should come before event dispatch to make sure user can get proper value inside event handler
             if(_isLegacyIE){
-                _updateFrame();
+                if(!isReplace){
+                    _updateFrame();
+                } else {
+                    _frame.contentWindow.frameHash = newHash;
+                }
             }
             hasher.changed.dispatch(_trimHash(newHash), _trimHash(oldHash));
         }
@@ -143,6 +147,18 @@ var hasher = (function(window){
         } else if (elm.detachEvent){
             elm.detachEvent('on' + eType, fn);
         }
+    }
+
+    function _makePath(paths){
+        paths = Array.prototype.slice.call(arguments);
+
+        var path = paths.join(hasher.separator);
+        path = path? hasher.prependHash + path.replace(_hashRegexp, '') + hasher.appendHash : path;
+
+        if(_isIE && _isLocal){
+            path = path.replace(/\?/, '%3F'); //fix IE8 local file bug [issue #6]
+        }
+        return path;
     }
 
     //--------------------------------------------------------------------------------------
@@ -289,15 +305,26 @@ var hasher = (function(window){
          * @example hasher.setHash('lorem', 'ipsum', 'dolor') -> '#/lorem/ipsum/dolor'
          */
         setHash : function(path){
-            var paths = Array.prototype.slice.call(arguments);
-            path = paths.join(hasher.separator);
-            path = path? hasher.prependHash + path.replace(_hashRegexp, '') + hasher.appendHash : path;
+            path = _makePath.apply(null, arguments);
             if(path !== _hash){
                 _registerChange(path); //avoid breaking the application if for some reason `location.hash` don't change
-                if(_isIE && _isLocal){
-                    path = path.replace(/\?/, '%3F'); //fix IE8 local file bug [issue #6]
-                }
                 location.hash = '#'+ encodeURI(path); //used encodeURI instead of encodeURIComponent to preserve '?', '/', '#'. Fixes Safari bug [issue #8]
+            }
+        },
+
+        /**
+         * Set Hash value without keeping previous hash on the history record.
+         * Similar to calling `location.replace("#/hash")` but will also work on IE6-7.
+         * @param {...string} path    Hash value without '#'. Hasher will join
+         * path segments using `hasher.separator` and prepend/append hash value
+         * with `hasher.appendHash` and `hasher.prependHash`
+         * @example hasher.replaceHash('lorem', 'ipsum', 'dolor') -> '#/lorem/ipsum/dolor'
+         */
+        replaceHash : function(path){
+            path = _makePath.apply(null, arguments);
+            if(path !== _hash){
+                _registerChange(path, true);
+                location.replace('#'+ encodeURI(path));
             }
         },
 

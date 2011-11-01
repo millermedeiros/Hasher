@@ -46,7 +46,7 @@ Include [JS-Signals](http://millermedeiros.github.com/js-signals/) and **hasher*
   <script type="text/javascript" src="hasher.js"></script>
 ```
 
-**IMPORTANT:** `signals.js` should be included before `hasher.js`. 
+**IMPORTANT:** `signals.js` should be included before `hasher.js`.
 
 
 ### JavaScript ###
@@ -100,7 +100,7 @@ hasher.setHash('bar');
 
 ### Routes: Using Hasher together with Crossroads.js ###
 
-Hasher is only focused on providing a reliable and clear API for setting hash values and 
+Hasher is only focused on providing a reliable and clear API for setting hash values and
 listening to hash state change event. If you need an advanced *routing* system
 check [crossroads.js](http://millermedeiros.github.com/crossroads.js/). Both
 were designed to work together easily:
@@ -124,14 +124,14 @@ hasher.init(); //start listening for history change
 
 Hasher will listen for the browser `onhashchange` event if it is supported (FF3.6+, IE8+, Chrome 5+, Safari 5+, Opera 10.6+)
 or it will fallback to pooling the `window.location` on an interval to check if
-hash value changed. On IE 6-7 it also uses an hidden iframe to trigger 
-the history state changes (since updating the hash value won't do the trick). 
-This is the same method used by most of the other available solutions like swfaddress, 
+hash value changed. On IE 6-7 it also uses an hidden iframe to trigger
+the history state changes (since updating the hash value won't do the trick).
+This is the same method used by most of the other available solutions like swfaddress,
 jQuery Address, YUI History, jqBBQ, Really Simple History, etc...
 
 The main difference from the other solutions are the API, code structure and
 the fact that it doesn't require jQuery/YUI/dojo/moootools/etc to work. It also
-uses [JS-Signals](http://millermedeiros.github.com/js-signals/) for the events which 
+uses [JS-Signals](http://millermedeiros.github.com/js-signals/) for the events which
 provides a sane way of handling events and some really useful advanced features.
 
 
@@ -141,18 +141,18 @@ provides a sane way of handling events and some really useful advanced features.
 Besides the fact of making history state work across multiple browsers it also
 normalizes and fixes many bugs, here are a few of the advantges:
 
- * Normalizes the hash value across browsers (firefox decode hash value and 
+ * Normalizes the hash value across browsers (firefox decode hash value and
    all the other browsers don't).
  * Fix IE8 bug if `location.hash` contains a "?" character and file is being
    accessed locally it would break the history stack. [iss #6]
  * Fix Safari 4-5 bug while setting `location.hash` to a value that contain
    non-printable ASCII chars (non-latin, accents, etc..). [iss #8]
  * Degrade gracefully if for some reason `location.hash` isn't available, will
-   dispatch the `changed` signal at each `hasher.setHash()` and application 
+   dispatch the `changed` signal at each `hasher.setHash()` and application
    can still work, it just won't generate a new history record.
  * Doesn't rely on callbacks so you can add as many listeners as you want and
-   since it uses [JS-Signals](http://millermedeiros.github.com/js-signals/) 
-   for the event system it also provides many advanced featured that wouldn't 
+   since it uses [JS-Signals](http://millermedeiros.github.com/js-signals/)
+   for the event system it also provides many advanced featured that wouldn't
    be available through a simple callback system, like disabling the dispatch
    of an event (so you can change the hash value without affecting your app
    state), removing all the listeners at once, dispose objects, etc...
@@ -163,13 +163,13 @@ normalizes and fixes many bugs, here are a few of the advantges:
    structure.
  * Isn't a plugin for a large JS library/framework (so you can use it with
    *any* library).
- * Can be easily integrated into a Router like 
+ * Can be easily integrated into a Router like
    [crossroads.js](http://millermedeiros.github.com/crossroads.js/).
  * Sometimes regular URLs doesn't make any sense, specially when you *can't*
    provide a fallback to all of them or when you just want to save the state of
    the application and that change wouldn't make sense on a full page reload
-   (scrolling through the same page, interactive slideshow, etc..), also some 
-   content may not need to be indexed by search engines (although you can use 
+   (scrolling through the same page, interactive slideshow, etc..), also some
+   content may not need to be indexed by search engines (although you can use
    *hashbangs* to make [Ajax content crawlable](http://code.google.com/web/ajaxcrawling/docs/getting-started.html)...).
    **Each scenario requires a different approach, be pragmatic.**
  * Clean API.
@@ -218,10 +218,10 @@ You can also run the test by yourself at [http://millermedeiros.github.com/Hashe
 
 Files inside `dist/js` folder.
 
- * hasher.js : Uncompressed source code with comments.
- * hasher.amd.js : Uncompressed source code wrapped as an [asynchronous module](http://wiki.commonjs.org/wiki/Modules/AsynchronousDefinition) to be used together with [RequireJS](http://requirejs.org/) or any other AMD loader.
+ * hasher.js : Uncompressed source code with comments. Works as a plain script
+   or can be loaded by an AMD loader like [RequireJS](http://requirejs.org/)
+   without generating any global variables.
  * hasher.min.js : Compressed code.
- * hasher.amd.min.js : Compressed code wrapped as an AMD module.
 
 Documentation is inside the `dist/docs` folder.
 
@@ -235,9 +235,9 @@ This project uses [Apache Ant](http://ant.apache.org/) for the build process. If
 
 This will delete all JS files inside the `dist` folder, merge/update/compress source files and copy the output to the `dist` folder.
 
-    and all
+    and deploy
 
-This will delete all files inside *dist* folder, run `ant compile` and generate documentation files.
+This will delete all files inside *dist* folder, is runs `ant compile` and generate documentation files.
 
 **IMPORTANT:** `dist` folder always contain the latest version, regular users should **not** need to run build task.
 
@@ -252,15 +252,15 @@ Released under the [MIT license](http://www.opensource.org/licenses/mit-license.
 ## Important ##
 
  - Weird case scenarios like calling methods from inside (i)frame, wrong doctype,
-   plugins, 3rd party code, etc, **MAY** prevent script from working properly. 
- - Hasher was designed on a way that it will still dispatch the 
-   `changed` signal even if it can't update the browser `location.hash`, so 
+   plugins, 3rd party code, etc, **MAY** prevent script from working properly.
+ - Hasher was designed on a way that it will still dispatch the
+   `changed` signal even if it can't update the browser `location.hash`, so
    application should keep working even if back/prev buttons doesn't work as
    expected.
  - Consider using the new [HTML5 history API](http://robertnyman.com/2011/08/03/html5-history-api-and-improving-end-user-experience/)
-   if normal URLs would make sense on the kind of site/application you are building and 
+   if normal URLs would make sense on the kind of site/application you are building and
    you have static fallbacks for all of them (in some cases that may not be
-   possible or even a good option). [History.js](https://github.com/balupton/history.js) 
+   possible or even a good option). [History.js](https://github.com/balupton/history.js)
    is probably the most used *polyfill* for the History API, check it out.
 
 
