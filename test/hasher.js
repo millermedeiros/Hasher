@@ -1,10 +1,12 @@
 /*!!
  * Hasher <http://github.com/millermedeiros/hasher>
  * @author Miller Medeiros
- * @version 1.0.0 (2011/08/03 10:49 PM)
+ * @version 1.1.0 (2011/11/01 07:15 PM)
  * Released under the MIT License
  */
 
+(function (define) {
+    define('hasher', ['signals'], function(signals){
 
 /*jshint white:false*/
 /*global signals:false, window:false*/
@@ -20,7 +22,7 @@ var hasher = (function(window){
     // Private Vars
     //--------------------------------------------------------------------------------------
 
-    var 
+    var
 
         POOL_INTERVAL = 25,
 
@@ -60,7 +62,7 @@ var hasher = (function(window){
         var regexp = new RegExp('^\\'+ hasher.prependHash +'|\\'+ hasher.appendHash +'$', 'g');
         return hash.replace(regexp, '');
     }
-    
+
     function _getWindowHash(){
         //parsed full URL instead of getting location.hash because Firefox decode hash value (and all the other browsers don't)
         //also because of IE8 bug with hash query in local file [issue #6]
@@ -71,7 +73,7 @@ var hasher = (function(window){
     function _getFrameHash(){
         return (_frame)? _frame.contentWindow.frameHash : null;
     }
-    
+
     function _createFrame(){
         _frame = document.createElement('iframe');
         _frame.src = 'about:blank';
@@ -89,36 +91,48 @@ var hasher = (function(window){
             frameDoc.close();
         }
     }
-    
-    function _registerChange(newHash){
+
+    function _registerChange(newHash, isReplace){
         newHash = decodeURIComponent(newHash); //fix IE8 while offline
         if(_hash !== newHash){
             var oldHash = _hash;
             _hash = newHash; //should come before event dispatch to make sure user can get proper value inside event handler
             if(_isLegacyIE){
-                _updateFrame();
+                if(!isReplace){
+                    _updateFrame();
+                } else {
+                    _frame.contentWindow.frameHash = newHash;
+                }
             }
             hasher.changed.dispatch(_trimHash(newHash), _trimHash(oldHash));
         }
     }
 
-    _checkHistory = (_isLegacyIE)? 
-        function(){
+    if (_isLegacyIE) {
+        _checkHistory = function(){
             var windowHash = _getWindowHash(),
                 frameHash = _getFrameHash();
-            if(frameHash !== _hash && frameHash !== windowHash){ //detect changes made pressing browser history buttons. Workaround since history.back() and history.forward() doesn't update hash value on IE6/7 but updates content of the iframe.
-                hasher.setHash(_trimHash(frameHash)); //needs to trim hash since value stored already have prependHash + appendHash
-            } else if (windowHash !== _hash){ //detect if hash changed (manually or using setHash)
+            if(frameHash !== _hash && frameHash !== windowHash){
+                //detect changes made pressing browser history buttons.
+                //Workaround since history.back() and history.forward() doesn't
+                //update hash value on IE6/7 but updates content of the iframe.
+                //needs to trim hash since value stored already have
+                //prependHash + appendHash for fast check.
+                hasher.setHash(_trimHash(frameHash));
+            } else if (windowHash !== _hash){
+                //detect if hash changed (manually or using setHash)
                 _registerChange(windowHash);
             }
-        } : 
-        function(){
+        };
+    } else {
+        _checkHistory = function(){
             var windowHash = _getWindowHash();
             if(windowHash !== _hash){
                 _registerChange(windowHash);
             }
         };
-    
+    }
+
     function _addListener(elm, eType, fn){
         if(elm.addEventListener){
             elm.addEventListener(eType, fn, false);
@@ -126,7 +140,7 @@ var hasher = (function(window){
             elm.attachEvent('on' + eType, fn);
         }
     }
-    
+
     function _removeListener(elm, eType, fn){
         if(elm.removeEventListener){
             elm.removeEventListener(eType, fn, false);
@@ -134,20 +148,32 @@ var hasher = (function(window){
             elm.detachEvent('on' + eType, fn);
         }
     }
-    
+
+    function _makePath(paths){
+        paths = Array.prototype.slice.call(arguments);
+
+        var path = paths.join(hasher.separator);
+        path = path? hasher.prependHash + path.replace(_hashRegexp, '') + hasher.appendHash : path;
+
+        if(_isIE && _isLocal){
+            path = path.replace(/\?/, '%3F'); //fix IE8 local file bug [issue #6]
+        }
+        return path;
+    }
+
     //--------------------------------------------------------------------------------------
     // Public (API)
     //--------------------------------------------------------------------------------------
-    
+
     hasher = /** @lends hasher */ {
-    
+
         /**
          * hasher Version Number
          * @type string
          * @constant
          */
-        VERSION : '1.0.0',
-        
+        VERSION : '1.1.0',
+
         /**
          * String that should always be added to the end of Hash value.
          * <ul>
@@ -158,7 +184,7 @@ var hasher = (function(window){
          * @type string
          */
         appendHash : '',
-        
+
         /**
          * String that should always be added to the beginning of Hash value.
          * <ul>
@@ -169,7 +195,7 @@ var hasher = (function(window){
          * @type string
          */
         prependHash : '/',
-        
+
         /**
          * String used to split hash paths; used by `hasher.getHashAsArray()` to split paths.
          * <ul>
@@ -178,28 +204,28 @@ var hasher = (function(window){
          * @type string
          */
         separator : '/',
-        
+
         /**
          * Signal dispatched when hash value changes.
          * - pass current hash as 1st parameter to listeners and previous hash value as 2nd parameter.
          * @type signals.Signal
          */
         changed : new Signal(),
-        
+
         /**
          * Signal dispatched when hasher is stopped.
          * -  pass current hash as first parameter to listeners
          * @type signals.Signal
          */
         stopped : new Signal(),
-      
+
         /**
          * Signal dispatched when hasher is initialized.
          * - pass current hash as first parameter to listeners.
          * @type signals.Signal
          */
         initialized : new Signal(),
-    
+
         /**
          * Start listening/dispatching changes in the hash/history.
          * <ul>
@@ -208,9 +234,9 @@ var hasher = (function(window){
          */
         init : function(){
             if(_isActive) return;
-            
+
             _hash = _getWindowHash();
-            
+
             //thought about branching/overloading hasher.init() to avoid checking multiple times but
             //don't think worth doing it since it probably won't be called multiple times.
             if(_isHashChangeSupported){
@@ -224,11 +250,11 @@ var hasher = (function(window){
                 }
                 _checkInterval = setInterval(_checkHistory, POOL_INTERVAL);
             }
-            
+
             _isActive = true;
             hasher.initialized.dispatch(_trimHash(_hash));
         },
-        
+
         /**
          * Stop listening/dispatching changes in the hash/history.
          * <ul>
@@ -238,39 +264,39 @@ var hasher = (function(window){
          */
         stop : function(){
             if(! _isActive) return;
-            
+
             if(_isHashChangeSupported){
                 _removeListener(window, 'hashchange', _checkHistory);
             }else{
                 clearInterval(_checkInterval);
                 _checkInterval = null;
             }
-            
+
             _isActive = false;
             hasher.stopped.dispatch(_trimHash(_hash));
         },
-        
+
         /**
          * @return {boolean}    If hasher is listening to changes on the browser history and/or hash value.
          */
         isActive : function(){
             return _isActive;
         },
-        
+
         /**
          * @return {string} Full URL.
          */
         getURL : function(){
             return location.href;
         },
-        
+
         /**
          * @return {string} Retrieve URL without query string and hash.
          */
         getBaseURL : function(){
             return hasher.getURL().replace(_baseUrlRegexp, ''); //removes everything after '?' and/or '#'
         },
-        
+
         /**
          * Set Hash value, generating a new history record.
          * @param {...string} path    Hash value without '#'. Hasher will join
@@ -279,18 +305,29 @@ var hasher = (function(window){
          * @example hasher.setHash('lorem', 'ipsum', 'dolor') -> '#/lorem/ipsum/dolor'
          */
         setHash : function(path){
-            var paths = Array.prototype.slice.call(arguments);
-            path = paths.join(hasher.separator);
-            path = path? hasher.prependHash + path.replace(_hashRegexp, '') + hasher.appendHash : path;
+            path = _makePath.apply(null, arguments);
             if(path !== _hash){
                 _registerChange(path); //avoid breaking the application if for some reason `location.hash` don't change
-                if(_isIE && _isLocal){
-                    path = path.replace(/\?/, '%3F'); //fix IE8 local file bug [issue #6]
-                }
                 location.hash = '#'+ encodeURI(path); //used encodeURI instead of encodeURIComponent to preserve '?', '/', '#'. Fixes Safari bug [issue #8]
             }
         },
-        
+
+        /**
+         * Set Hash value without keeping previous hash on the history record.
+         * Similar to calling `location.replace("#/hash")` but will also work on IE6-7.
+         * @param {...string} path    Hash value without '#'. Hasher will join
+         * path segments using `hasher.separator` and prepend/append hash value
+         * with `hasher.appendHash` and `hasher.prependHash`
+         * @example hasher.replaceHash('lorem', 'ipsum', 'dolor') -> '#/lorem/ipsum/dolor'
+         */
+        replaceHash : function(path){
+            path = _makePath.apply(null, arguments);
+            if(path !== _hash){
+                _registerChange(path, true);
+                location.replace('#'+ encodeURI(path));
+            }
+        },
+
         /**
          * @return {string} Hash value without '#', `hasher.appendHash` and `hasher.prependHash`.
          */
@@ -298,14 +335,14 @@ var hasher = (function(window){
             //didn't used actual value of the `location.hash` to avoid breaking the application in case `location.hash` isn't available and also because value should always be synched.
             return _trimHash(_hash);
         },
-        
+
         /**
          * @return {Array.<string>} Hash value split into an Array.
          */
         getHashAsArray : function(){
             return hasher.getHash().split(hasher.separator);
         },
-        
+
         /**
          * Removes all event listeners, stops hasher and destroy hasher object.
          * - IMPORTANT: hasher won't work after calling this method, hasher Object will be deleted.
@@ -317,16 +354,25 @@ var hasher = (function(window){
             hasher.changed.dispose();
             _frame = hasher = window.hasher = null;
         },
-        
+
         /**
          * @return {string} A string representation of the object.
          */
         toString : function(){
             return '[hasher version="'+ hasher.VERSION +'" hash="'+ hasher.getHash() +'"]';
         }
-    
+
     };
-    
+
+    hasher.initialized.memorize = true; //see #33
+
     return hasher;
 
 }(window));
+
+
+        return hasher;
+    });
+}(typeof define === 'function' && define.amd ? define : function (id, deps, factory) {
+    window[id] = factory(window[deps[0]]);
+}));
