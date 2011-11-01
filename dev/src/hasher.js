@@ -1,5 +1,3 @@
-//::LICENSE:://
-
 /*jshint white:false*/
 /*global signals:false, window:false*/
 
