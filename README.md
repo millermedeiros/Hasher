@@ -235,7 +235,7 @@ This project uses [Apache Ant](http://ant.apache.org/) for the build process. If
 
 This will delete all JS files inside the `dist` folder, merge/update/compress source files and copy the output to the `dist` folder.
 
-    and deploy
+    ant deploy
 
 This will delete all files inside *dist* folder, is runs `ant compile` and generate documentation files.
 
