@@ -113,8 +113,11 @@ crossroads.addRoute('lorem/ipsum');
 crossroads.routed.add(console.log, console); //log all routes
 
 //setup hasher
-hasher.initialized.add(crossroads.parse, crossroads); //parse initial hash value
-hasher.changed.add(crossroads.parse, crossroads); //parse hash changes
+function parseHash(newHash, oldHash){
+  crossroads.parse(newHash);
+}
+hasher.initialized.add(parseHash); // parse initial hash
+hasher.changed.add(parseHash); //parse hash changes
 hasher.init(); //start listening for history change
 ```
 
