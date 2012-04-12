@@ -181,7 +181,7 @@ normalizes and fixes many bugs, here are a few of the advantges:
 
 ## Documentation ##
 
-Documentation can be found inside the `dist/docs` folder or at [http://millermedeiros.github.com/Hasher/docs/](http://millermedeiros.github.com/Hasher/test/unit.html).
+Documentation can be found inside the `dist/docs` folder or at [http://millermedeiros.github.com/Hasher/docs/](http://millermedeiros.github.com/Hasher/docs/).
 
 
 
