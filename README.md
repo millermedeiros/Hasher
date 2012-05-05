@@ -98,6 +98,28 @@ setHashSilently('lorem/ipsum'); //set hash value without dispatching changed eve
 hasher.setHash('bar');
 ```
 
+
+### Setting hash value without generating a new history record
+
+Hasher also contains the method `replaceHash()`. It works very similarly to the
+`setHash()` method (will also dispatch a `changed` signal), the main difference
+it that it won't keep the **previous** hash on the history record (similar to
+`location.replace()`). It's useful for redirections and any other change that
+shouldn't be on the browser history.
+
+```js
+function onHasherInit(curHash){
+  if (curHash == '') {
+    // redirect to "home" hash without keeping the empty hash on the history
+    hasher.replaceHash('home');
+  }
+}
+hasher.initialized.add(onHasherInit);
+hasher.changed.add(console.log, console); // log all hashes
+hasher.init();
+```
+
+
 ### Routes: Using Hasher together with Crossroads.js ###
 
 Hasher is only focused on providing a reliable and clear API for setting hash values and
