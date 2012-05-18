@@ -298,7 +298,10 @@ var hasher = (function(window){
             path = _makePath.apply(null, arguments);
             if(path !== _hash){
                 _registerChange(path); //avoid breaking the application if for some reason `location.hash` don't change
-                location.hash = '#'+ encodeURI(path); //used encodeURI instead of encodeURIComponent to preserve '?', '/', '#'. Fixes Safari bug [issue #8]
+                // Preventing multiple unnecessary "changed" events during consecutive redirects [issue #39]
+                if (path === _hash) {
+                    location.hash = '#' + encodeURI(path); //used encodeURI instead of encodeURIComponent to preserve '?', '/', '#'. Fixes Safari bug [issue #8]
+                }
             }
         },
 
@@ -314,7 +317,9 @@ var hasher = (function(window){
             path = _makePath.apply(null, arguments);
             if(path !== _hash){
                 _registerChange(path, true);
-                location.replace('#'+ encodeURI(path));
+                if (path === _hash) {
+                    location.replace('#' + encodeURI(path));
+                }
             }
         },
 
