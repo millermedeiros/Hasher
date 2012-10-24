@@ -360,7 +360,7 @@ module();
 test('multiple listeners & changes', function (){
 
     stop(2000);
-    expect(25);
+    expect(29);
 
     function handler1(evt){
         ok(true, 'Called Handler #1');
@@ -397,6 +397,8 @@ test('multiple listeners & changes', function (){
     hasher.setHash('Lorem/Dolor&Amet/?foo=bar&ipsum=dolor&n=123&nan=abc123');
     equals(hasher.getHash(), 'Lorem/Dolor&Amet/?foo=bar&ipsum=dolor&n=123&nan=abc123');
 
+    hasher.setHash('something%');
+    equals(hasher.getHash(), 'something%');
 
     hasher.setHash('?foo=bar&ipsum=dolor');
     equals(hasher.getHash(), '?foo=bar&ipsum=dolor');
