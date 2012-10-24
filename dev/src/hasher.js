@@ -296,7 +296,7 @@ var hasher = (function(window){
         setHash : function(path){
             path = _makePath.apply(null, arguments);
             if(path !== _hash){
-                _registerChange(path); //avoid breaking the application if for some reason `window.location.hash` don't change
+                _registerChange(encodeURI(path)); //avoid breaking the application if for some reason `window.location.hash` don't change
                 window.location.hash = '#'+ encodeURI(path); //used encodeURI instead of encodeURIComponent to preserve '?', '/', '#'. Fixes Safari bug [issue #8]
             }
         },
@@ -312,7 +312,7 @@ var hasher = (function(window){
         replaceHash : function(path){
             path = _makePath.apply(null, arguments);
             if(path !== _hash){
-                _registerChange(path, true);
+                _registerChange(encodeURI(path), true);
                 window.location.replace('#'+ encodeURI(path));
             }
         },
