@@ -1,7 +1,7 @@
 /*!!
  * Hasher <http://github.com/millermedeiros/hasher>
  * @author Miller Medeiros
- * @version 1.1.0 (2011/11/01 07:15 PM)
+ * @version 1.1.1 (2012/10/25 03:47 PM)
  * Released under the MIT License
  */
 
@@ -24,12 +24,13 @@ var hasher = (function(window){
 
     var
 
+        // frequency that it will check hash value on IE 6-7 since it doesn't
+        // support the hashchange event
         POOL_INTERVAL = 25,
 
         // local storage for brevity and better compression --------------------------------
 
         document = window.document,
-        location = window.location,
         history = window.history,
         Signal = signals.Signal,
 
@@ -47,9 +48,15 @@ var hasher = (function(window){
 
         // sniffing/feature detection -------------------------------------------------------
 
-        _isIE = (!+"\v1"), //hack based on this: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html
-        _isHashChangeSupported = ('onhashchange' in window), // FF3.6+, IE8+, Chrome 5+, Safari 5+
-        _isLegacyIE = _isIE && !_isHashChangeSupported, //check if is IE6-7 since hash change is only supported on IE8+ and changing hash value on IE6-7 doesn't generate history record.
+        //hack based on this: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html
+        _isIE = (!+"\v1"),
+        // hashchange is supported by FF3.6+, IE8+, Chrome 5+, Safari 5+ but
+        // feature detection fails on IE compatibility mode, so we need to
+        // check documentMode
+        _isHashChangeSupported = ('onhashchange' in window) && document.documentMode !== 7,
+        //check if is IE6-7 since hash change is only supported on IE8+ and
+        //changing hash value on IE6-7 doesn't generate history record.
+        _isLegacyIE = _isIE && !_isHashChangeSupported,
         _isLocal = (location.protocol === 'file:');
 
 
@@ -64,7 +71,7 @@ var hasher = (function(window){
     }
 
     function _getWindowHash(){
-        //parsed full URL instead of getting location.hash because Firefox decode hash value (and all the other browsers don't)
+        //parsed full URL instead of getting window.location.hash because Firefox decode hash value (and all the other browsers don't)
         //also because of IE8 bug with hash query in local file [issue #6]
         var result = _hashValRegexp.exec( hasher.getURL() );
         return (result && result[1])? decodeURIComponent(result[1]) : '';
@@ -109,6 +116,9 @@ var hasher = (function(window){
     }
 
     if (_isLegacyIE) {
+        /**
+         * @private
+         */
         _checkHistory = function(){
             var windowHash = _getWindowHash(),
                 frameHash = _getFrameHash();
@@ -125,6 +135,9 @@ var hasher = (function(window){
             }
         };
     } else {
+        /**
+         * @private
+         */
         _checkHistory = function(){
             var windowHash = _getWindowHash();
             if(windowHash !== _hash){
@@ -172,7 +185,7 @@ var hasher = (function(window){
          * @type string
          * @constant
          */
-        VERSION : '1.1.0',
+        VERSION : '1.1.1',
 
         /**
          * String that should always be added to the end of Hash value.
@@ -287,7 +300,7 @@ var hasher = (function(window){
          * @return {string} Full URL.
          */
         getURL : function(){
-            return location.href;
+            return window.location.href;
         },
 
         /**
@@ -307,14 +320,14 @@ var hasher = (function(window){
         setHash : function(path){
             path = _makePath.apply(null, arguments);
             if(path !== _hash){
-                _registerChange(path); //avoid breaking the application if for some reason `location.hash` don't change
-                location.hash = '#'+ encodeURI(path); //used encodeURI instead of encodeURIComponent to preserve '?', '/', '#'. Fixes Safari bug [issue #8]
+                _registerChange(path); //avoid breaking the application if for some reason `window.location.hash` don't change
+                window.location.hash = '#'+ encodeURI(path); //used encodeURI instead of encodeURIComponent to preserve '?', '/', '#'. Fixes Safari bug [issue #8]
             }
         },
 
         /**
          * Set Hash value without keeping previous hash on the history record.
-         * Similar to calling `location.replace("#/hash")` but will also work on IE6-7.
+         * Similar to calling `window.location.replace("#/hash")` but will also work on IE6-7.
          * @param {...string} path    Hash value without '#'. Hasher will join
          * path segments using `hasher.separator` and prepend/append hash value
          * with `hasher.appendHash` and `hasher.prependHash`
@@ -324,7 +337,7 @@ var hasher = (function(window){
             path = _makePath.apply(null, arguments);
             if(path !== _hash){
                 _registerChange(path, true);
-                location.replace('#'+ encodeURI(path));
+                window.location.replace('#'+ encodeURI(path));
             }
         },
 
@@ -332,7 +345,7 @@ var hasher = (function(window){
          * @return {string} Hash value without '#', `hasher.appendHash` and `hasher.prependHash`.
          */
         getHash : function(){
-            //didn't used actual value of the `location.hash` to avoid breaking the application in case `location.hash` isn't available and also because value should always be synched.
+            //didn't used actual value of the `window.location.hash` to avoid breaking the application in case `window.location.hash` isn't available and also because value should always be synched.
             return _trimHash(_hash);
         },
 
