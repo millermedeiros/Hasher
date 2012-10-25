@@ -106,6 +106,9 @@ var hasher = (function(window){
     }
 
     if (_isLegacyIE) {
+        /**
+         * @private
+         */
         _checkHistory = function(){
             var windowHash = _getWindowHash(),
                 frameHash = _getFrameHash();
@@ -122,6 +125,9 @@ var hasher = (function(window){
             }
         };
     } else {
+        /**
+         * @private
+         */
         _checkHistory = function(){
             var windowHash = _getWindowHash();
             if(windowHash !== _hash){

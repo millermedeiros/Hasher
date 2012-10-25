@@ -1,7 +1,7 @@
 /*!!
  * Hasher <http://github.com/millermedeiros/hasher>
  * @author Miller Medeiros
- * @version 1.1.0+ (2012/10/25 09:48 AM)
+ * @version 1.1.1 (2012/10/25 03:47 PM)
  * Released under the MIT License
  */
 
@@ -116,6 +116,9 @@ var hasher = (function(window){
     }
 
     if (_isLegacyIE) {
+        /**
+         * @private
+         */
         _checkHistory = function(){
             var windowHash = _getWindowHash(),
                 frameHash = _getFrameHash();
@@ -132,6 +135,9 @@ var hasher = (function(window){
             }
         };
     } else {
+        /**
+         * @private
+         */
         _checkHistory = function(){
             var windowHash = _getWindowHash();
             if(windowHash !== _hash){
@@ -179,7 +185,7 @@ var hasher = (function(window){
          * @type string
          * @constant
          */
-        VERSION : '1.1.0+',
+        VERSION : '1.1.1',
 
         /**
          * String that should always be added to the end of Hash value.
