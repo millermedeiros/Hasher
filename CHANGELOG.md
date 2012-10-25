@@ -1,6 +1,13 @@
 # Hasher Changelog #
 
 
+## Next
+
+ - fix iOS5 bug when going to a new page and coming back afterwards, caused by
+   cached reference to an old instance of the `window.location`. (#43)
+ - fix IE compatibility mode. (#44).
+
+
 ## v1.1.0 (2011/11/01) ##
 
  - add `hasher.replaceHash()` (#35)

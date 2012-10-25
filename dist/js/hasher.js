@@ -1,7 +1,7 @@
 /*!!
  * Hasher <http://github.com/millermedeiros/hasher>
  * @author Miller Medeiros
- * @version 1.1.0 (2012/08/14 03:19 PM)
+ * @version 1.1.0+ (2012/10/25 09:48 AM)
  * Released under the MIT License
  */
 
@@ -24,6 +24,8 @@ var hasher = (function(window){
 
     var
 
+        // frequency that it will check hash value on IE 6-7 since it doesn't
+        // support the hashchange event
         POOL_INTERVAL = 25,
 
         // local storage for brevity and better compression --------------------------------
@@ -46,10 +48,16 @@ var hasher = (function(window){
 
         // sniffing/feature detection -------------------------------------------------------
 
-        _isIE = (!+"\v1"), //hack based on this: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html
-        _isHashChangeSupported = ('onhashchange' in window), // FF3.6+, IE8+, Chrome 5+, Safari 5+
-        _isLegacyIE = _isIE && !_isHashChangeSupported, //check if is IE6-7 since hash change is only supported on IE8+ and changing hash value on IE6-7 doesn't generate history record.
-        _isLocal = (window.location.protocol === 'file:');
+        //hack based on this: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html
+        _isIE = (!+"\v1"),
+        // hashchange is supported by FF3.6+, IE8+, Chrome 5+, Safari 5+ but
+        // feature detection fails on IE compatibility mode, so we need to
+        // check documentMode
+        _isHashChangeSupported = ('onhashchange' in window) && document.documentMode !== 7,
+        //check if is IE6-7 since hash change is only supported on IE8+ and
+        //changing hash value on IE6-7 doesn't generate history record.
+        _isLegacyIE = _isIE && !_isHashChangeSupported,
+        _isLocal = (location.protocol === 'file:');
 
 
     //--------------------------------------------------------------------------------------
@@ -171,7 +179,7 @@ var hasher = (function(window){
          * @type string
          * @constant
          */
-        VERSION : '1.1.0',
+        VERSION : '1.1.0+',
 
         /**
          * String that should always be added to the end of Hash value.
