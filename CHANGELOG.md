@@ -2,6 +2,13 @@ Hasher Changelog
 ================
 
 
+NEXT
+----
+
+ - fix unnecessary "changed" events during consecutive redirects (#39)
+
+
+
 v1.1.1 (2012/10/25)
 -------------------
 

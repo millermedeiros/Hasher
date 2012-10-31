@@ -1,7 +1,7 @@
 /*!!
  * Hasher <http://github.com/millermedeiros/hasher>
  * @author Miller Medeiros
- * @version 1.1.1 (2012/10/25 03:47 PM)
+ * @version 1.1.1+ (2012/10/31 01:27 PM)
  * Released under the MIT License
  */
 
@@ -185,7 +185,7 @@ var hasher = (function(window){
          * @type string
          * @constant
          */
-        VERSION : '1.1.1',
+        VERSION : '1.1.1+',
 
         /**
          * String that should always be added to the end of Hash value.
@@ -320,8 +320,11 @@ var hasher = (function(window){
         setHash : function(path){
             path = _makePath.apply(null, arguments);
             if(path !== _hash){
-                _registerChange(path); //avoid breaking the application if for some reason `window.location.hash` don't change
-                window.location.hash = '#'+ encodeURI(path); //used encodeURI instead of encodeURIComponent to preserve '?', '/', '#'. Fixes Safari bug [issue #8]
+                _registerChange(path); //avoid breaking the application if for some reason `location.hash` don't change
+                // Preventing multiple unnecessary "changed" events during consecutive redirects [issue #39]
+                if (path === _hash) {
+                    window.location.hash = '#' + encodeURI(path); //used encodeURI instead of encodeURIComponent to preserve '?', '/', '#'. Fixes Safari bug [issue #8]
+                }
             }
         },
 
@@ -337,7 +340,10 @@ var hasher = (function(window){
             path = _makePath.apply(null, arguments);
             if(path !== _hash){
                 _registerChange(path, true);
-                window.location.replace('#'+ encodeURI(path));
+                // Preventing multiple unnecessary "changed" events during consecutive redirects [issue #39]
+                if (path === _hash) {
+                    window.location.replace('#' + encodeURI(path));
+                }
             }
         },
 

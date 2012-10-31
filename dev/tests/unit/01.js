@@ -572,6 +572,47 @@ test('replaceHash', function(){
 
 /* == */
 
+module();
+
+test('multiple redirects [issue #39]', function(){
+    stop(1500);
+    expect(9);
+
+    hasher.init();
+
+    var n = 0;
+
+    var hashChangeHandler = function(newHash, prevHash) {
+        n += 1;
+
+        equals(hasher.getHash(), newHash, 'hasher.getHash() === newHash');
+
+        if (newHash === 'zero') {
+            equals(prevHash, '', 'prevHash === ""');
+            hasher.replaceHash('one');
+        } else if (newHash === 'one') {
+            equals(prevHash, 'zero', 'prevHash === "zero"');
+            hasher.replaceHash('two');
+        } else {
+            equals(prevHash, 'one', 'prevHash === "one"');
+            equals(newHash, 'two' , 'newHash === "two"');
+        }
+    };
+
+    hasher.replaceHash('');
+    hasher.changed.add( hashChangeHandler );
+    hasher.replaceHash('zero');
+
+    setTimeout(function(){
+        hasher.changed.remove( hashChangeHandler );
+        equals(n, 3, 'only changed 3 times');
+        equals(window.location.hash, '#/two', 'updated location.hash');
+        start();
+    }, 1200);
+
+});
+
+
 /* ==== dispose ==== */
 
 module();
