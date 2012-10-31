@@ -1,7 +1,7 @@
 /*!!
  * Hasher <http://github.com/millermedeiros/hasher>
  * @author Miller Medeiros
- * @version 1.1.1+ (2012/10/31 03:17 PM)
+ * @version 1.1.2 (2012/10/31 03:19 PM)
  * Released under the MIT License
  */
 
@@ -191,7 +191,7 @@ var hasher = (function(window){
          * @type string
          * @constant
          */
-        VERSION : '1.1.1+',
+        VERSION : '1.1.2',
 
         /**
          * String that should always be added to the end of Hash value.

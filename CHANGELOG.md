@@ -2,8 +2,8 @@ Hasher Changelog
 ================
 
 
-NEXT
-----
+v1.1.2 (2012/10/31)
+-------------------
 
  - fix unnecessary "changed" events during consecutive redirects (#39)
  - fix hash containing "%" (#42)
