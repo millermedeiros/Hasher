@@ -22,8 +22,8 @@
  *
  */
 
-var DELAY_BACK_FORWARD = 50;
-var TIMEOUT_BACK_FORWARD = 200;
+var DELAY_BACK_FORWARD = 80;
+var TIMEOUT_BACK_FORWARD = 300;
 
 location.hash = ''; //resets location.hash
 
@@ -182,7 +182,8 @@ var testsHashs = [
     '/asd',
     '/asd/qwerty/',
     '/asd/qwerty/?foo=bar',
-    'lorem-ipsum'
+    'lorem-ipsum',
+    'foo%bar%' // [issue #42]
 ];
 
 
@@ -571,6 +572,85 @@ test('replaceHash', function(){
 
 
 /* == */
+
+module();
+
+test('multiple redirects [issue #39]', function(){
+    stop(1500);
+    expect(9);
+
+    hasher.init();
+
+    var n = 0;
+
+    var hashChangeHandler = function(newHash, prevHash) {
+        n += 1;
+
+        equals(hasher.getHash(), newHash, 'hasher.getHash() === newHash');
+
+        if (newHash === 'zero') {
+            equals(prevHash, '', 'prevHash === ""');
+            hasher.replaceHash('one');
+        } else if (newHash === 'one') {
+            equals(prevHash, 'zero', 'prevHash === "zero"');
+            hasher.replaceHash('two');
+        } else {
+            equals(prevHash, 'one', 'prevHash === "one"');
+            equals(newHash, 'two' , 'newHash === "two"');
+        }
+    };
+
+    hasher.replaceHash('');
+    hasher.changed.add( hashChangeHandler );
+    hasher.replaceHash('zero');
+
+    setTimeout(function(){
+        hasher.changed.remove( hashChangeHandler );
+        equals(n, 3, 'only changed 3 times');
+        equals(window.location.hash, '#/two', 'updated location.hash');
+        start();
+    }, 1200);
+
+});
+
+/* ==== */
+
+module();
+
+test('IE8 local + hash query [issue #6]', function(){
+    stop(1500);
+    expect(9);
+
+    var count = 0;
+
+    var hashChangeHandler = function(newHash, oldHash){
+        ok(newHash !== oldHash, 'hash changed');
+        ok(newHash.indexOf('?') !== -1, 'has hash query');
+        count++;
+    };
+    hasher.changed.add(hashChangeHandler);
+
+    hasher.setHash('foo?lorem=ipsum');
+
+    setTimeout(function(){
+        hasher.setHash('foo?lorem=amet');
+
+        setTimeout(function(){
+            var b1 = hasher.changed.add(function(newHash, oldHash){
+                b1.detach();
+                equals(newHash, 'foo?lorem=ipsum', 'new hash');
+                equals(oldHash, 'foo?lorem=amet', 'old hash');
+                hasher.changed.remove(hashChangeHandler);
+                equals(count, 3, 'count');
+                start();
+            });
+            // it's a TRAP, check if encode/decode is working properly
+            window.history.back();
+        }, DELAY_BACK_FORWARD);
+
+    }, DELAY_BACK_FORWARD);
+
+});
 
 /* ==== dispose ==== */
 
