@@ -6,7 +6,7 @@ NEXT
 ----
 
  - fix unnecessary "changed" events during consecutive redirects (#39)
-
+ - fix hash containing "%" (#42)
 
 
 v1.1.1 (2012/10/25)

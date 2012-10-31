@@ -90,7 +90,6 @@ var hasher = (function(window){
     }
 
     function _registerChange(newHash, isReplace){
-        newHash = decodeURIComponent(newHash); //fix IE8 while offline
         if(_hash !== newHash){
             var oldHash = _hash;
             _hash = newHash; //should come before event dispatch to make sure user can get proper value inside event handler
@@ -157,9 +156,16 @@ var hasher = (function(window){
 
         var path = paths.join(hasher.separator);
         path = path? hasher.prependHash + path.replace(_hashRegexp, '') + hasher.appendHash : path;
+        return path;
+    }
 
+    function _encodePath(path){
+        //used encodeURI instead of encodeURIComponent to preserve '?', '/',
+        //'#'. Fixes Safari bug [issue #8]
+        path = encodeURI(path);
         if(_isIE && _isLocal){
-            path = path.replace(/\?/, '%3F'); //fix IE8 local file bug [issue #6]
+            //fix IE8 local file bug [issue #6]
+            path = path.replace(/\?/, '%3F');
         }
         return path;
     }
@@ -310,10 +316,12 @@ var hasher = (function(window){
         setHash : function(path){
             path = _makePath.apply(null, arguments);
             if(path !== _hash){
-                _registerChange(path); //avoid breaking the application if for some reason `location.hash` don't change
-                // Preventing multiple unnecessary "changed" events during consecutive redirects [issue #39]
+                // we should store raw value
+                _registerChange(path);
                 if (path === _hash) {
-                    window.location.hash = '#' + encodeURI(path); //used encodeURI instead of encodeURIComponent to preserve '?', '/', '#'. Fixes Safari bug [issue #8]
+                    // we check if path is still === _hash to avoid error in
+                    // case of multiple consecutive redirects [issue #39]
+                    window.location.hash = '#' + _encodePath(path);
                 }
             }
         },
@@ -329,10 +337,12 @@ var hasher = (function(window){
         replaceHash : function(path){
             path = _makePath.apply(null, arguments);
             if(path !== _hash){
+                // we should store raw value
                 _registerChange(path, true);
-                // Preventing multiple unnecessary "changed" events during consecutive redirects [issue #39]
                 if (path === _hash) {
-                    window.location.replace('#' + encodeURI(path));
+                    // we check if path is still === _hash to avoid error in
+                    // case of multiple consecutive redirects [issue #39]
+                    window.location.replace('#' + _encodePath(path));
                 }
             }
         },
