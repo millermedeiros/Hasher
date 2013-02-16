@@ -54,9 +54,13 @@ var hasher = (function(window){
     // Private Methods
     //--------------------------------------------------------------------------------------
 
+    function _escapeRegExp(str){
+        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+    }
+
     function _trimHash(hash){
-        if(! hash) return '';
-        var regexp = new RegExp('^\\'+ hasher.prependHash +'|\\'+ hasher.appendHash +'$', 'g');
+        if (!hash) return '';
+        var regexp = new RegExp('^' + _escapeRegExp(hasher.prependHash) + '|' + _escapeRegExp(hasher.appendHash) + '$', 'g');
         return hash.replace(regexp, '');
     }
 
