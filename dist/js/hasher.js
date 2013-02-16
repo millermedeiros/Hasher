@@ -1,7 +1,7 @@
 /*!!
  * Hasher <http://github.com/millermedeiros/hasher>
  * @author Miller Medeiros
- * @version 1.1.2 (2012/10/31 03:19 PM)
+ * @version 1.1.3 (2013/02/15 04:47 PM)
  * Released under the MIT License
  */
 
@@ -64,10 +64,14 @@ var hasher = (function(window){
     // Private Methods
     //--------------------------------------------------------------------------------------
 
+    function _escapeRegExp(str){
+    	return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+    }
+
     function _trimHash(hash){
-        if(! hash) return '';
-        var regexp = new RegExp('^\\'+ hasher.prependHash +'|\\'+ hasher.appendHash +'$', 'g');
-        return hash.replace(regexp, '');
+    	if (!hash) return '';
+    	var regexp = new RegExp('^' + _escapeRegExp(hasher.prependHash) + '|' + _escapeRegExp(hasher.appendHash) + '$', 'g');
+    	return hash.replace(regexp, '');
     }
 
     function _getWindowHash(){
@@ -191,7 +195,7 @@ var hasher = (function(window){
          * @type string
          * @constant
          */
-        VERSION : '1.1.2',
+        VERSION : '1.1.3',
 
         /**
          * String that should always be added to the end of Hash value.
