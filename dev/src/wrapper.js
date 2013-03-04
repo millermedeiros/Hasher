@@ -1,6 +1,6 @@
 //::LICENSE:://
 (function (define) {
-    define('hasher', ['signals'], function(signals){
+    define(['signals'], function(signals){
 
 //::HASHER:://
 
