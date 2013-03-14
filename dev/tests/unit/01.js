@@ -652,6 +652,45 @@ test('IE8 local + hash query [issue #6]', function(){
 
 });
 
+
+
+test('appendHash + $ [issue #49]', function(){
+    stop(2000);
+
+    hasher.init();
+    ok(! hasher.changed.getNumListeners(), "No CHANGED Listener");
+
+    var hashChangeHandler = function(newHash, oldHash){
+        ok(newHash !== oldHash, 'hash changed');
+        equals(newHash, 'foo$bar', 'new hash');
+    };
+
+    hasher.changed.add(hashChangeHandler);
+
+    hasher.appendHash = '';
+    hasher.setHash('foo$bar');
+
+
+    setTimeout(function(){
+        hasher.changed.remove(hashChangeHandler);
+
+        hasher.changed.add(function(newHash, oldHash){
+            equals(newHash, 'foo$lorem=amet', 'new hash');
+            equals(oldHash, 'foo$bar', 'old hash');
+            hasher.changed.removeAll();
+            start();
+        });
+
+        setTimeout(function(){
+            hasher.setHash('foo$lorem=amet');
+        }, DELAY_BACK_FORWARD);
+
+    }, DELAY_BACK_FORWARD);
+
+});
+
+
+
 /* ==== dispose ==== */
 
 module();
