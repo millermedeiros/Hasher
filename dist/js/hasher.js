@@ -1,12 +1,12 @@
 /*!!
  * Hasher <http://github.com/millermedeiros/hasher>
  * @author Miller Medeiros
- * @version 1.1.2+ (2013/03/14 06:40 PM)
+ * @version 1.1.2+ (2013/03/14 06:55 PM)
  * Released under the MIT License
  */
 
-(function (define) {
-    define('hasher', ['signals'], function(signals){
+;(function () {
+var factory = function(signals){
 
 /*jshint white:false*/
 /*global signals:false, window:false*/
@@ -404,8 +404,14 @@ var hasher = (function(window){
 }(window));
 
 
-        return hasher;
-    });
-}(typeof define === 'function' && define.amd ? define : function (id, deps, factory) {
-    window[id] = factory(window[deps[0]]);
-}));
+    return hasher;
+};
+
+if (typeof define === 'function' && define.amd) {
+    define(['signals'], factory);
+} else {
+    /*jshint sub:true */
+    window['hasher'] = factory(window['signals']);
+}
+
+}());

@@ -1,11 +1,17 @@
 //::LICENSE:://
-(function (define) {
-    define(['signals'], function(signals){
+;(function () {
+var factory = function(signals){
 
 //::HASHER:://
 
-        return hasher;
-    });
-}(typeof define === 'function' && define.amd ? define : function (deps, factory) {
-    window.hasher = factory(window[deps[0]]);
-}));
+    return hasher;
+};
+
+if (typeof define === 'function' && define.amd) {
+    define(['signals'], factory);
+} else {
+    /*jshint sub:true */
+    window['hasher'] = factory(window['signals']);
+}
+
+}());
