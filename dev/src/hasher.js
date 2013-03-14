@@ -55,7 +55,7 @@ var hasher = (function(window){
     //--------------------------------------------------------------------------------------
 
     function _escapeRegExp(str){
-        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+        return String(str || '').replace(/[\\.+*?\^$\[\](){}\/'#]/g, "\\$&");
     }
 
     function _trimHash(hash){
