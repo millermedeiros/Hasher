@@ -2,6 +2,13 @@ Hasher Changelog
 ================
 
 
+v1.1.3 (2013/03/14)
+-------------------
+
+ - escape RegExp on `trimHash` to avoid removing `$` from hash value (#49)
+ - use unnamed AMD module for greater portability (#51)
+
+
 v1.1.2 (2012/10/31)
 -------------------
 

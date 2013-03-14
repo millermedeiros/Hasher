@@ -1,7 +1,7 @@
 /*!!
  * Hasher <http://github.com/millermedeiros/hasher>
  * @author Miller Medeiros
- * @version 1.1.2+ (2013/03/14 06:55 PM)
+ * @version 1.1.3 (2013/03/14 07:02 PM)
  * Released under the MIT License
  */
 
@@ -65,7 +65,7 @@ var hasher = (function(window){
     //--------------------------------------------------------------------------------------
 
     function _escapeRegExp(str){
-        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+        return String(str || '').replace(/[\\.+*?\^$\[\](){}\/'#]/g, "\\$&");
     }
 
     function _trimHash(hash){
@@ -195,7 +195,7 @@ var hasher = (function(window){
          * @type string
          * @constant
          */
-        VERSION : '1.1.2+',
+        VERSION : '1.1.3',
 
         /**
          * String that should always be added to the end of Hash value.
