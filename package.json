@@ -1,0 +1,24 @@
+{
+  "name": "hasher",
+  "version": "1.1.3",
+  "description": "Hasher is a set of JavaScript functions to control browser history for rich-media websites and applications",
+  "main": "dist/hasher.min.js",
+  "scripts": {
+    "test": "open dev/tests/unit/dev.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/millermedeiros/Hasher.git"
+  },
+  "keywords": [
+    "history",
+    "hash",
+    "hasher",
+    "navigation",
+    "browser"
+  ],
+  "author": "Miller Medeiros <contact@millermedeiros.com>",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "gitHead": "44380c20f5be540f6bf40c36ed14af13d5df124b"
+}
