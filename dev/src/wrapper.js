@@ -9,6 +9,8 @@ var factory = function(signals){
 
 if (typeof define === 'function' && define.amd) {
     define(['signals'], factory);
+} else if (typeof exports === 'object') {
+    module.exports = factory(require('signals'));
 } else {
     /*jshint sub:true */
     window['hasher'] = factory(window['signals']);

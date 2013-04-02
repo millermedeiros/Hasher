@@ -1,7 +1,7 @@
 /*!!
  * Hasher <http://github.com/millermedeiros/hasher>
  * @author Miller Medeiros
- * @version 1.1.3 (2013/03/14 07:02 PM)
+ * @version 1.1.3 (2013/04/01 11:45 PM)
  * Released under the MIT License
  */
 
@@ -409,6 +409,8 @@ var hasher = (function(window){
 
 if (typeof define === 'function' && define.amd) {
     define(['signals'], factory);
+} else if (typeof exports === 'object') {
+    module.exports = factory(require('signals'));
 } else {
     /*jshint sub:true */
     window['hasher'] = factory(window['signals']);
