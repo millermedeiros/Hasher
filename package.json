@@ -19,8 +19,6 @@
   ],
   "author": "Miller Medeiros <contact@millermedeiros.com>",
   "license": "MIT",
-  "readmeFilename": "README.md",
-  "gitHead": "44380c20f5be540f6bf40c36ed14af13d5df124b",
   "dependencies": {
     "signals": "~1.0.0"
   }
