@@ -1,6 +1,6 @@
 {
   "name": "hasher",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "Hasher is a set of JavaScript functions to control browser history for rich-media websites and applications",
   "main": "dist/js/hasher.js",
   "scripts": {
@@ -20,6 +20,6 @@
   "author": "Miller Medeiros <contact@millermedeiros.com>",
   "license": "MIT",
   "dependencies": {
-    "signals": "~1.0.0"
+    "signals": ">0.7 <2.0"
   }
 }
