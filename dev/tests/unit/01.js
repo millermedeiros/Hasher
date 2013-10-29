@@ -689,7 +689,44 @@ test('appendHash + $ [issue #49]', function(){
 
 });
 
+/* ==== raw hashes ==== */
 
+module();
+
+test('raw hashes', function (){
+    stop(500);
+
+    hasher.raw = true;
+
+    hasher.init();
+
+    var hashChangeHandler = function(newHash, oldHash){
+        ok(newHash !== oldHash, 'hash changed');
+        equals(newHash, 'foo%20bar', 'new hash');
+    };
+
+    hasher.changed.add(hashChangeHandler);
+
+    hasher.appendHash = '';
+    hasher.setHash('foo%20bar');
+
+
+    setTimeout(function(){
+        hasher.changed.remove(hashChangeHandler);
+
+        hasher.changed.add(function(newHash, oldHash){
+            equals(newHash, 'foo%20lorem%3Damet', 'new hash');
+            equals(oldHash, 'foo%20bar', 'old hash');
+            hasher.changed.removeAll();
+            start();
+        });
+
+        setTimeout(function(){
+            hasher.setHash('foo%20lorem%3Damet');
+        }, DELAY_BACK_FORWARD);
+
+    }, DELAY_BACK_FORWARD);
+});
 
 /* ==== dispose ==== */
 
