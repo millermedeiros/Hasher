@@ -188,6 +188,15 @@ var hasher = (function(window){
         VERSION : '::VERSION_NUMBER::',
 
         /**
+         * Boolean deciding if hasher encodes/decodes the hash or not.
+         * <ul>
+         * <li>default value: false;</li>
+         * </ul>
+         * @type boolean
+         */
+        raw : false,
+
+        /**
          * String that should always be added to the end of Hash value.
          * <ul>
          * <li>default value: '';</li>
