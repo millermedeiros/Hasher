@@ -1,6 +1,14 @@
 Hasher Changelog
 ================
 
+v1.2.0 (2013/11/11)
+-------------------
+
+ - hasher.raw for percent-encoded strings (#59, thanks @mwoc)
+ - wrap decodeURIComponent into `try/catch` (#57)
+ - bower.json
+
+
 v1.1.4 (2013/04/03)
 -------------------
 
