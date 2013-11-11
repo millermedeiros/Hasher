@@ -68,11 +68,8 @@ var hasher = (function(window){
         //parsed full URL instead of getting window.location.hash because Firefox decode hash value (and all the other browsers don't)
         //also because of IE8 bug with hash query in local file [issue #6]
         var result = _hashValRegexp.exec( hasher.getURL() );
-        if (hasher.raw) {
-            return (result && result[1])? result[1] : '';
-        } else {
-            return (result && result[1])? decodeURIComponent(result[1]) : '';
-        }
+        var path = (result && result[1]) || '';
+        return hasher.raw? path : decodeURIComponent(path);
     }
 
     function _getFrameHash(){
@@ -338,12 +335,10 @@ var hasher = (function(window){
                 if (path === _hash) {
                     // we check if path is still === _hash to avoid error in
                     // case of multiple consecutive redirects [issue #39]
-                    if (hasher.raw) {
-                        window.location.hash = '#' + path;
-                    } else {
-                        window.location.hash = '#' + _encodePath(path);
+                    if (! hasher.raw) {
+                        path = _encodePath(path);
                     }
-
+                    window.location.hash = '#' + path;
                 }
             }
         },
@@ -364,11 +359,10 @@ var hasher = (function(window){
                 if (path === _hash) {
                     // we check if path is still === _hash to avoid error in
                     // case of multiple consecutive redirects [issue #39]
-                    if (hasher.raw) {
-                        window.location.replace('#' + path);
-                    } else {
-                        window.location.replace('#' + _encodePath(path));
+                    if (! hasher.raw) {
+                        path = _encodePath(path);
                     }
+                    window.location.replace('#' + path);
                 }
             }
         },
