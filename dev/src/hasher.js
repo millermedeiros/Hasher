@@ -69,7 +69,13 @@ var hasher = (function(window){
         //also because of IE8 bug with hash query in local file [issue #6]
         var result = _hashValRegexp.exec( hasher.getURL() );
         var path = (result && result[1]) || '';
-        return hasher.raw? path : decodeURIComponent(path);
+        try {
+          return hasher.raw? path : decodeURIComponent(path);
+        } catch (e) {
+          // in case user did not set `hasher.raw` and decodeURIComponent
+          // throws an error (see #57)
+          return path;
+        }
     }
 
     function _getFrameHash(){
