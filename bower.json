@@ -8,7 +8,7 @@
   "description": "Hasher is a set of JavaScript functions to control browser history for rich-media websites and applications",
   "main": "dist/js/hasher.js",
   "dependencies": {
-    "signals": ">0.7 <2.0"
+    "js-signals": ">0.7 <2.0"
   },
   "keywords": [
     "history",
