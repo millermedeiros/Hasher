@@ -1,7 +1,7 @@
 /*!!
  * Hasher <http://github.com/millermedeiros/hasher>
  * @author Miller Medeiros
- * @version 1.2.0 (2013/11/11 03:18 PM)
+ * @version 1.2.0 (2014/10/27 10:53 AM)
  * Released under the MIT License
  */
 
@@ -360,6 +360,16 @@ var hasher = (function(window){
         },
 
         /**
+         * Set Hash value, generating a new history record.
+         * Do not dispatch events for this hash change.
+         */
+        setHashQuiet : function(path){
+            hasher.changed.active = false;
+            hasher.setHash.apply(null, arguments);
+            hasher.changed.active = true;
+        },
+
+        /**
          * Set Hash value without keeping previous hash on the history record.
          * Similar to calling `window.location.replace("#/hash")` but will also work on IE6-7.
          * @param {...string} path    Hash value without '#'. Hasher will join
@@ -381,6 +391,16 @@ var hasher = (function(window){
                     window.location.replace('#' + path);
                 }
             }
+        },
+
+        /**
+         * Set Hash value without keeping previous hash on the history record.
+         * Do not dispatch events for this hash change.
+         */
+        replaceHashQuiet : function(path){
+            hasher.changed.active = false;
+            hasher.replaceHash.apply(null, arguments);
+            hasher.changed.active = true;
         },
 
         /**
