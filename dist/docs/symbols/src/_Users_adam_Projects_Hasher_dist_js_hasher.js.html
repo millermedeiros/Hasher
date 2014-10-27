@@ -8,7 +8,7 @@
 	</style></head><body><pre><span class='line'>  1</span> <span class="COMM">/*!!
 <span class='line'>  2</span>  * Hasher &lt;http://github.com/millermedeiros/hasher>
 <span class='line'>  3</span>  * @author Miller Medeiros
-<span class='line'>  4</span>  * @version 1.2.0 (2013/11/11 03:18 PM)
+<span class='line'>  4</span>  * @version 1.2.0 (2014/10/27 10:53 AM)
 <span class='line'>  5</span>  * Released under the MIT License
 <span class='line'>  6</span>  */</span><span class="WHIT">
 <span class='line'>  7</span> 
@@ -367,83 +367,103 @@
 <span class='line'>360</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
 <span class='line'>361</span> 
 <span class='line'>362</span> </span><span class="WHIT">        </span><span class="COMM">/**
-<span class='line'>363</span>          * Set Hash value without keeping previous hash on the history record.
-<span class='line'>364</span>          * Similar to calling `window.location.replace("#/hash")` but will also work on IE6-7.
-<span class='line'>365</span>          * @param {...string} path    Hash value without '#'. Hasher will join
-<span class='line'>366</span>          * path segments using `hasher.separator` and prepend/append hash value
-<span class='line'>367</span>          * with `hasher.appendHash` and `hasher.prependHash`
-<span class='line'>368</span>          * @example hasher.replaceHash('lorem', 'ipsum', 'dolor') -> '#/lorem/ipsum/dolor'
-<span class='line'>369</span>          */</span><span class="WHIT">
-<span class='line'>370</span> </span><span class="WHIT">        </span><span class="NAME">replaceHash</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">path</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>371</span> </span><span class="WHIT">            </span><span class="NAME">path</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">_makePath.apply</span><span class="PUNC">(</span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">arguments</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>372</span> </span><span class="WHIT">            </span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">path</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="NAME">_hash</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>373</span> </span><span class="WHIT">                </span><span class="COMM">// we should store raw value</span><span class="WHIT">
-<span class='line'>374</span> </span><span class="WHIT">                </span><span class="NAME">_registerChange</span><span class="PUNC">(</span><span class="NAME">path</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>375</span> </span><span class="WHIT">                </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">path</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="NAME">_hash</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>376</span> </span><span class="WHIT">                    </span><span class="COMM">// we check if path is still === _hash to avoid error in</span><span class="WHIT">
-<span class='line'>377</span> </span><span class="WHIT">                    </span><span class="COMM">// case of multiple consecutive redirects [issue #39]</span><span class="WHIT">
-<span class='line'>378</span> </span><span class="WHIT">                    </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">!</span><span class="WHIT"> </span><span class="NAME">hasher.raw</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>379</span> </span><span class="WHIT">                        </span><span class="NAME">path</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">_encodePath</span><span class="PUNC">(</span><span class="NAME">path</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>380</span> </span><span class="WHIT">                    </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>381</span> </span><span class="WHIT">                    </span><span class="NAME">window.location.replace</span><span class="PUNC">(</span><span class="STRN">'#'</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">path</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>382</span> </span><span class="WHIT">                </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>383</span> </span><span class="WHIT">            </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>384</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>385</span> 
-<span class='line'>386</span> </span><span class="WHIT">        </span><span class="COMM">/**
-<span class='line'>387</span>          * @return {string} Hash value without '#', `hasher.appendHash` and `hasher.prependHash`.
-<span class='line'>388</span>          */</span><span class="WHIT">
-<span class='line'>389</span> </span><span class="WHIT">        </span><span class="NAME">getHash</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>390</span> </span><span class="WHIT">            </span><span class="COMM">//didn't used actual value of the `window.location.hash` to avoid breaking the application in case `window.location.hash` isn't available and also because value should always be synched.</span><span class="WHIT">
-<span class='line'>391</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">_trimHash</span><span class="PUNC">(</span><span class="NAME">_hash</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>392</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>393</span> 
-<span class='line'>394</span> </span><span class="WHIT">        </span><span class="COMM">/**
-<span class='line'>395</span>          * @return {Array.&lt;string>} Hash value split into an Array.
-<span class='line'>396</span>          */</span><span class="WHIT">
-<span class='line'>397</span> </span><span class="WHIT">        </span><span class="NAME">getHashAsArray</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>398</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">hasher.getHash</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">split</span><span class="PUNC">(</span><span class="NAME">hasher.separator</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>399</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>400</span> 
-<span class='line'>401</span> </span><span class="WHIT">        </span><span class="COMM">/**
-<span class='line'>402</span>          * Removes all event listeners, stops hasher and destroy hasher object.
-<span class='line'>403</span>          * - IMPORTANT: hasher won't work after calling this method, hasher Object will be deleted.
-<span class='line'>404</span>          */</span><span class="WHIT">
-<span class='line'>405</span> </span><span class="WHIT">        </span><span class="NAME">dispose</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>406</span> </span><span class="WHIT">            </span><span class="NAME">hasher.stop</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>407</span> </span><span class="WHIT">            </span><span class="NAME">hasher.initialized.dispose</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>408</span> </span><span class="WHIT">            </span><span class="NAME">hasher.stopped.dispose</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>409</span> </span><span class="WHIT">            </span><span class="NAME">hasher.changed.dispose</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>410</span> </span><span class="WHIT">            </span><span class="NAME">_frame</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">hasher</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">window.hasher</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>411</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>412</span> 
-<span class='line'>413</span> </span><span class="WHIT">        </span><span class="COMM">/**
-<span class='line'>414</span>          * @return {string} A string representation of the object.
-<span class='line'>415</span>          */</span><span class="WHIT">
-<span class='line'>416</span> </span><span class="WHIT">        </span><span class="NAME">toString</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>417</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="STRN">'[hasher version="'</span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">hasher.VERSION</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="STRN">'" hash="'</span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">hasher.getHash</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="STRN">'"]'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>418</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>419</span> 
-<span class='line'>420</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>421</span> 
-<span class='line'>422</span> </span><span class="WHIT">    </span><span class="NAME">hasher.initialized.memorize</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//see #33</span><span class="WHIT">
-<span class='line'>423</span> 
-<span class='line'>424</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">hasher</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>425</span> 
-<span class='line'>426</span> </span><span class="PUNC">}</span><span class="PUNC">(</span><span class="NAME">window</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>427</span> 
-<span class='line'>428</span> 
-<span class='line'>429</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">hasher</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>430</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>431</span> 
-<span class='line'>432</span> </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">define</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">'function'</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">define.amd</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>433</span> </span><span class="WHIT">    </span><span class="NAME">define</span><span class="PUNC">(</span><span class="PUNC">[</span><span class="STRN">'signals'</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">factory</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>434</span> </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">else</span><span class="WHIT"> </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">exports</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">'object'</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>435</span> </span><span class="WHIT">    </span><span class="NAME">module.exports</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">factory</span><span class="PUNC">(</span><span class="NAME">require</span><span class="PUNC">(</span><span class="STRN">'signals'</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>436</span> </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">else</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>437</span> </span><span class="WHIT">    </span><span class="COMM">/*jshint sub:true */</span><span class="WHIT">
-<span class='line'>438</span> </span><span class="WHIT">    </span><span class="NAME">window</span><span class="PUNC">[</span><span class="STRN">'hasher'</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">factory</span><span class="PUNC">(</span><span class="NAME">window</span><span class="PUNC">[</span><span class="STRN">'signals'</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>439</span> </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>440</span> 
-<span class='line'>441</span> </span><span class="PUNC">}</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>442</span> </span></pre></body></html>
+<span class='line'>363</span>          * Set Hash value, generating a new history record.
+<span class='line'>364</span>          * Do not dispatch events for this hash change.
+<span class='line'>365</span>          */</span><span class="WHIT">
+<span class='line'>366</span> </span><span class="WHIT">        </span><span class="NAME">setHashQuiet</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">path</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>367</span> </span><span class="WHIT">            </span><span class="NAME">hasher.changed.active</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>368</span> </span><span class="WHIT">            </span><span class="NAME">hasher.setHash.apply</span><span class="PUNC">(</span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">arguments</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>369</span> </span><span class="WHIT">            </span><span class="NAME">hasher.changed.active</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>370</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>371</span> 
+<span class='line'>372</span> </span><span class="WHIT">        </span><span class="COMM">/**
+<span class='line'>373</span>          * Set Hash value without keeping previous hash on the history record.
+<span class='line'>374</span>          * Similar to calling `window.location.replace("#/hash")` but will also work on IE6-7.
+<span class='line'>375</span>          * @param {...string} path    Hash value without '#'. Hasher will join
+<span class='line'>376</span>          * path segments using `hasher.separator` and prepend/append hash value
+<span class='line'>377</span>          * with `hasher.appendHash` and `hasher.prependHash`
+<span class='line'>378</span>          * @example hasher.replaceHash('lorem', 'ipsum', 'dolor') -> '#/lorem/ipsum/dolor'
+<span class='line'>379</span>          */</span><span class="WHIT">
+<span class='line'>380</span> </span><span class="WHIT">        </span><span class="NAME">replaceHash</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">path</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>381</span> </span><span class="WHIT">            </span><span class="NAME">path</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">_makePath.apply</span><span class="PUNC">(</span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">arguments</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>382</span> </span><span class="WHIT">            </span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">path</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="NAME">_hash</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>383</span> </span><span class="WHIT">                </span><span class="COMM">// we should store raw value</span><span class="WHIT">
+<span class='line'>384</span> </span><span class="WHIT">                </span><span class="NAME">_registerChange</span><span class="PUNC">(</span><span class="NAME">path</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>385</span> </span><span class="WHIT">                </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">path</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="NAME">_hash</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>386</span> </span><span class="WHIT">                    </span><span class="COMM">// we check if path is still === _hash to avoid error in</span><span class="WHIT">
+<span class='line'>387</span> </span><span class="WHIT">                    </span><span class="COMM">// case of multiple consecutive redirects [issue #39]</span><span class="WHIT">
+<span class='line'>388</span> </span><span class="WHIT">                    </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">!</span><span class="WHIT"> </span><span class="NAME">hasher.raw</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>389</span> </span><span class="WHIT">                        </span><span class="NAME">path</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">_encodePath</span><span class="PUNC">(</span><span class="NAME">path</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>390</span> </span><span class="WHIT">                    </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>391</span> </span><span class="WHIT">                    </span><span class="NAME">window.location.replace</span><span class="PUNC">(</span><span class="STRN">'#'</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">path</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>392</span> </span><span class="WHIT">                </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>393</span> </span><span class="WHIT">            </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>394</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>395</span> 
+<span class='line'>396</span> </span><span class="WHIT">        </span><span class="COMM">/**
+<span class='line'>397</span>          * Set Hash value without keeping previous hash on the history record.
+<span class='line'>398</span>          * Do not dispatch events for this hash change.
+<span class='line'>399</span>          */</span><span class="WHIT">
+<span class='line'>400</span> </span><span class="WHIT">        </span><span class="NAME">replaceHashQuiet</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">path</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>401</span> </span><span class="WHIT">            </span><span class="NAME">hasher.changed.active</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>402</span> </span><span class="WHIT">            </span><span class="NAME">hasher.replaceHash.apply</span><span class="PUNC">(</span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">arguments</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>403</span> </span><span class="WHIT">            </span><span class="NAME">hasher.changed.active</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>404</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>405</span> 
+<span class='line'>406</span> </span><span class="WHIT">        </span><span class="COMM">/**
+<span class='line'>407</span>          * @return {string} Hash value without '#', `hasher.appendHash` and `hasher.prependHash`.
+<span class='line'>408</span>          */</span><span class="WHIT">
+<span class='line'>409</span> </span><span class="WHIT">        </span><span class="NAME">getHash</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>410</span> </span><span class="WHIT">            </span><span class="COMM">//didn't used actual value of the `window.location.hash` to avoid breaking the application in case `window.location.hash` isn't available and also because value should always be synched.</span><span class="WHIT">
+<span class='line'>411</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">_trimHash</span><span class="PUNC">(</span><span class="NAME">_hash</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>412</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>413</span> 
+<span class='line'>414</span> </span><span class="WHIT">        </span><span class="COMM">/**
+<span class='line'>415</span>          * @return {Array.&lt;string>} Hash value split into an Array.
+<span class='line'>416</span>          */</span><span class="WHIT">
+<span class='line'>417</span> </span><span class="WHIT">        </span><span class="NAME">getHashAsArray</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>418</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">hasher.getHash</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">split</span><span class="PUNC">(</span><span class="NAME">hasher.separator</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>419</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>420</span> 
+<span class='line'>421</span> </span><span class="WHIT">        </span><span class="COMM">/**
+<span class='line'>422</span>          * Removes all event listeners, stops hasher and destroy hasher object.
+<span class='line'>423</span>          * - IMPORTANT: hasher won't work after calling this method, hasher Object will be deleted.
+<span class='line'>424</span>          */</span><span class="WHIT">
+<span class='line'>425</span> </span><span class="WHIT">        </span><span class="NAME">dispose</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>426</span> </span><span class="WHIT">            </span><span class="NAME">hasher.stop</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>427</span> </span><span class="WHIT">            </span><span class="NAME">hasher.initialized.dispose</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>428</span> </span><span class="WHIT">            </span><span class="NAME">hasher.stopped.dispose</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>429</span> </span><span class="WHIT">            </span><span class="NAME">hasher.changed.dispose</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>430</span> </span><span class="WHIT">            </span><span class="NAME">_frame</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">hasher</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">window.hasher</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>431</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>432</span> 
+<span class='line'>433</span> </span><span class="WHIT">        </span><span class="COMM">/**
+<span class='line'>434</span>          * @return {string} A string representation of the object.
+<span class='line'>435</span>          */</span><span class="WHIT">
+<span class='line'>436</span> </span><span class="WHIT">        </span><span class="NAME">toString</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>437</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="STRN">'[hasher version="'</span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">hasher.VERSION</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="STRN">'" hash="'</span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">hasher.getHash</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="STRN">'"]'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>438</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>439</span> 
+<span class='line'>440</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>441</span> 
+<span class='line'>442</span> </span><span class="WHIT">    </span><span class="NAME">hasher.initialized.memorize</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//see #33</span><span class="WHIT">
+<span class='line'>443</span> 
+<span class='line'>444</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">hasher</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>445</span> 
+<span class='line'>446</span> </span><span class="PUNC">}</span><span class="PUNC">(</span><span class="NAME">window</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>447</span> 
+<span class='line'>448</span> 
+<span class='line'>449</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">hasher</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>450</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>451</span> 
+<span class='line'>452</span> </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">define</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">'function'</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">define.amd</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>453</span> </span><span class="WHIT">    </span><span class="NAME">define</span><span class="PUNC">(</span><span class="PUNC">[</span><span class="STRN">'signals'</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">factory</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>454</span> </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">else</span><span class="WHIT"> </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">exports</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">'object'</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>455</span> </span><span class="WHIT">    </span><span class="NAME">module.exports</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">factory</span><span class="PUNC">(</span><span class="NAME">require</span><span class="PUNC">(</span><span class="STRN">'signals'</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>456</span> </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">else</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>457</span> </span><span class="WHIT">    </span><span class="COMM">/*jshint sub:true */</span><span class="WHIT">
+<span class='line'>458</span> </span><span class="WHIT">    </span><span class="NAME">window</span><span class="PUNC">[</span><span class="STRN">'hasher'</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">factory</span><span class="PUNC">(</span><span class="NAME">window</span><span class="PUNC">[</span><span class="STRN">'signals'</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>459</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>460</span> 
+<span class='line'>461</span> </span><span class="PUNC">}</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>462</span> </span></pre></body></html>
