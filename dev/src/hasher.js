@@ -325,7 +325,12 @@ var hasher = (function(window){
         getBaseURL : function(){
             return hasher.getURL().replace(_baseUrlRegexp, ''); //removes everything after '?' and/or '#'
         },
-
+        /**
+         * @return {string} Retrieve hash without base URL.
+         */
+        getWindowHash : function () {
+            return _getWindowHash();
+        },
         /**
          * Set Hash value, generating a new history record.
          * @param {...string} path    Hash value without '#'. Hasher will join

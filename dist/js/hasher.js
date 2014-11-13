@@ -1,7 +1,7 @@
 /*!!
  * Hasher <http://github.com/millermedeiros/hasher>
  * @author Miller Medeiros
- * @version 1.2.0 (2013/11/11 03:18 PM)
+ * @version 1.2.0 (2014/11/12 09:08 PM)
  * Released under the MIT License
  */
 
@@ -335,7 +335,12 @@ var hasher = (function(window){
         getBaseURL : function(){
             return hasher.getURL().replace(_baseUrlRegexp, ''); //removes everything after '?' and/or '#'
         },
-
+        /**
+         * @return {string} Retrieve hash without base URL.
+         */
+        getWindowHash : function () {
+            return _getWindowHash();
+        },
         /**
          * Set Hash value, generating a new history record.
          * @param {...string} path    Hash value without '#'. Hasher will join
