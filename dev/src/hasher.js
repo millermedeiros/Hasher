@@ -111,7 +111,9 @@ var hasher = (function(window){
                     _frame.contentWindow.frameHash = newHash;
                 }
             }
-            hasher.changed.dispatch(_trimHash(newHash), _trimHash(oldHash));
+            return function () {
+                hasher.changed.dispatch(_trimHash(newHash), _trimHash(oldHash));
+            };
         }
     }
 
@@ -121,7 +123,8 @@ var hasher = (function(window){
          */
         _checkHistory = function(){
             var windowHash = _getWindowHash(),
-                frameHash = _getFrameHash();
+                frameHash = _getFrameHash(),
+                dispatchFunction;
             if(frameHash !== _hash && frameHash !== windowHash){
                 //detect changes made pressing browser history buttons.
                 //Workaround since history.back() and history.forward() doesn't
@@ -131,7 +134,8 @@ var hasher = (function(window){
                 hasher.setHash(_trimHash(frameHash));
             } else if (windowHash !== _hash){
                 //detect if hash changed (manually or using setHash)
-                _registerChange(windowHash);
+                dispatchFunction = _registerChange(windowHash);
+                dispatchFunction && dispatchFunction();
             }
         };
     } else {
@@ -139,9 +143,11 @@ var hasher = (function(window){
          * @private
          */
         _checkHistory = function(){
-            var windowHash = _getWindowHash();
+            var windowHash = _getWindowHash(),
+                dispatchFunction;
             if(windowHash !== _hash){
-                _registerChange(windowHash);
+                dispatchFunction = _registerChange(windowHash);
+                dispatchFunction && dispatchFunction();
             }
         };
     }
@@ -334,18 +340,17 @@ var hasher = (function(window){
          * @example hasher.setHash('lorem', 'ipsum', 'dolor') -> '#/lorem/ipsum/dolor'
          */
         setHash : function(path){
+            var dispatchFunction;
+
             path = _makePath.apply(null, arguments);
             if(path !== _hash){
                 // we should store raw value
-                _registerChange(path);
-                if (path === _hash) {
-                    // we check if path is still === _hash to avoid error in
-                    // case of multiple consecutive redirects [issue #39]
-                    if (! hasher.raw) {
-                        path = _encodePath(path);
-                    }
-                    window.location.hash = '#' + path;
+                dispatchFunction = _registerChange(path);
+                if (! hasher.raw) {
+                    path = _encodePath(path);
                 }
+                window.location.hash = '#' + path;
+                dispatchFunction && dispatchFunction();
             }
         },
 
@@ -358,18 +363,17 @@ var hasher = (function(window){
          * @example hasher.replaceHash('lorem', 'ipsum', 'dolor') -> '#/lorem/ipsum/dolor'
          */
         replaceHash : function(path){
+            var dispatchFunction;
+
             path = _makePath.apply(null, arguments);
             if(path !== _hash){
                 // we should store raw value
-                _registerChange(path, true);
-                if (path === _hash) {
-                    // we check if path is still === _hash to avoid error in
-                    // case of multiple consecutive redirects [issue #39]
-                    if (! hasher.raw) {
-                        path = _encodePath(path);
-                    }
-                    window.location.replace('#' + path);
+                dispatchFunction = _registerChange(path, true);
+                if (! hasher.raw) {
+                    path = _encodePath(path);
                 }
+                window.location.replace('#' + path);
+                dispatchFunction && dispatchFunction();
             }
         },
 
