@@ -613,6 +613,43 @@ test('multiple redirects [issue #39]', function(){
 
 });
 
+
+module("Synchronous hash setting");
+
+asyncTest("Should not omit a history entry when hash is set again in a handler", function () {
+    var calls = [],
+        hashChangeHandler = function (newHash) {
+            calls.push(newHash);
+
+            if (newHash === "initial") {
+                hasher.setHash("firstChange");
+            }
+
+            if (newHash === "firstChange") {
+                hasher.setHash("secondChange");
+            }
+
+            if (newHash === "secondChange") {
+                hasher.changed.remove(hashChangeHandler);
+                window.history.back();
+                hasher.changed.add(assertHandler);
+            }
+
+        },
+        assertHandler = function (newHash) {
+            strictEqual(newHash, "firstChange", "The hash got set to the firstChange and did not get ommited.");
+            strictEqual(calls.length, 3, "initial , first second where executed");
+
+            hasher.changed.remove(assertHandler);
+            start();
+        };
+
+    hasher.changed.add(hashChangeHandler);
+    hasher.setHash("initial");
+
+    hasher.init();
+});
+
 /* ==== */
 
 module();
