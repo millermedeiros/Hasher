@@ -184,7 +184,7 @@ normalizes and fixes many bugs, here are a few of the advantges:
  * Option to start/stop pooling/listening for changes on the hash whenever you
    want giving more control over how you app is supposed to work.
  * Available as an AMD module which can be easily integrated into other
-   projects without polluting the global scope or affecting you aplication
+   projects without polluting the global scope or affecting you application
    structure.
  * Isn't a plugin for a large JS library/framework (so you can use it with
    *any* library).
