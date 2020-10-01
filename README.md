@@ -1,6 +1,6 @@
 ![hasher-logo.gif](https://github.com/millermedeiros/Hasher/raw/master/assets/hasher-logo.gif)
 
-Hasher is a set of JavaScript functions to control browser history for rich-media websites and applications.
+Hasher is a set of JavaScript functions used to control browsing history for rich-media websites and applications.
 It works as an abstraction of browsers native methods plus some extra helper methods, it also has the advantage of dispatching Events when the history state change across multiple browsers (since this feature isn't supported by all of them).
 
 
@@ -11,16 +11,16 @@ It works as an abstraction of browsers native methods plus some extra helper met
  - Some of the alternatives are way too complex, sometimes doing more things automatically than you actually want it to do.
  - Source code of most of the solutions are way too cryptic making it impossible to customize for your need or to debug it in case you find any issue.
  - Some of the solutions require extra markup and/or blank files to make it work.
- - The HTML5 History API is awesome but some for some kinds of applications using the
-   `location.hash` may still be the recommended solution for saving application state.
+ - The HTML5 History API is awesome but for some kinds of applications using the
+   `location.hash` it may still be the recommended solution for saving application state.
 
 
 
 ## Goals ##
 
  - Be simple.
- - Work on the main browsers (IE6+, newest versions of Firefox, Safari, Opera and Chrome).
- - Clean source code, making it easy to debug/customize/maintain.
+ - Work on the most of the browsers (IE6+, newest versions of Firefox, Safari, Opera and Chrome).
+ - Clean source code, makes it easy to debug/customize/maintain.
  - Follow best practices/standards.
  - Fully unit tested. ([tests](http://millermedeiros.github.com/Hasher/test/unit.html))
  - Don't break application if for some reason `location.hash` can't be updated.
